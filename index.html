@@ -2694,17 +2694,7 @@ var pageTitles={dashboard:'لوحة التحكم',students:'الطلبة','stude
 var currentPage='dashboard';
 function updateTopbarAddButton(){
  var btn=document.getElementById('topbar-add-btn');
- if(!btn)return;
- var labels={
- students:'+ إضافة طالب',
- teachers:'+ إضافة مدرس',
- results:'+ إضافة نتيجة',
- fees:'+ إضافة رسم',
- expenses:'+ إضافة مصروف',
- slips:'+ إضافة قصاصة'
- };
- btn.textContent=labels[currentPage]||'+ إضافة';
- btn.style.display=labels[currentPage]?'inline-flex':'none';
+ if(btn){btn.style.display='none';btn.textContent='';}
 }
 function topbarAdd(){
  var modalByPage={
