@@ -2385,6 +2385,28 @@ html[data-theme=light] .global-search-results{background:#ede7dd;}
  <input type="number" id="sal-workdays" min="1" max="31" placeholder="مثال: 26" value="30" oninput="updateSalPreview()">
  </div>
  </div>
+ <!-- إعداد أيام الجمعة -->
+ <div style="background:rgba(240,192,96,0.06);border:1px solid rgba(240,192,96,0.18);border-radius:10px;padding:12px;margin-bottom:12px">
+ <div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:5px">
+ <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+ إعداد أيام الجمعة
+ </div>
+ <div style="display:flex;gap:8px">
+ <label style="display:flex;align-items:center;gap:6px;cursor:pointer;flex:1;padding:8px 10px;border-radius:8px;border:1px solid var(--border2);background:var(--card2);font-size:11px;font-weight:600;transition:all .2s" id="fri-paid-lbl">
+ <input type="radio" name="sal-friday" id="sal-friday-paid" value="paid" onchange="updateSalPreview()" style="accent-color:var(--gold)">
+ <span style="color:var(--success)">مدفوعة</span>
+ <span style="font-size:9px;color:var(--muted);margin-right:auto">تُحتسب في الراتب</span>
+ </label>
+ <label style="display:flex;align-items:center;gap:6px;cursor:pointer;flex:1;padding:8px 10px;border-radius:8px;border:1px solid var(--border2);background:var(--card2);font-size:11px;font-weight:600;transition:all .2s" id="fri-unpaid-lbl">
+ <input type="radio" name="sal-friday" id="sal-friday-unpaid" value="unpaid" onchange="updateSalPreview()" style="accent-color:var(--danger)">
+ <span style="color:var(--danger)">غير مدفوعة</span>
+ <span style="font-size:9px;color:var(--muted);margin-right:auto">تُستثنى من الراتب</span>
+ </label>
+ </div>
+ <div style="font-size:9px;color:var(--muted);margin-top:7px;line-height:1.5">
+ عند اختيار "غير مدفوعة" سيتم استثناء أيام الجمعة من حساب أيام الحضور والراتب المستحق تلقائياً
+ </div>
+ </div>
  <div id="sal-preview" style="background:rgba(240,192,96,0.08);border:1px solid var(--border);border-radius:9px;padding:14px;font-size:11px;margin-bottom:4px;display:none">
  </div>
  <div class="modal-footer">
@@ -3570,9 +3592,43 @@ function renderTAttGrid(){
  style="background:var(--card2);border:1px solid var(--border2);border-radius:6px;padding:3px 7px;color:var(--text);font-size:10px;outline:none;font-family:var(--font)">
  </div>
  ${timeIn&&timeOut?`<span style="font-size:9px;color:var(--purple)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${calcHours(timeIn,timeOut)}</span>`:''}
+ ${t.phone&&timeIn?`<button onclick="sendTeacherAttWA(${t.id})" style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:7px;border:1px solid rgba(37,211,102,0.35);background:rgba(37,211,102,0.10);color:#25d366;cursor:pointer;font-size:9px;font-weight:700;font-family:var(--font);transition:all 0.2s;white-space:nowrap"><svg width="10" height="10" viewBox="0 0 24 24" fill="#25d366"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.008 9.469c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 14.447l-2.938-.916c-.638-.203-.651-.638.136-.943l11.49-4.43c.531-.194.995.131.684.09z"/></svg> إشعار حضور</button>`:''}
  </div>`:''}
  </div>`;
  }).join('');
+}
+
+// إشعار واتساب بوقت حضور المدرس
+function sendTeacherAttWA(tid){
+ var t=gT(tid);
+ if(!t){toast('المدرس غير موجود');return;}
+ if(!t.phone){toast('لا يوجد رقم هاتف للمدرس');return;}
+ var dv=document.getElementById('tatt-date').value||today();
+ var timeIn=(tattTimes[tid]?tattTimes[tid]['in']:'')|| '';
+ var timeOut=(tattTimes[tid]?tattTimes[tid]['out']:'')||'';
+ if(!timeIn){toast('سجّل وقت الدخول أولاً');return;}
+ var instName=data.settings.instName||'راصد';
+ var hours=timeOut?calcHours(timeIn,timeOut):'';
+ var nl='%0A';
+ var msg=encodeURIComponent(instName)+nl;
+ msg+='%E2%80%8E%E2%80%8E';
+ var parts=[];
+ parts.push('السلام عليكم أستاذ '+t.fname);
+ parts.push('تم تسجيل حضوركم ليوم '+dv);
+ parts.push('وقت الدخول: '+formatTime12(timeIn));
+ if(timeOut)parts.push('وقت الخروج: '+formatTime12(timeOut));
+ if(hours)parts.push('مدة الدوام: '+hours);
+ parts.push('مع تحيات '+instName);
+ var body=parts.join('\n');
+ var phone=waPhone(t.phone);
+ if(!phone){toast('رقم الهاتف غير صالح');return;}
+ var url='https://wa.me/'+phone+'?text='+encodeURIComponent(body);
+ window.open(url,'_blank');
+ // تسجيل في سجل واتساب
+ var logEntry={id:data.nextId.waLog++,type:'teacher-att',teacherId:tid,date:dv,msg:body,sentAt:new Date().toISOString()};
+ data.waLog.push(logEntry);
+ save();
+ toast('جاري فتح واتساب...');
 }
 
 function calcHours(tIn,tOut){
@@ -4850,24 +4906,41 @@ function delExpense(id){
 // ══════════════════════════════════════════════
 
 // احسب عدد أيام الحضور للمدرس في شهر معين
+// مع دعم استثناء أيام الجمعة إذا كانت غير مدفوعة
 function getTeacherPresentDays(tid, month){
- return data.teacherAttendance.filter(a=>
- a.teacherId===tid &&
- a.status==='present' &&
- a.date.startsWith(month)
- ).length;
+ var sal=data.salaries.find(s=>s.teacherId===tid);
+ var fridayPaid=sal?(sal.fridayPaid!==false):true;
+ return data.teacherAttendance.filter(function(a){
+ if(a.teacherId!==tid||a.status!=='present'||!a.date.startsWith(month))return false;
+ if(!fridayPaid){
+ var d=new Date(a.date+'T00:00:00');
+ if(d.getDay()===5)return false;
+ }
+ return true;
+ }).length;
+}
+
+// احتساب عدد أيام الجمعة الحاضرة في شهر معين (لعرضها في الحساب التفصيلي)
+function getTeacherFridayDays(tid, month){
+ return data.teacherAttendance.filter(function(a){
+ if(a.teacherId!==tid||a.status!=='present'||!a.date.startsWith(month))return false;
+ var d=new Date(a.date+'T00:00:00');
+ return d.getDay()===5;
+ }).length;
 }
 
 // احسب الراتب المستحق للمدرس في شهر معين
 // المعادلة: (الراتب الثابت ÷ أيام العمل) × أيام الحضور الفعلية
 function calcDueSalary(tid, month){
  var sal=data.salaries.find(s=>s.teacherId===tid);
- if(!sal)return{due:0,dailyRate:0,presentDays:0,workDays:0};
+ if(!sal)return{due:0,dailyRate:0,presentDays:0,workDays:0,fridayDays:0,fridayPaid:true};
  var workDays=sal.workDays||30;
+ var fridayPaid=sal.fridayPaid!==false;
  var dailyRate=sal.amount/workDays;
  var presentDays=getTeacherPresentDays(tid, month);
+ var fridayDays=getTeacherFridayDays(tid, month);
  var due=Math.round(dailyRate*presentDays);
- return{due,dailyRate:Math.round(dailyRate),presentDays,workDays,fixedSalary:sal.amount};
+ return{due:due,dailyRate:Math.round(dailyRate),presentDays:presentDays,workDays:workDays,fixedSalary:sal.amount,fridayDays:fridayDays,fridayPaid:fridayPaid};
 }
 
 // احسب ما دُفع للمدرس في شهر معين
@@ -4888,8 +4961,9 @@ function renderSalariesCards(){
 
  el.innerHTML=data.teachers.map(t=>{
  var sal=data.salaries.find(s=>s.teacherId===t.id);
- var _sal=sal?calcDueSalary(t.id,currentMonth):{due:0,dailyRate:0,presentDays:0,workDays:0,fixedSalary:0};
+ var _sal=sal?calcDueSalary(t.id,currentMonth):{due:0,dailyRate:0,presentDays:0,workDays:0,fixedSalary:0,fridayDays:0,fridayPaid:true};
  var due=_sal.due,dailyRate=_sal.dailyRate,presentDays=_sal.presentDays,workDays=_sal.workDays,fixedSalary=_sal.fixedSalary;
+ var fridayDays=_sal.fridayDays||0,fridayPaid=_sal.fridayPaid!==false;
  var paidThisMonth=getPaidForMonth(t.id, currentMonth);
  var remainingThisMonth=due-paidThisMonth;
  var totalPaidAllTime=data.salaryPayments.filter(p=>p.teacherId===t.id).reduce((a,p)=>a+p.amount,0);
@@ -4904,6 +4978,7 @@ function renderSalariesCards(){
  <div class="item-sub">${t.subject}</div>
  ${sal?`<div style="font-size:9px;color:var(--muted);margin-top:2px">
  راتب ثابت: ${fmt(sal.amount)} | يوم العمل: ${fmt(dailyRate)}
+ <span style="display:inline-flex;align-items:center;gap:3px;margin-right:4px;padding:1px 6px;border-radius:4px;font-size:8px;font-weight:700;background:${fridayPaid?'rgba(52,211,153,0.12)':'rgba(248,113,113,0.12)'};color:${fridayPaid?'var(--success)':'var(--danger)'}">الجمعة: ${fridayPaid?'مدفوعة':'غير مدفوعة'}</span>
  </div>`:''}
  </div>
  </div>
@@ -4941,6 +5016,7 @@ function renderSalariesCards(){
  <div style="font-size:16px;font-weight:900;color:var(--gold)">${fmt(due)}</div>
  <div style="font-size:9px;color:var(--muted)">الراتب المستحق هذا الشهر</div>
  </div>
+ ${!fridayPaid&&fridayDays>0?`<div style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.18);border-radius:7px;padding:7px;text-align:center;font-size:9px;color:var(--danger);margin-bottom:8px"> تم استثناء ${fridayDays} يوم جمعة من حساب الراتب</div>`:''}
  <div class="item-stats">
  <div class="item-stat"><div class="item-stat-val" style="color:var(--success);font-size:11px">${fmt(paidThisMonth)}</div><div class="item-stat-lbl">مدفوع هذا الشهر</div></div>
  <div class="item-stat"><div class="item-stat-val" style="color:${remainingThisMonth>0?'var(--danger)':'var(--success)'};font-size:11px">${fmt(remainingThisMonth>0?remainingThisMonth:0)}</div><div class="item-stat-lbl">${remainingThisMonth<=0?'مكتمل':'متبقي'}</div></div>
@@ -4965,9 +5041,14 @@ function openSetSalary(tid){
  var t=gT(tid);
  var sal=data.salaries.find(s=>s.teacherId===tid);
  document.getElementById('sal-teacher-id').value=tid;
- document.getElementById('sal-teacher-name').textContent=`${t.fname} ${t.lname} — ${t.subject}`;
+ document.getElementById('sal-teacher-name').textContent=t.fname+' '+t.lname+' — '+t.subject;
  document.getElementById('sal-amount').value=sal?sal.amount:'';
  document.getElementById('sal-workdays').value=sal?sal.workDays:30;
+ var fridayPaid=sal?(sal.fridayPaid!==false):true;
+ var paidEl=document.getElementById('sal-friday-paid');
+ var unpaidEl=document.getElementById('sal-friday-unpaid');
+ if(paidEl)paidEl.checked=fridayPaid;
+ if(unpaidEl)unpaidEl.checked=!fridayPaid;
  updateSalPreview();
  document.getElementById('modal-set-salary').classList.add('open');
 }
@@ -4976,31 +5057,40 @@ function updateSalPreview(){
  var tid=parseInt(document.getElementById('sal-teacher-id').value);
  var amount=parseFloat(gVal('sal-amount'))||0;
  var workDays=parseInt(document.getElementById('sal-workdays').value)||26;
+ var fridayPaidEl=document.querySelector('input[name="sal-friday"]:checked');
+ var fridayPaid=fridayPaidEl?fridayPaidEl.value==='paid':true;
  var prev=document.getElementById('sal-preview');
  if(!amount||!tid){prev.style.display='none';return;}
  var dailyRate=amount/workDays;
  var now=new Date();
- var currentMonth=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
- var presentDays=getTeacherPresentDays(tid, currentMonth);
+ var currentMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+ // احسب أيام الحضور مع مراعاة الجمعة مؤقتاً
+ var allPresent=data.teacherAttendance.filter(function(a){
+ return a.teacherId===tid&&a.status==='present'&&a.date.startsWith(currentMonth);
+ });
+ var fridayCount=allPresent.filter(function(a){
+ var d=new Date(a.date+'T00:00:00');return d.getDay()===5;
+ }).length;
+ var presentDays=fridayPaid?allPresent.length:(allPresent.length-fridayCount);
  var dueSalary=Math.round(dailyRate*presentDays);
  prev.style.display='block';
- prev.innerHTML=`
- <div style="font-size:10px;color:var(--gold);font-weight:700;margin-bottom:8px"> معاينة حساب الراتب</div>
- <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
- <div style="text-align:center;background:var(--card);border-radius:7px;padding:8px">
- <div style="font-weight:700;color:var(--gold)">${fmt(Math.round(dailyRate))}</div>
- <div style="font-size:9px;color:var(--muted)">قيمة اليوم الواحد</div>
- </div>
- <div style="text-align:center;background:var(--card);border-radius:7px;padding:8px">
- <div style="font-weight:700;color:var(--info)">${presentDays} يوم</div>
- <div style="font-size:9px;color:var(--muted)">حضور هذا الشهر</div>
- </div>
- </div>
- <div style="text-align:center;background:rgba(240,192,96,0.1);border-radius:8px;padding:8px">
- <div style="font-size:10px;color:var(--muted)">${fmt(Math.round(dailyRate))} × ${presentDays} =</div>
- <div style="font-size:17px;font-weight:900;color:var(--gold)">${fmt(dueSalary)}</div>
- <div style="font-size:9px;color:var(--muted)">الراتب المستحق هذا الشهر</div>
- </div>`;
+ prev.innerHTML='<div style="font-size:10px;color:var(--gold);font-weight:700;margin-bottom:8px"> معاينة حساب الراتب</div>'+
+ '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'+
+ '<div style="text-align:center;background:var(--card);border-radius:7px;padding:8px">'+
+ '<div style="font-weight:700;color:var(--gold)">'+fmt(Math.round(dailyRate))+'</div>'+
+ '<div style="font-size:9px;color:var(--muted)">قيمة اليوم الواحد</div>'+
+ '</div>'+
+ '<div style="text-align:center;background:var(--card);border-radius:7px;padding:8px">'+
+ '<div style="font-weight:700;color:var(--info)">'+presentDays+' يوم</div>'+
+ '<div style="font-size:9px;color:var(--muted)">حضور هذا الشهر'+(fridayPaid?'':' (بدون جمعة)')+'</div>'+
+ '</div>'+
+ '</div>'+
+ (!fridayPaid&&fridayCount>0?'<div style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:7px;padding:7px;text-align:center;margin-bottom:8px;font-size:9px;color:var(--danger)"> تم استثناء '+fridayCount+' يوم جمعة من الحساب</div>':'')+
+ '<div style="text-align:center;background:rgba(240,192,96,0.1);border-radius:8px;padding:8px">'+
+ '<div style="font-size:10px;color:var(--muted)">'+fmt(Math.round(dailyRate))+' × '+presentDays+' =</div>'+
+ '<div style="font-size:17px;font-weight:900;color:var(--gold)">'+fmt(dueSalary)+'</div>'+
+ '<div style="font-size:9px;color:var(--muted)">الراتب المستحق هذا الشهر</div>'+
+ '</div>';
 }
 
 function saveSalary(){
@@ -5009,10 +5099,12 @@ function saveSalary(){
  var workDays=parseInt(document.getElementById('sal-workdays').value)||26;
  if(!amount||amount<=0){toast('أدخل الراتب الثابت');return;}
  if(!workDays||workDays<1){toast('أدخل عدد أيام العمل');return;}
+ var fridayPaidEl=document.querySelector('input[name="sal-friday"]:checked');
+ var fridayPaid=fridayPaidEl?fridayPaidEl.value==='paid':true;
  var idx=data.salaries.findIndex(s=>s.teacherId===tid);
- var salObj={teacherId:tid,amount,workDays,type:'fixed'};
+ var salObj={teacherId:tid,amount,workDays,type:'fixed',fridayPaid:fridayPaid};
  if(idx!==-1)data.salaries[idx]=Object.assign({},data.salaries[idx],salObj);
- else data.salaries.push({id:data.nextId.salary++,...salObj});
+ else data.salaries.push({id:data.nextId.salary++,teacherId:tid,amount:amount,workDays:workDays,type:'fixed',fridayPaid:fridayPaid});
  save();closeModal('set-salary');renderSalariesCards();
  toast('تم حفظ الراتب');
 }
