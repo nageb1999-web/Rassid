@@ -143,7 +143,7 @@ html[data-theme=light] .auth-loader-text{color:#8c7d6b;}
 }
 
 /* ═══════════════════════════════════════════════════
- MAAHADI — Enterprise Design System v2.0
+ RASID — Enterprise Design System v2.0
  Inspired by: Linear, Vercel, Stripe, Notion
 ═══════════════════════════════════════════════════ */
 
@@ -1025,7 +1025,7 @@ tr:hover td{background:var(--surface-hover);}
 
 
 /* ═══════════════════════════════════════════════════
- MAAHADI — Premium Academy Identity v3.0
+ RASID — Premium Academy Identity v3.0
  Full visual identity refresh: luxury academic SaaS
  Added by ChatGPT
 ═══════════════════════════════════════════════════ */
@@ -1586,7 +1586,7 @@ html[data-theme=light] .global-search-results{background:#ede7dd;}
 </div>
 
  <div class="splash-title">راصد</div>
- <div class="splash-sub" id="splash-inst-name">نظام الإدارة المتكامل</div>
+ <div class="splash-sub" id="splash-inst-name">نظام إدارة المعاهد</div>
  <div class="splash-bar"><div class="splash-progress"></div></div>
 </div>
 
@@ -2809,7 +2809,7 @@ function sendSubExpiryWA(sid){
  }
  parts.push('');
  parts.push('نرجو التواصل معنا لتجديد الاشتراك');
- parts.push('مع تحيات '+(data.settings.instName||'المعهد'));
+ parts.push('مع تحيات '+(data.settings.instName||'راصد'));
  var msg=parts.join('\n');
  var phone=waPhone(s.parentPhone);
  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
@@ -2999,7 +2999,7 @@ function sendSlipWA(slipId){
  msg += 'درس ' + item.subject + ': ' + item.homework + nl;
  });
  if(slip.note) msg += nl + 'ملاحظة: ' + slip.note;
- msg += nl + nl + 'مع تحيات ' + (data.settings.instName||'المعهد');
+ msg += nl + nl + 'مع تحيات ' + (data.settings.instName||'راصد');
  var phone = waPhone(t.phone);
  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
  }, delay);
@@ -3074,7 +3074,7 @@ function markSlipDone(slipId){
  slip.items.forEach(function(item){
  msg += 'درس ' + item.subject + ': ' + item.homework + nl;
  });
- msg += nl + 'مع تحيات ' + (data.settings.instName||'المعهد');
+ msg += nl + 'مع تحيات ' + (data.settings.instName||'راصد');
  var phone = waPhone(s.parentPhone);
  setTimeout(function(){
  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
@@ -4265,7 +4265,7 @@ function applyTemplate(){
  var sid=parseInt(document.getElementById('wa-custom-student').value);
  var s=gS(sid);
  var templates={
- welcome:`السلام عليكم ولي أمر الطالب ${s?s.fname:''} ${s?s.lname:''} \n\nيسعدنا انضمامكم إلى ${data.settings.instName||'معهدنا'} ونتمنى للطالب رحلة تعليمية موفقة.\n\nمع تحيات إدارة المعهد `,
+ welcome:`السلام عليكم ولي أمر الطالب ${s?s.fname:''} ${s?s.lname:''} \n\nيسعدنا انضمامكم إلى ${data.settings.instName||'راصد'} ونتمنى للطالب رحلة تعليمية موفقة.\n\nمع تحيات إدارة راصد `,
  reminder:`السلام عليكم ولي أمر الطالب ${s?s.fname:''} ${s?s.lname:''} \n\nنود التذكير بموعد الحصة القادمة.\n\nمع تحيات ${data.settings.instName||'المعهد'} `,
  custom:''
  };
@@ -4375,7 +4375,7 @@ function calcStorageSize(){
 
 
 // ══ BACKUP TEXT FUNCTIONS ══
-var BACKUP_KEY = 'maahadi_internal_backup';
+var BACKUP_KEY = 'rasid_internal_backup';
 
 function showBackupText(){
  var body = document.getElementById('backup-text-body');
@@ -4467,7 +4467,7 @@ function exportJSON(){
  var dataUri='data:application/json;charset=utf-8,'+encodeURIComponent(json);
  var a=document.createElement('a');
  a.href=dataUri;
- a.download=(data.settings.instName||'maahadi')+'_backup_'+today()+'.json';
+ a.download=(data.settings.instName||'rasid')+'_backup_'+today()+'.json';
  document.body.appendChild(a);
  a.click();
  document.body.removeChild(a);
@@ -4518,7 +4518,7 @@ function exportExcel(){
  var dataUri='data:application/vnd.ms-excel;charset=utf-8,'+encodeURIComponent('\ufeff'+html);
  var a=document.createElement('a');
  a.href=dataUri;
- a.download=(data.settings.instName||'maahadi')+'_'+today()+'.xls';
+ a.download=(data.settings.instName||'rasid')+'_'+today()+'.xls';
  document.body.appendChild(a);
  a.click();
  document.body.removeChild(a);
@@ -4586,10 +4586,10 @@ function sendAttendanceWA(sid, type){
 
  if(type === 'arrival'){
  msg = 'السلام عليكم ولي أمر الطالب ' + s.fname + ' ' + s.lname + nl;
- msg += nl + 'نُبشّركم بأن ابنكم وصل إلى ' + (data.settings.instName||'المعهد') + ' بأمان' + nl;
+ msg += nl + 'نُبشّركم بأن ابنكم وصل إلى ' + (data.settings.instName||'راصد') + ' بأمان' + nl;
  msg += 'وقت الوصول: ' + formatTime12(timeNow) + nl;
  msg += 'التاريخ: ' + today() + nl;
- msg += nl + 'مع تحيات ' + (data.settings.instName||'المعهد');
+ msg += nl + 'مع تحيات ' + (data.settings.instName||'راصد');
  // حفظ وقت الوصول
  var idx = data.attendance.findIndex(function(a){ return a.studentId===sid && a.date===today(); });
  if(idx !== -1) data.attendance[idx].arrivalTime = timeNow;
@@ -4597,11 +4597,11 @@ function sendAttendanceWA(sid, type){
  save();
  } else if(type === 'departure'){
  msg = 'السلام عليكم ولي أمر الطالب ' + s.fname + ' ' + s.lname + nl;
- msg += nl + 'نُعلمكم بأن ابنكم انتهت محاضراته وغادر ' + (data.settings.instName||'المعهد') + nl;
+ msg += nl + 'نُعلمكم بأن ابنكم انتهت محاضراته وغادر ' + (data.settings.instName||'راصد') + nl;
  msg += 'وقت المغادرة: ' + formatTime12(timeNow) + nl;
  msg += 'التاريخ: ' + today() + nl;
  msg += nl + 'نتمنى له يوماً موفقاً' + nl;
- msg += 'مع تحيات ' + (data.settings.instName||'المعهد');
+ msg += 'مع تحيات ' + (data.settings.instName||'راصد');
  // حفظ وقت المغادرة
  var idx2 = data.attendance.findIndex(function(a){ return a.studentId===sid && a.date===today(); });
  if(idx2 !== -1) data.attendance[idx2].departTime = timeNow;
@@ -5162,7 +5162,7 @@ var _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 var currentUser = null;
 
 // domain وهمي لتحويل username → email
-var AUTH_DOMAIN = '@maahadi.local';
+var AUTH_DOMAIN = '@rasid.local';
 function usernameToEmail(u){ return u.trim().toLowerCase() + AUTH_DOMAIN; }
 
 // ══════════════════════════════════════════════
