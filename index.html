@@ -5771,7 +5771,6 @@ function saveWithIndicator() {
   }
   try {
     localStorage.setItem('institute_v4', JSON.stringify(data));
-    queueCloudBackup();
     if (ind) {
       ind.className = 'save-indicator saved';
       ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> تم الحفظ';
@@ -5787,53 +5786,6 @@ function saveWithIndicator() {
       ind.innerHTML = 'فشل الحفظ';
     }
     console.warn('save error', e);
-  }
-}
-
-
-// ════════════════════════════════════════════════
-// CLOUD BACKUP — حفظ نسخة سحابية آمنة دون تعطيل التطبيق
-// ════════════════════════════════════════════════
-var _cloudBackupTimer = null;
-function queueCloudBackup(){
-  try{
-    clearTimeout(_cloudBackupTimer);
-    _cloudBackupTimer = setTimeout(function(){
-      saveToCloudBackup();
-    }, 1200);
-  }catch(e){}
-}
-
-async function saveToCloudBackup(){
-  try{
-    if (typeof _supabase === 'undefined' || !_supabase) return;
-    if (!navigator.onLine) return;
-
-    var user = currentUser;
-    if (!user || !user.id) {
-      try {
-        var resp = await Promise.race([
-          _supabase.auth.getUser(),
-          new Promise(function(resolve){ setTimeout(function(){ resolve(null); }, 3000); })
-        ]);
-        if (resp && resp.data && resp.data.user) user = resp.data.user;
-      } catch(e) {}
-    }
-    if (!user || !user.id) return;
-
-    var payload = JSON.parse(JSON.stringify(data || {}));
-    var result = await Promise.race([
-      _supabase.from('app_backups').upsert({
-        user_id: user.id,
-        data: payload,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id' }),
-      new Promise(function(resolve){ setTimeout(function(){ resolve({ timeout:true }); }, 6000); })
-    ]);
-
-    if (result && result.error) console.warn('Cloud backup error:', result.error.message || result.error);
-  } catch(e) {
-    console.warn('Cloud backup failed:', e);
   }
 }
 
