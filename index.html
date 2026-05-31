@@ -4695,34 +4695,7 @@ function exportExcel(){
  s.rows.forEach(row=>{html+='<tr>';row.forEach(c=>{html+=`<td style="padding:6px;text-align:right;direction:rtl">${c||''}</td>`;});html+='</tr>';});
  html+='</tbody></table><br/>';
  });
- html+='
-<script>
-(function(){
-const KEY='last_cloud_backup_time';
-function updateBackupLabel(){
- const el=document.getElementById('last-backup-info');
- if(!el) return;
- const v=localStorage.getItem(KEY);
- el.textContent=v?('آخر نسخة احتياطية: '+v):'آخر نسخة احتياطية: لا توجد';
-}
-window.updateBackupLabel=updateBackupLabel;
-document.addEventListener('DOMContentLoaded',()=>{
-  const panel=document.createElement('div');
-  panel.id='last-backup-info';
-  panel.style.cssText='padding:10px;margin:10px;border-radius:10px;font-size:12px;opacity:.85';
-  panel.textContent='آخر نسخة احتياطية: لا توجد';
-  document.body.appendChild(panel);
-  updateBackupLabel();
-});
-window.markCloudBackupSuccess=function(){
- const d=new Date().toLocaleString('ar-IQ');
- localStorage.setItem(KEY,d);
- updateBackupLabel();
-}
-})();
-</script>
-
-</body></html>';
+ html+='</body></html>';
  var dataUri='data:application/vnd.ms-excel;charset=utf-8,'+encodeURIComponent('\ufeff'+html);
  var a=document.createElement('a');
  a.href=dataUri;
@@ -6135,32 +6108,5 @@ checkSession();
 }
 
 </style>
-
-<script>
-(function(){
-const KEY='last_cloud_backup_time';
-function updateBackupLabel(){
- const el=document.getElementById('last-backup-info');
- if(!el) return;
- const v=localStorage.getItem(KEY);
- el.textContent=v?('آخر نسخة احتياطية: '+v):'آخر نسخة احتياطية: لا توجد';
-}
-window.updateBackupLabel=updateBackupLabel;
-document.addEventListener('DOMContentLoaded',()=>{
-  const panel=document.createElement('div');
-  panel.id='last-backup-info';
-  panel.style.cssText='padding:10px;margin:10px;border-radius:10px;font-size:12px;opacity:.85';
-  panel.textContent='آخر نسخة احتياطية: لا توجد';
-  document.body.appendChild(panel);
-  updateBackupLabel();
-});
-window.markCloudBackupSuccess=function(){
- const d=new Date().toLocaleString('ar-IQ');
- localStorage.setItem(KEY,d);
- updateBackupLabel();
-}
-})();
-</script>
-
 </body>
 </html>
