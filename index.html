@@ -2626,7 +2626,6 @@ var data = defaultData();
 // Save to IndexedDB — non-blocking
 function save(){
  saveWithIndicator();
- try { saveToCloudDebounced(); } catch(e) { console.warn('cloud save trigger error', e); }
 }
 
 // Async init — loads data before starting app
@@ -5259,54 +5258,6 @@ var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 var _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 var currentUser = null;
 
-
-// ══════════════════════════════════════════════
-// CLOUD BACKUP — حفظ نسخة سحابية آمنة بدون تعطيل التطبيق
-// ══════════════════════════════════════════════
-var _cloudSaveTimer = null;
-function saveToCloudDebounced(){
- clearTimeout(_cloudSaveTimer);
- _cloudSaveTimer = setTimeout(function(){
-  saveToCloud().catch(function(e){ console.warn('Cloud save failed:', e); });
- }, 800);
-}
-
-async function saveToCloud(){
- try {
-  if(!navigator.onLine) return;
-  if(!_supabase || !_supabase.auth) return;
-
-  var resp = await Promise.race([
-   _supabase.auth.getUser(),
-   _timeoutPromise(4500)
-  ]);
-  if(resp && resp.__timeout) return;
-
-  var user = resp && resp.data ? resp.data.user : null;
-  if(!user && currentUser && currentUser.id) user = currentUser;
-  if(!user || !user.id) return;
-
-  var payload = JSON.parse(JSON.stringify(data || {}));
-  var result = await Promise.race([
-   _supabase.from('app_backups').upsert({
-    user_id: user.id,
-    data: payload,
-    updated_at: new Date().toISOString()
-   }, { onConflict: 'user_id' }),
-   _timeoutPromise(7000)
-  ]);
-
-  if(result && result.__timeout) return;
-  if(result && result.error){
-   console.warn('Cloud save error:', result.error.message || result.error);
-   return;
-  }
-  console.log('تم الحفظ سحابياً في app_backups');
- } catch(e){
-  console.warn('Cloud save error:', e && e.message ? e.message : e);
- }
-}
-
 // domain وهمي لتحويل username → email
 var AUTH_DOMAIN = '@rasid.local';
 function usernameToEmail(u){ return u.trim().toLowerCase() + AUTH_DOMAIN; }
@@ -5653,110 +5604,48 @@ async function checkAndStart(){
 }
 
 // فحص الجلسة عند فتح التطبيق
-function _timeoutPromise(ms){
- return new Promise(function(resolve){
-  setTimeout(function(){ resolve({ __timeout: true }); }, ms || 6000);
- });
-}
-
 async function checkSession(){
  showAuthLoader();
- var finished = false;
- function finish(fn){
-  if(finished) return;
-  finished = true;
-  try { fn(); } catch(e) { console.warn('finish auth error', e); }
- }
-
- // حماية نهائية: لا تترك شاشة "جاري التحقق" معلقة أبداً
- setTimeout(function(){
-  if(!finished){
-   finish(function(){
-    hideAuthLoader();
-    var cached = null;
-    try { cached = localStorage.getItem('cached_user'); } catch(e){}
-    if(cached){
-     try {
-      currentUser = JSON.parse(cached);
-      updateUserInfo(currentUser);
-      showApp();
-      startApp();
-      return;
-     } catch(e){}
-    }
-    showLoginScreen();
-   });
-  }
- }, 7000);
-
  try {
-  if(!_supabase || !_supabase.auth || !_supabase.auth.getSession){
-   throw new Error('Supabase auth غير جاهز');
-  }
-
-  var resp = await Promise.race([
-   _supabase.auth.getSession(),
-   _timeoutPromise(5000)
-  ]);
-
-  if(resp && resp.__timeout){
-   throw new Error('انتهت مهلة التحقق من الجلسة');
-  }
-
-  var sessionData = resp && resp.data ? resp.data : null;
-  if(sessionData && sessionData.session && sessionData.session.user){
-   currentUser = sessionData.session.user;
-   try {
-    localStorage.setItem('cached_user', JSON.stringify({ id: currentUser.id, email: currentUser.email }));
-   } catch(e){}
-   updateUserInfo(currentUser);
-   finish(function(){
-    hideAuthLoader();
-    showApp();
-    checkAndStart().catch(function(err){ console.warn('subscription check error', err); startApp(); });
-   });
-   return;
-  }
-
-  // fallback أوفلاين — استخدم آخر مستخدم محفوظ محلياً
-  var cached = null;
-  try { cached = localStorage.getItem('cached_user'); } catch(e){}
-  if(cached){
-   try {
-    currentUser = JSON.parse(cached);
-    updateUserInfo(currentUser);
-    finish(function(){
-     hideAuthLoader();
-     showApp();
-     startApp();
-    });
-    return;
-   } catch(e){}
-  }
-
-  finish(function(){
-   hideAuthLoader();
-   showLoginScreen();
-  });
+ var resp = await _supabase.auth.getSession();
+ var data = resp.data;
+ if(data && data.session && data.session.user){
+ currentUser = data.session.user;
+ updateUserInfo(currentUser);
+ hideAuthLoader();
+ showApp();
+ await checkAndStart();
+ return;
+ }
+ // fallback أوفلاين — استخدم آخر مستخدم محفوظ محلياً
+ var cached = localStorage.getItem('cached_user');
+ if(cached){
+ try {
+ currentUser = JSON.parse(cached);
+ updateUserInfo(currentUser);
+ hideAuthLoader();
+ showApp();
+ await checkAndStart();
+ return;
+ } catch(e){}
+ }
+ hideAuthLoader();
+ showLoginScreen();
  } catch(e){
-  console.warn('checkSession fallback:', e && e.message ? e.message : e);
-  try {
-   var cached2 = localStorage.getItem('cached_user');
-   if(cached2){
-    currentUser = JSON.parse(cached2);
-    updateUserInfo(currentUser);
-    finish(function(){
-     hideAuthLoader();
-     showApp();
-     startApp();
-    });
-    return;
-   }
-  } catch(err){}
-  finish(function(){
-   hideAuthLoader();
-   showLoginScreen();
-  });
+ // عند فشل Supabase تماماً — جرّب الكاش المحلي
+ try {
+ var cached2 = localStorage.getItem('cached_user');
+ if(cached2){
+ currentUser = JSON.parse(cached2);
+ updateUserInfo(currentUser);
+ hideAuthLoader();
+ showApp();
+ await checkAndStart();
+ return;
+ }
+ } catch(err){}
+ hideAuthLoader();
+ showLoginScreen();
  }
 }
 
@@ -5882,6 +5771,7 @@ function saveWithIndicator() {
   }
   try {
     localStorage.setItem('institute_v4', JSON.stringify(data));
+    queueCloudBackup();
     if (ind) {
       ind.className = 'save-indicator saved';
       ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> تم الحفظ';
@@ -5899,6 +5789,73 @@ function saveWithIndicator() {
     console.warn('save error', e);
   }
 }
+
+
+// ════════════════════════════════════════════════
+// CLOUD BACKUP — حفظ نسخة سحابية دون تعطيل التطبيق
+// ════════════════════════════════════════════════
+var _cloudBackupTimer = null;
+var _cloudBackupBusy = false;
+var _cloudBackupPending = false;
+
+function queueCloudBackup() {
+  try {
+    // لا نغيّر منطق التطبيق الأصلي: التخزين المحلي يبقى الأساسي.
+    // نؤخر الرفع قليلاً حتى لا نرسل طلباً مع كل نقرة صغيرة.
+    clearTimeout(_cloudBackupTimer);
+    _cloudBackupTimer = setTimeout(saveToCloudBackup, 1200);
+  } catch (e) {
+    console.warn('cloud backup queue error', e);
+  }
+}
+
+async function saveToCloudBackup() {
+  try {
+    if (_cloudBackupBusy) { _cloudBackupPending = true; return; }
+    if (typeof _supabase === 'undefined' || !_supabase) return;
+    if (!navigator.onLine) return;
+
+    _cloudBackupBusy = true;
+
+    var user = currentUser;
+    if (!user || !user.id) {
+      try {
+        var sessionResp = await _supabase.auth.getSession();
+        if (sessionResp && sessionResp.data && sessionResp.data.session && sessionResp.data.session.user) {
+          user = sessionResp.data.session.user;
+        }
+      } catch (e) {}
+    }
+
+    if (!user || !user.id) { _cloudBackupBusy = false; return; }
+
+    var payload = JSON.parse(JSON.stringify(data));
+    var result = await _supabase
+      .from('app_backups')
+      .upsert({
+        user_id: user.id,
+        data: payload,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id' });
+
+    if (result && result.error) {
+      console.warn('cloud backup error', result.error.message || result.error);
+    } else {
+      console.log('تم حفظ نسخة سحابية في app_backups');
+    }
+  } catch (e) {
+    console.warn('cloud backup failed', e);
+  } finally {
+    _cloudBackupBusy = false;
+    if (_cloudBackupPending) {
+      _cloudBackupPending = false;
+      queueCloudBackup();
+    }
+  }
+}
+
+// عند رجوع الإنترنت، ارفع آخر نسخة محفوظة محلياً تلقائياً
+window.addEventListener('online', function(){ queueCloudBackup(); });
 
 // ════════════════════════════════════════════════
 // GLOBAL SEARCH — بحث عالمي
