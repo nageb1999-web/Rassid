@@ -2626,7 +2626,7 @@ var data = defaultData();
 // Save to IndexedDB — non-blocking
 function save(){
  saveWithIndicator();
- scheduleCloudSave();
+ try { saveToCloudDebounced(); } catch(e) { console.warn('cloud save trigger error', e); }
 }
 
 // Async init — loads data before starting app
@@ -5259,6 +5259,54 @@ var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 var _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 var currentUser = null;
 
+
+// ══════════════════════════════════════════════
+// CLOUD BACKUP — حفظ نسخة سحابية آمنة بدون تعطيل التطبيق
+// ══════════════════════════════════════════════
+var _cloudSaveTimer = null;
+function saveToCloudDebounced(){
+ clearTimeout(_cloudSaveTimer);
+ _cloudSaveTimer = setTimeout(function(){
+  saveToCloud().catch(function(e){ console.warn('Cloud save failed:', e); });
+ }, 800);
+}
+
+async function saveToCloud(){
+ try {
+  if(!navigator.onLine) return;
+  if(!_supabase || !_supabase.auth) return;
+
+  var resp = await Promise.race([
+   _supabase.auth.getUser(),
+   _timeoutPromise(4500)
+  ]);
+  if(resp && resp.__timeout) return;
+
+  var user = resp && resp.data ? resp.data.user : null;
+  if(!user && currentUser && currentUser.id) user = currentUser;
+  if(!user || !user.id) return;
+
+  var payload = JSON.parse(JSON.stringify(data || {}));
+  var result = await Promise.race([
+   _supabase.from('app_backups').upsert({
+    user_id: user.id,
+    data: payload,
+    updated_at: new Date().toISOString()
+   }, { onConflict: 'user_id' }),
+   _timeoutPromise(7000)
+  ]);
+
+  if(result && result.__timeout) return;
+  if(result && result.error){
+   console.warn('Cloud save error:', result.error.message || result.error);
+   return;
+  }
+  console.log('تم الحفظ سحابياً في app_backups');
+ } catch(e){
+  console.warn('Cloud save error:', e && e.message ? e.message : e);
+ }
+}
+
 // domain وهمي لتحويل username → email
 var AUTH_DOMAIN = '@rasid.local';
 function usernameToEmail(u){ return u.trim().toLowerCase() + AUTH_DOMAIN; }
@@ -5605,48 +5653,110 @@ async function checkAndStart(){
 }
 
 // فحص الجلسة عند فتح التطبيق
+function _timeoutPromise(ms){
+ return new Promise(function(resolve){
+  setTimeout(function(){ resolve({ __timeout: true }); }, ms || 6000);
+ });
+}
+
 async function checkSession(){
  showAuthLoader();
- try {
- var resp = await _supabase.auth.getSession();
- var data = resp.data;
- if(data && data.session && data.session.user){
- currentUser = data.session.user;
- updateUserInfo(currentUser);
- hideAuthLoader();
- showApp();
- await checkAndStart();
- return;
+ var finished = false;
+ function finish(fn){
+  if(finished) return;
+  finished = true;
+  try { fn(); } catch(e) { console.warn('finish auth error', e); }
  }
- // fallback أوفلاين — استخدم آخر مستخدم محفوظ محلياً
- var cached = localStorage.getItem('cached_user');
- if(cached){
+
+ // حماية نهائية: لا تترك شاشة "جاري التحقق" معلقة أبداً
+ setTimeout(function(){
+  if(!finished){
+   finish(function(){
+    hideAuthLoader();
+    var cached = null;
+    try { cached = localStorage.getItem('cached_user'); } catch(e){}
+    if(cached){
+     try {
+      currentUser = JSON.parse(cached);
+      updateUserInfo(currentUser);
+      showApp();
+      startApp();
+      return;
+     } catch(e){}
+    }
+    showLoginScreen();
+   });
+  }
+ }, 7000);
+
  try {
- currentUser = JSON.parse(cached);
- updateUserInfo(currentUser);
- hideAuthLoader();
- showApp();
- await checkAndStart();
- return;
- } catch(e){}
- }
- hideAuthLoader();
- showLoginScreen();
+  if(!_supabase || !_supabase.auth || !_supabase.auth.getSession){
+   throw new Error('Supabase auth غير جاهز');
+  }
+
+  var resp = await Promise.race([
+   _supabase.auth.getSession(),
+   _timeoutPromise(5000)
+  ]);
+
+  if(resp && resp.__timeout){
+   throw new Error('انتهت مهلة التحقق من الجلسة');
+  }
+
+  var sessionData = resp && resp.data ? resp.data : null;
+  if(sessionData && sessionData.session && sessionData.session.user){
+   currentUser = sessionData.session.user;
+   try {
+    localStorage.setItem('cached_user', JSON.stringify({ id: currentUser.id, email: currentUser.email }));
+   } catch(e){}
+   updateUserInfo(currentUser);
+   finish(function(){
+    hideAuthLoader();
+    showApp();
+    checkAndStart().catch(function(err){ console.warn('subscription check error', err); startApp(); });
+   });
+   return;
+  }
+
+  // fallback أوفلاين — استخدم آخر مستخدم محفوظ محلياً
+  var cached = null;
+  try { cached = localStorage.getItem('cached_user'); } catch(e){}
+  if(cached){
+   try {
+    currentUser = JSON.parse(cached);
+    updateUserInfo(currentUser);
+    finish(function(){
+     hideAuthLoader();
+     showApp();
+     startApp();
+    });
+    return;
+   } catch(e){}
+  }
+
+  finish(function(){
+   hideAuthLoader();
+   showLoginScreen();
+  });
  } catch(e){
- // عند فشل Supabase تماماً — جرّب الكاش المحلي
- try {
- var cached2 = localStorage.getItem('cached_user');
- if(cached2){
- currentUser = JSON.parse(cached2);
- updateUserInfo(currentUser);
- hideAuthLoader();
- showApp();
- await checkAndStart();
- return;
- }
- } catch(err){}
- hideAuthLoader();
- showLoginScreen();
+  console.warn('checkSession fallback:', e && e.message ? e.message : e);
+  try {
+   var cached2 = localStorage.getItem('cached_user');
+   if(cached2){
+    currentUser = JSON.parse(cached2);
+    updateUserInfo(currentUser);
+    finish(function(){
+     hideAuthLoader();
+     showApp();
+     startApp();
+    });
+    return;
+   }
+  } catch(err){}
+  finish(function(){
+   hideAuthLoader();
+   showLoginScreen();
+  });
  }
 }
 
@@ -5789,69 +5899,6 @@ function saveWithIndicator() {
     console.warn('save error', e);
   }
 }
-
-// ════════════════════════════════════════════════
-// CLOUD BACKUP — حفظ نسخة سحابية في Supabase
-// يحفظ التطبيق محلياً أولاً، ثم يرفع نسخة كاملة إلى جدول app_backups
-// ════════════════════════════════════════════════
-var _cloudSaveTimer = null;
-var _cloudSaveRunning = false;
-
-function scheduleCloudSave(){
-  clearTimeout(_cloudSaveTimer);
-  _cloudSaveTimer = setTimeout(function(){
-    saveToCloud();
-  }, 900);
-}
-
-async function getCloudUser(){
-  try {
-    if (currentUser && currentUser.id) return currentUser;
-    if (typeof _supabase === 'undefined' || !_supabase || !_supabase.auth) return null;
-    var res = await _supabase.auth.getUser();
-    if (res && res.data && res.data.user) return res.data.user;
-  } catch(e) {}
-  return null;
-}
-
-async function saveToCloud(){
-  try {
-    if (_cloudSaveRunning) return;
-    if (typeof _supabase === 'undefined' || !_supabase) return;
-    if (!navigator.onLine) return;
-
-    var user = await getCloudUser();
-    if (!user || !user.id) return;
-
-    _cloudSaveRunning = true;
-
-    var res = await _supabase
-      .from('app_backups')
-      .upsert({
-        user_id: user.id,
-        data: data,
-        updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'user_id'
-      });
-
-    if (res && res.error) {
-      console.error('Cloud save error:', res.error.message || res.error);
-      return;
-    }
-
-    console.log('تم الحفظ سحابياً في Supabase');
-  } catch (e) {
-    console.error('Cloud save failed:', e);
-  } finally {
-    _cloudSaveRunning = false;
-  }
-}
-
-window.addEventListener('online', function(){
-  // عند رجوع الإنترنت ارفع آخر نسخة محفوظة داخل الهاتف
-  saveToCloud();
-});
 
 // ════════════════════════════════════════════════
 // GLOBAL SEARCH — بحث عالمي
