@@ -2529,6 +2529,7 @@ html[data-theme=light] .global-search-results{background:#ede7dd;}
  <button id="cloud-backup-btn" class="btn btn-gold" style="justify-content:center;padding:13px" onclick="cloudBackupNow()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> نسخ احتياطي سحابي</button>
  <button id="cloud-restore-btn" class="btn btn-outline" style="justify-content:center;padding:13px" onclick="restoreFromCloud()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> استعادة من السحابة</button>
  <div id="cloud-backup-status" style="display:none;font-size:10px;line-height:1.7;padding:9px 10px;border-radius:8px;background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.15);color:var(--muted);text-align:center"></div>
+ <div id="last-cloud-backup-info" style="font-size:10px;line-height:1.7;padding:9px 10px;border-radius:8px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.14);color:var(--muted);text-align:center">آخر نسخة احتياطية سحابية: لا توجد</div>
  <div style="border-top:1px solid var(--border2);margin:3px 0"></div>
  <label style="display:flex;align-items:center;justify-content:center;gap:7px;padding:13px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;color:var(--danger)">
  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> استيراد نسخة احتياطية
@@ -2789,7 +2790,7 @@ function openModal(name){
  document.getElementById('sub-pay-note').value='';
  if(data.students.length)loadSubPayInfo();
  }
- if(name==='backup'){setTimeout(calcStorageSize,100);}
+ if(name==='backup'){setTimeout(calcStorageSize,100);setTimeout(updateLastCloudBackupInfo,120);}
  if(name==='add-result'){populateResultModal();}
  if(name==='add-expense'){
  document.getElementById('exp-date').value=today();
@@ -4528,6 +4529,31 @@ function restoreFromText(){
 }
 
 
+
+// ══════════════════════════════════════════════
+// LAST CLOUD BACKUP LABEL — Safe local display only
+// يعرض وقت آخر نسخ سحابي ناجح ولا يلمس تسجيل الدخول
+// ══════════════════════════════════════════════
+var LAST_CLOUD_BACKUP_KEY = 'rasid_last_cloud_backup_at';
+function formatLastCloudBackupTime(value){
+ try{
+  if(!value) return 'لا توجد';
+  return new Date(value).toLocaleString('ar-IQ',{hour12:true});
+ }catch(e){return value||'لا توجد';}
+}
+function updateLastCloudBackupInfo(){
+ var el=document.getElementById('last-cloud-backup-info');
+ if(!el) return;
+ var v=localStorage.getItem(LAST_CLOUD_BACKUP_KEY);
+ el.textContent='آخر نسخة احتياطية سحابية: '+formatLastCloudBackupTime(v);
+}
+function markCloudBackupSuccess(value){
+ var stamp=value||new Date().toISOString();
+ try{localStorage.setItem(LAST_CLOUD_BACKUP_KEY, stamp);}catch(e){}
+ updateLastCloudBackupInfo();
+}
+setTimeout(updateLastCloudBackupInfo, 500);
+
 // ══════════════════════════════════════════════
 // CLOUD BACKUP — Manual only (safe)
 // لا يعمل تلقائياً ولا يلمس شاشة تسجيل الدخول
@@ -4595,6 +4621,7 @@ async function cloudBackupNow(){
    'تأخر الاتصال بقاعدة البيانات.'
   );
   if(res.error) throw res.error;
+  markCloudBackupSuccess();
   var when = new Date().toLocaleString('ar-IQ',{hour12:true});
   setCloudStatus('تم حفظ النسخة السحابية بنجاح — '+when, 'success');
   toast('تم النسخ الاحتياطي سحابياً');
