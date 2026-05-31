@@ -2526,6 +2526,10 @@ html[data-theme=light] .global-search-results{background:#ede7dd;}
  <button class="btn btn-success" style="justify-content:center;padding:13px" onclick="exportExcel()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> تصدير كملف Excel</button>
  <button class="btn btn-info" style="justify-content:center;padding:13px" onclick="showBackupText()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> عرض النسخة كنص (للنسخ)</button>
  <div style="border-top:1px solid var(--border2);margin:3px 0"></div>
+ <button id="cloud-backup-btn" class="btn btn-gold" style="justify-content:center;padding:13px" onclick="cloudBackupNow()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> نسخ احتياطي سحابي</button>
+ <button id="cloud-restore-btn" class="btn btn-outline" style="justify-content:center;padding:13px" onclick="restoreFromCloud()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> استعادة من السحابة</button>
+ <div id="cloud-backup-status" style="display:none;font-size:10px;line-height:1.7;padding:9px 10px;border-radius:8px;background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.15);color:var(--muted);text-align:center"></div>
+ <div style="border-top:1px solid var(--border2);margin:3px 0"></div>
  <label style="display:flex;align-items:center;justify-content:center;gap:7px;padding:13px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;color:var(--danger)">
  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> استيراد نسخة احتياطية
  <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
@@ -4520,6 +4524,121 @@ function restoreFromText(){
  toast('تم الاستيراد بنجاح');
  } catch(e){
  toast('خطأ في القراءة — النص ناقص أو تالف');
+ }
+}
+
+
+// ══════════════════════════════════════════════
+// CLOUD BACKUP — Manual only (safe)
+// لا يعمل تلقائياً ولا يلمس شاشة تسجيل الدخول
+// ══════════════════════════════════════════════
+function setCloudStatus(msg, type){
+ var el=document.getElementById('cloud-backup-status');
+ if(!el) return;
+ el.style.display='block';
+ el.textContent=msg;
+ if(type==='error'){
+  el.style.background='rgba(248,113,113,0.08)';
+  el.style.borderColor='rgba(248,113,113,0.22)';
+  el.style.color='var(--danger)';
+ }else if(type==='success'){
+  el.style.background='rgba(52,211,153,0.08)';
+  el.style.borderColor='rgba(52,211,153,0.22)';
+  el.style.color='var(--success)';
+ }else{
+  el.style.background='rgba(96,165,250,0.06)';
+  el.style.borderColor='rgba(96,165,250,0.15)';
+  el.style.color='var(--muted)';
+ }
+}
+
+function setCloudButtons(disabled){
+ var b1=document.getElementById('cloud-backup-btn');
+ var b2=document.getElementById('cloud-restore-btn');
+ if(b1) b1.disabled=!!disabled;
+ if(b2) b2.disabled=!!disabled;
+}
+
+function withTimeout(promise, ms, message){
+ return Promise.race([
+  promise,
+  new Promise(function(_, reject){
+   setTimeout(function(){reject(new Error(message||'انتهت مهلة الاتصال'));}, ms||9000);
+  })
+ ]);
+}
+
+async function getCloudUser(){
+ if(currentUser && currentUser.id) return currentUser;
+ if(!_supabase || !_supabase.auth) throw new Error('Supabase غير جاهز. تأكد من تسجيل الدخول والاتصال بالإنترنت.');
+ var res = await withTimeout(_supabase.auth.getUser(), 9000, 'تأخر التحقق من المستخدم. جرّب تسجيل الخروج والدخول مجدداً.');
+ if(res.error) throw res.error;
+ if(!res.data || !res.data.user) throw new Error('لا توجد جلسة دخول نشطة. سجّل الدخول أولاً.');
+ currentUser = res.data.user;
+ return currentUser;
+}
+
+async function cloudBackupNow(){
+ if(!navigator.onLine){ toast('لا يوجد اتصال بالإنترنت'); setCloudStatus('لا يوجد اتصال بالإنترنت.', 'error'); return; }
+ setCloudButtons(true);
+ setCloudStatus('جاري رفع النسخة السحابية...', 'info');
+ try{
+  var user = await getCloudUser();
+  var payload = JSON.parse(JSON.stringify(data));
+  var res = await withTimeout(
+   _supabase.from('app_backups').upsert({
+    user_id: user.id,
+    data: payload,
+    updated_at: new Date().toISOString()
+   }, { onConflict:'user_id' }),
+   12000,
+   'تأخر الاتصال بقاعدة البيانات.'
+  );
+  if(res.error) throw res.error;
+  var when = new Date().toLocaleString('ar-IQ',{hour12:true});
+  setCloudStatus('تم حفظ النسخة السحابية بنجاح — '+when, 'success');
+  toast('تم النسخ الاحتياطي سحابياً');
+ }catch(e){
+  console.error('Cloud backup error:', e);
+  setCloudStatus('فشل النسخ السحابي: '+(e.message||e), 'error');
+  toast('فشل النسخ السحابي');
+ }finally{
+  setCloudButtons(false);
+ }
+}
+
+async function restoreFromCloud(){
+ if(!navigator.onLine){ toast('لا يوجد اتصال بالإنترنت'); setCloudStatus('لا يوجد اتصال بالإنترنت.', 'error'); return; }
+ setCloudButtons(true);
+ setCloudStatus('جاري البحث عن النسخة السحابية...', 'info');
+ try{
+  var user = await getCloudUser();
+  var res = await withTimeout(
+   _supabase.from('app_backups').select('data,updated_at').eq('user_id', user.id).maybeSingle(),
+   12000,
+   'تأخر الاتصال بقاعدة البيانات.'
+  );
+  if(res.error) throw res.error;
+  if(!res.data || !res.data.data){
+   setCloudStatus('لا توجد نسخة سحابية محفوظة لهذا الحساب.', 'error');
+   toast('لا توجد نسخة سحابية');
+   return;
+  }
+  var updated = res.data.updated_at ? new Date(res.data.updated_at).toLocaleString('ar-IQ',{hour12:true}) : 'غير معروف';
+  if(!confirm('سيتم استبدال بيانات هذا الجهاز بالنسخة السحابية.\nتاريخ النسخة: '+updated+'\nهل أنت متأكد؟')) return;
+  if(!confirm('تأكيد أخير: لا يمكن التراجع بعد الاستعادة.')) return;
+  data = migrateData(res.data.data);
+  save();
+  closeModal('backup');
+  renderDashboard();
+  showPage('dashboard');
+  toast('تمت الاستعادة من السحابة');
+ }catch(e){
+  console.error('Cloud restore error:', e);
+  setCloudStatus('فشل الاسترجاع السحابي: '+(e.message||e), 'error');
+  toast('فشل الاسترجاع السحابي');
+ }finally{
+  setCloudButtons(false);
  }
 }
 
