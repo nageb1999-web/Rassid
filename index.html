@@ -14,6 +14,7 @@
 <!-- manifest.json removed — غير مطلوب لـ APK -->
 <title>راصد</title>
 <!-- ══ Supabase SDK ══ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 <style>
 /* ══ صفحة تسجيل الدخول ══ */
@@ -5255,7 +5256,7 @@ initTheme();
 // ══════════════════════════════════════════════
 var SUPABASE_URL = 'https://sisviyfaecocomeiahse.supabase.co';
 var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpc3ZpeWZhZWNvY29tZWlhaHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjA1NDgsImV4cCI6MjA5NTI5NjU0OH0.6yZdxy74b4Bh5vtc5sLWc9Q5UQ6ltZIx-Wfh65PQoYk';
-var _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+var _supabase = (typeof supabase !== 'undefined') ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON) : null;
 var currentUser = null;
 
 // domain وهمي لتحويل username → email
@@ -5603,14 +5604,27 @@ async function checkAndStart(){
  }
 }
 
+
+// Supabase helper: prevents the opening screen from hanging forever
+function withTimeout(promise, ms){
+ return new Promise(function(resolve, reject){
+  var done=false;
+  var t=setTimeout(function(){ if(!done){ done=true; reject(new Error('timeout')); } }, ms);
+  Promise.resolve(promise).then(function(v){ if(!done){ done=true; clearTimeout(t); resolve(v); } }).catch(function(e){ if(!done){ done=true; clearTimeout(t); reject(e); } });
+ });
+}
+
 // فحص الجلسة عند فتح التطبيق
 async function checkSession(){
  showAuthLoader();
  try {
- var resp = await _supabase.auth.getSession();
- var data = resp.data;
- if(data && data.session && data.session.user){
- currentUser = data.session.user;
+ if(typeof supabase === 'undefined' || !_supabase || !_supabase.auth){
+  throw new Error('Supabase SDK not loaded');
+ }
+ var resp = await withTimeout(_supabase.auth.getSession(), 5000);
+ var sessionData = resp.data;
+ if(sessionData && sessionData.session && sessionData.session.user){
+ currentUser = sessionData.session.user;
  updateUserInfo(currentUser);
  hideAuthLoader();
  showApp();
@@ -5632,6 +5646,7 @@ async function checkSession(){
  hideAuthLoader();
  showLoginScreen();
  } catch(e){
+ console.warn('Auth check failed:', e && e.message ? e.message : e);
  // عند فشل Supabase تماماً — جرّب الكاش المحلي
  try {
  var cached2 = localStorage.getItem('cached_user');
