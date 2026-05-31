@@ -5771,7 +5771,6 @@ function saveWithIndicator() {
   }
   try {
     localStorage.setItem('institute_v4', JSON.stringify(data));
-    queueCloudBackup();
     if (ind) {
       ind.className = 'save-indicator saved';
       ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> تم الحفظ';
@@ -5789,73 +5788,6 @@ function saveWithIndicator() {
     console.warn('save error', e);
   }
 }
-
-
-// ════════════════════════════════════════════════
-// CLOUD BACKUP — حفظ نسخة سحابية دون تعطيل التطبيق
-// ════════════════════════════════════════════════
-var _cloudBackupTimer = null;
-var _cloudBackupBusy = false;
-var _cloudBackupPending = false;
-
-function queueCloudBackup() {
-  try {
-    // لا نغيّر منطق التطبيق الأصلي: التخزين المحلي يبقى الأساسي.
-    // نؤخر الرفع قليلاً حتى لا نرسل طلباً مع كل نقرة صغيرة.
-    clearTimeout(_cloudBackupTimer);
-    _cloudBackupTimer = setTimeout(saveToCloudBackup, 1200);
-  } catch (e) {
-    console.warn('cloud backup queue error', e);
-  }
-}
-
-async function saveToCloudBackup() {
-  try {
-    if (_cloudBackupBusy) { _cloudBackupPending = true; return; }
-    if (typeof _supabase === 'undefined' || !_supabase) return;
-    if (!navigator.onLine) return;
-
-    _cloudBackupBusy = true;
-
-    var user = currentUser;
-    if (!user || !user.id) {
-      try {
-        var sessionResp = await _supabase.auth.getSession();
-        if (sessionResp && sessionResp.data && sessionResp.data.session && sessionResp.data.session.user) {
-          user = sessionResp.data.session.user;
-        }
-      } catch (e) {}
-    }
-
-    if (!user || !user.id) { _cloudBackupBusy = false; return; }
-
-    var payload = JSON.parse(JSON.stringify(data));
-    var result = await _supabase
-      .from('app_backups')
-      .upsert({
-        user_id: user.id,
-        data: payload,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id' });
-
-    if (result && result.error) {
-      console.warn('cloud backup error', result.error.message || result.error);
-    } else {
-      console.log('تم حفظ نسخة سحابية في app_backups');
-    }
-  } catch (e) {
-    console.warn('cloud backup failed', e);
-  } finally {
-    _cloudBackupBusy = false;
-    if (_cloudBackupPending) {
-      _cloudBackupPending = false;
-      queueCloudBackup();
-    }
-  }
-}
-
-// عند رجوع الإنترنت، ارفع آخر نسخة محفوظة محلياً تلقائياً
-window.addEventListener('online', function(){ queueCloudBackup(); });
 
 // ════════════════════════════════════════════════
 // GLOBAL SEARCH — بحث عالمي
