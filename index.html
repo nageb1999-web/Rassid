@@ -2530,6 +2530,11 @@ html[data-theme=light] .global-search-results{background:#ede7dd;}
  <button id="cloud-restore-btn" class="btn btn-outline" style="justify-content:center;padding:13px" onclick="restoreFromCloud()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> استعادة من السحابة</button>
  <div id="cloud-backup-status" style="display:none;font-size:10px;line-height:1.7;padding:9px 10px;border-radius:8px;background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.15);color:var(--muted);text-align:center"></div>
  <div id="last-cloud-backup-info" style="font-size:10px;line-height:1.7;padding:9px 10px;border-radius:8px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.14);color:var(--muted);text-align:center">آخر نسخة احتياطية سحابية: لا توجد</div>
+ <label style="display:flex;align-items:center;gap:8px;padding:11px 13px;background:rgba(240,192,96,0.06);border:1px solid rgba(240,192,96,0.15);border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;color:var(--text-2)">
+  <input type="checkbox" id="auto-backup-toggle" style="width:auto;accent-color:var(--gold)" onchange="toggleAutoBackup(this.checked)">
+  <span>نسخ احتياطي تلقائي (كل 5 دقائق)</span>
+ </label>
+ <button class="btn btn-outline" style="justify-content:center;padding:10px" onclick="showBackupHistory()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> سجل النسخ الاحتياطية</button>
  <div style="border-top:1px solid var(--border2);margin:3px 0"></div>
  <label style="display:flex;align-items:center;justify-content:center;gap:7px;padding:13px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;color:var(--danger)">
  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> استيراد نسخة احتياطية
@@ -2632,10 +2637,6 @@ var data = defaultData();
 // Save to IndexedDB — non-blocking
 function save(){
  saveWithIndicator();
-<<<<<<< HEAD
-=======
- try { saveToCloudDebounced(); } catch(e) { console.warn('cloud save trigger error', e); }
->>>>>>> 8d5fbfca28fc7743227abb6f87db1c34ea0ae7ea
 }
 
 // Async init — loads data before starting app
@@ -2794,7 +2795,7 @@ function openModal(name){
  document.getElementById('sub-pay-note').value='';
  if(data.students.length)loadSubPayInfo();
  }
- if(name==='backup'){setTimeout(calcStorageSize,100);setTimeout(updateLastCloudBackupInfo,120);}
+ if(name==='backup'){setTimeout(calcStorageSize,100);setTimeout(updateLastCloudBackupInfo,120);setTimeout(loadAutoBackupState,150);}
  if(name==='add-result'){populateResultModal();}
  if(name==='add-expense'){
  document.getElementById('exp-date').value=today();
@@ -4589,13 +4590,15 @@ function setCloudButtons(disabled){
  if(b2) b2.disabled=!!disabled;
 }
 
+// ══════════════════════════════════════════════
+// withTimeout — التعريف الرئيسي (يخدم Backup + Auth)
+// ══════════════════════════════════════════════
 function withTimeout(promise, ms, message){
- return Promise.race([
-  promise,
-  new Promise(function(_, reject){
-   setTimeout(function(){reject(new Error(message||'انتهت مهلة الاتصال'));}, ms||9000);
-  })
- ]);
+ return new Promise(function(resolve, reject){
+  var done=false;
+  var t=setTimeout(function(){ if(!done){ done=true; reject(new Error(message||'timeout')); } }, ms||9000);
+  Promise.resolve(promise).then(function(v){ if(!done){ done=true; clearTimeout(t); resolve(v); } }).catch(function(e){ if(!done){ done=true; clearTimeout(t); reject(e); } });
+ });
 }
 
 async function getCloudUser(){
@@ -4626,6 +4629,14 @@ async function cloudBackupNow(){
   );
   if(res.error) throw res.error;
   markCloudBackupSuccess();
+  // تسجيل في backup_history — لا يوقف العملية إذا فشل
+  try{
+   var _bsize = JSON.stringify(payload).length;
+   _supabase.from('backup_history').insert({
+    user_id: user.id,
+    size: _bsize
+   }).then(function(){}).catch(function(){});
+  }catch(_e){}
   var when = new Date().toLocaleString('ar-IQ',{hour12:true});
   setCloudStatus('تم حفظ النسخة السحابية بنجاح — '+when, 'success');
   toast('تم النسخ الاحتياطي سحابياً');
@@ -4670,6 +4681,139 @@ async function restoreFromCloud(){
   toast('فشل الاسترجاع السحابي');
  }finally{
   setCloudButtons(false);
+ }
+}
+
+// ══════════════════════════════════════════════
+// AUTO BACKUP — نسخ احتياطي تلقائي
+// لا يلمس Auth ولا Session ولا بيانات التطبيق
+// ══════════════════════════════════════════════
+var AUTO_BACKUP_KEY = 'rasid_auto_backup_enabled';
+var _autoBackupInterval = null;
+
+function loadAutoBackupState(){
+ try{
+  var v = localStorage.getItem(AUTO_BACKUP_KEY);
+  var enabled = (v === 'true');
+  var el = document.getElementById('auto-backup-toggle');
+  if(el) el.checked = enabled;
+  if(enabled) startAutoBackupTimer();
+ }catch(e){}
+}
+
+function toggleAutoBackup(enabled){
+ try{ localStorage.setItem(AUTO_BACKUP_KEY, enabled ? 'true' : 'false'); }catch(e){}
+ if(enabled){
+  startAutoBackupTimer();
+  toast('تم تفعيل النسخ الاحتياطي التلقائي');
+ } else {
+  stopAutoBackupTimer();
+  toast('تم إيقاف النسخ الاحتياطي التلقائي');
+ }
+}
+
+function startAutoBackupTimer(){
+ stopAutoBackupTimer();
+ _autoBackupInterval = setInterval(function(){
+  autoBackupSilent();
+ }, 5 * 60 * 1000);
+}
+
+function stopAutoBackupTimer(){
+ if(_autoBackupInterval){ clearInterval(_autoBackupInterval); _autoBackupInterval = null; }
+}
+
+async function autoBackupSilent(){
+ if(!navigator.onLine) return;
+ if(!currentUser || !currentUser.id) return;
+ if(!_supabase) return;
+ try{
+  var payload = JSON.parse(JSON.stringify(data));
+  var size = JSON.stringify(payload).length;
+  var r1 = await withTimeout(
+   _supabase.from('app_backups').upsert({
+    user_id: currentUser.id,
+    data: payload,
+    updated_at: new Date().toISOString()
+   }, { onConflict:'user_id' }),
+   12000
+  );
+  if(r1 && r1.error) return;
+  await withTimeout(
+   _supabase.from('backup_history').insert({
+    user_id: currentUser.id,
+    size: size
+   }),
+   8000
+  );
+  markCloudBackupSuccess();
+ }catch(e){
+  console.warn('Auto backup silent fail:', e && e.message ? e.message : e);
+ }
+}
+
+// ══════════════════════════════════════════════
+// BACKUP HISTORY — سجل النسخ الاحتياطية
+// ══════════════════════════════════════════════
+async function showBackupHistory(){
+ var existing = document.getElementById('backup-history-modal');
+ if(!existing){
+  var div = document.createElement('div');
+  div.id = 'backup-history-modal';
+  div.className = 'modal-overlay';
+  div.innerHTML =
+   '<div class="modal" style="max-width:400px">' +
+    '<h3><span style="display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> سجل النسخ الاحتياطية</span></h3>' +
+    '<div id="backup-history-body" style="min-height:60px;font-size:11px"></div>' +
+    '<div class="modal-footer"><button class="btn btn-outline" onclick="document.getElementById(\'backup-history-modal\').classList.remove(\'open\')">إغلاق</button></div>' +
+   '</div>';
+  div.addEventListener('click', function(e){ if(e.target === div) div.classList.remove('open'); });
+  document.body.appendChild(div);
+ }
+ document.getElementById('backup-history-modal').classList.add('open');
+ var body = document.getElementById('backup-history-body');
+ body.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px">جاري التحميل...</div>';
+ if(!navigator.onLine){
+  body.innerHTML = '<div style="color:var(--danger);text-align:center;padding:20px">لا يوجد اتصال بالإنترنت</div>';
+  return;
+ }
+ try{
+  if(!currentUser || !currentUser.id) throw new Error('no user');
+  var res = await withTimeout(
+   _supabase.from('backup_history')
+    .select('id,created_at,size')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false })
+    .limit(10),
+   10000
+  );
+  if(res.error) throw res.error;
+  var rows = res.data || [];
+  if(!rows.length){
+   body.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px">لا توجد نسخ مسجلة بعد</div>';
+   return;
+  }
+  var html = '<table style="width:100%;border-collapse:collapse;margin-top:4px">' +
+   '<thead><tr>' +
+   '<th style="text-align:right;padding:6px 8px;color:var(--muted);font-size:10px;font-weight:700;border-bottom:1px solid var(--border2)">#</th>' +
+   '<th style="text-align:right;padding:6px 8px;color:var(--muted);font-size:10px;font-weight:700;border-bottom:1px solid var(--border2)">التاريخ</th>' +
+   '<th style="text-align:right;padding:6px 8px;color:var(--muted);font-size:10px;font-weight:700;border-bottom:1px solid var(--border2)">الحجم</th>' +
+   '</tr></thead><tbody>';
+  rows.forEach(function(row, i){
+   var dt = row.created_at ? new Date(row.created_at).toLocaleString('ar-IQ',{hour12:true}) : '\u2014';
+   var kb = row.size ? (row.size/1024).toFixed(1)+' KB' : '\u2014';
+   var rowBg = i === 0 ? 'background:rgba(52,211,153,0.04)' : '';
+   html += '<tr style="border-bottom:.5px solid var(--border2);' + rowBg + '">' +
+    '<td style="padding:7px 8px;color:var(--muted)">' + (i+1) + '</td>' +
+    '<td style="padding:7px 8px;color:var(--text)">' + dt + '</td>' +
+    '<td style="padding:7px 8px;color:var(--gold)">' + kb + '</td>' +
+   '</tr>';
+  });
+  html += '</tbody></table>' +
+   '<div style="font-size:9px;color:var(--muted);text-align:center;margin-top:10px">يُعرض آخر 10 نسخ</div>';
+  body.innerHTML = html;
+ }catch(e){
+  body.innerHTML = '<div style="color:var(--danger);text-align:center;padding:20px">فشل التحميل: '+(e.message||e)+'</div>';
  }
 }
 
@@ -5409,54 +5553,6 @@ var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 var _supabase = (typeof supabase !== 'undefined') ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON) : null;
 var currentUser = null;
 
-
-// ══════════════════════════════════════════════
-// CLOUD BACKUP — حفظ نسخة سحابية آمنة بدون تعطيل التطبيق
-// ══════════════════════════════════════════════
-var _cloudSaveTimer = null;
-function saveToCloudDebounced(){
- clearTimeout(_cloudSaveTimer);
- _cloudSaveTimer = setTimeout(function(){
-  saveToCloud().catch(function(e){ console.warn('Cloud save failed:', e); });
- }, 800);
-}
-
-async function saveToCloud(){
- try {
-  if(!navigator.onLine) return;
-  if(!_supabase || !_supabase.auth) return;
-
-  var resp = await Promise.race([
-   _supabase.auth.getUser(),
-   _timeoutPromise(4500)
-  ]);
-  if(resp && resp.__timeout) return;
-
-  var user = resp && resp.data ? resp.data.user : null;
-  if(!user && currentUser && currentUser.id) user = currentUser;
-  if(!user || !user.id) return;
-
-  var payload = JSON.parse(JSON.stringify(data || {}));
-  var result = await Promise.race([
-   _supabase.from('app_backups').upsert({
-    user_id: user.id,
-    data: payload,
-    updated_at: new Date().toISOString()
-   }, { onConflict: 'user_id' }),
-   _timeoutPromise(7000)
-  ]);
-
-  if(result && result.__timeout) return;
-  if(result && result.error){
-   console.warn('Cloud save error:', result.error.message || result.error);
-   return;
-  }
-  console.log('تم الحفظ سحابياً في app_backups');
- } catch(e){
-  console.warn('Cloud save error:', e && e.message ? e.message : e);
- }
-}
-
 // domain وهمي لتحويل username → email
 var AUTH_DOMAIN = '@rasid.local';
 function usernameToEmail(u){ return u.trim().toLowerCase() + AUTH_DOMAIN; }
@@ -5803,25 +5899,9 @@ async function checkAndStart(){
 }
 
 
-// Supabase helper: prevents the opening screen from hanging forever
-function withTimeout(promise, ms){
- return new Promise(function(resolve, reject){
-  var done=false;
-  var t=setTimeout(function(){ if(!done){ done=true; reject(new Error('timeout')); } }, ms);
-  Promise.resolve(promise).then(function(v){ if(!done){ done=true; clearTimeout(t); resolve(v); } }).catch(function(e){ if(!done){ done=true; clearTimeout(t); reject(e); } });
- });
-}
-
 // فحص الجلسة عند فتح التطبيق
-function _timeoutPromise(ms){
- return new Promise(function(resolve){
-  setTimeout(function(){ resolve({ __timeout: true }); }, ms || 6000);
- });
-}
-
 async function checkSession(){
  showAuthLoader();
-<<<<<<< HEAD
  try {
  if(typeof supabase === 'undefined' || !_supabase || !_supabase.auth){
   throw new Error('Supabase SDK not loaded');
@@ -5835,87 +5915,22 @@ async function checkSession(){
  showApp();
  await checkAndStart();
  return;
-=======
- var finished = false;
- function finish(fn){
-  if(finished) return;
-  finished = true;
-  try { fn(); } catch(e) { console.warn('finish auth error', e); }
->>>>>>> 8d5fbfca28fc7743227abb6f87db1c34ea0ae7ea
  }
-
- // حماية نهائية: لا تترك شاشة "جاري التحقق" معلقة أبداً
- setTimeout(function(){
-  if(!finished){
-   finish(function(){
-    hideAuthLoader();
-    var cached = null;
-    try { cached = localStorage.getItem('cached_user'); } catch(e){}
-    if(cached){
-     try {
-      currentUser = JSON.parse(cached);
-      updateUserInfo(currentUser);
-      showApp();
-      startApp();
-      return;
-     } catch(e){}
-    }
-    showLoginScreen();
-   });
-  }
- }, 7000);
-
+ // fallback أوفلاين — استخدم آخر مستخدم محفوظ محلياً
+ var cached = localStorage.getItem('cached_user');
+ if(cached){
  try {
-  if(!_supabase || !_supabase.auth || !_supabase.auth.getSession){
-   throw new Error('Supabase auth غير جاهز');
-  }
-
-  var resp = await Promise.race([
-   _supabase.auth.getSession(),
-   _timeoutPromise(5000)
-  ]);
-
-  if(resp && resp.__timeout){
-   throw new Error('انتهت مهلة التحقق من الجلسة');
-  }
-
-  var sessionData = resp && resp.data ? resp.data : null;
-  if(sessionData && sessionData.session && sessionData.session.user){
-   currentUser = sessionData.session.user;
-   try {
-    localStorage.setItem('cached_user', JSON.stringify({ id: currentUser.id, email: currentUser.email }));
-   } catch(e){}
-   updateUserInfo(currentUser);
-   finish(function(){
-    hideAuthLoader();
-    showApp();
-    checkAndStart().catch(function(err){ console.warn('subscription check error', err); startApp(); });
-   });
-   return;
-  }
-
-  // fallback أوفلاين — استخدم آخر مستخدم محفوظ محلياً
-  var cached = null;
-  try { cached = localStorage.getItem('cached_user'); } catch(e){}
-  if(cached){
-   try {
-    currentUser = JSON.parse(cached);
-    updateUserInfo(currentUser);
-    finish(function(){
-     hideAuthLoader();
-     showApp();
-     startApp();
-    });
-    return;
-   } catch(e){}
-  }
-
-  finish(function(){
-   hideAuthLoader();
-   showLoginScreen();
-  });
+ currentUser = JSON.parse(cached);
+ updateUserInfo(currentUser);
+ hideAuthLoader();
+ showApp();
+ await checkAndStart();
+ return;
+ } catch(e){}
+ }
+ hideAuthLoader();
+ showLoginScreen();
  } catch(e){
-<<<<<<< HEAD
  console.warn('Auth check failed:', e && e.message ? e.message : e);
  // عند فشل Supabase تماماً — جرّب الكاش المحلي
  try {
@@ -5931,26 +5946,6 @@ async function checkSession(){
  } catch(err){}
  hideAuthLoader();
  showLoginScreen();
-=======
-  console.warn('checkSession fallback:', e && e.message ? e.message : e);
-  try {
-   var cached2 = localStorage.getItem('cached_user');
-   if(cached2){
-    currentUser = JSON.parse(cached2);
-    updateUserInfo(currentUser);
-    finish(function(){
-     hideAuthLoader();
-     showApp();
-     startApp();
-    });
-    return;
-   }
-  } catch(err){}
-  finish(function(){
-   hideAuthLoader();
-   showLoginScreen();
-  });
->>>>>>> 8d5fbfca28fc7743227abb6f87db1c34ea0ae7ea
  }
 }
 
@@ -6016,6 +6011,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
 function startApp(){
  try{ initDB(); }catch(e){ console.warn('DB init:',e); }
+ // تفعيل النسخ التلقائي إذا كان مُفعَّلاً سابقاً — لا يلمس Auth
+ try{ if(localStorage.getItem(AUTO_BACKUP_KEY)==='true') startAutoBackupTimer(); }catch(e){}
  if(data.settings&&!data.settings.instName){
   data.settings.instName='راصد';
   save();
