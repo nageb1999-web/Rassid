@@ -2271,10 +2271,55 @@ html:not([data-theme=light]) #activation-screen {
  <div class="page" id="page-students">
  <div class="sec-header">
  <span class="sec-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> قائمة الطلبة</span></span>
+ <div style="display:flex;align-items:center;gap:6px">
+ <button id="students-filter-btn" onclick="toggleStudentFilter()" style="display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border2);border-radius:10px;padding:7px 12px;color:var(--text-3);font-family:var(--font);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> بحث متقدم
+ </button>
  <button class="btn btn-gold btn-sm" style="display:inline-flex;align-items:center;gap:6px" onclick="openModal('add-student')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> إضافة طالب</button>
  </div>
+ </div>
 
- <div class="search-bar"><input class="search-input" type="text" placeholder="بحث بالاسم..." id="student-search" oninput="renderStudents()"></div>
+ <!-- بحث متقدم -->
+ <div id="students-adv-panel" style="display:none;background:var(--card);border:2px solid rgba(168,134,90,0.35);border-radius:16px;padding:16px;margin-bottom:18px;">
+ <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+ <div style="display:flex;align-items:center;gap:6px">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+ <span style="font-size:12px;font-weight:700;color:var(--gold)">بحث متقدم</span>
+ </div>
+ <button onclick="resetStudentFilters()" style="background:transparent;border:1px solid var(--border2);border-radius:8px;padding:5px 10px;color:var(--text-3);font-family:var(--font);font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:5px">
+ <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.32"/></svg> إعادة ضبط
+ </button>
+ </div>
+ <input type="text" id="student-search" placeholder="بحث بالاسم أو الهاتف أو اسم ولي الأمر..." oninput="renderStudents()"
+ style="width:100%;box-sizing:border-box;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;margin-bottom:12px;">
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
+ <div>
+ <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">المرحلة</div>
+ <select id="filter-stage" onchange="renderStudents()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <option value="">الكل</option><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">حالة الرسوم</div>
+ <select id="filter-fees" onchange="renderStudents()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <option value="">الكل</option><option value="paid">مسدد بالكامل</option><option value="partial">متبقي رسوم</option><option value="none">لا توجد رسوم</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">نسبة الحضور</div>
+ <select id="filter-att" onchange="renderStudents()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <option value="">الكل</option><option value="excellent">ممتاز 75%+</option><option value="average">متوسط 50-74%</option><option value="poor">ضعيف أقل 50%</option><option value="none">لا يوجد سجل</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">ترتيب النتائج</div>
+ <select id="filter-sort" onchange="renderStudents()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <option value="name">الاسم أ-ي</option><option value="att_desc">الحضور ↓</option><option value="att_asc">الحضور ↑</option><option value="grade_desc">المعدل ↓</option><option value="grade_asc">المعدل ↑</option>
+ </select>
+ </div>
+ </div>
+ <div id="student-filter-stats" style="font-size:10px;color:var(--gold);margin-top:8px;min-height:12px"></div>
+ </div>
  <div class="cards-grid" id="students-cards"></div>
  </div>
 
@@ -2315,8 +2360,40 @@ html:not([data-theme=light]) #activation-screen {
  <input type="date" id="att-date" style="background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:6px 11px;color:var(--text);font-family:var(--font);font-size:11px;outline:none;" onchange="attDateChanged()">
  <span id="att-date-badge" style="font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(240,192,96,0.12);color:var(--gold)"></span>
  <button class="btn btn-info btn-sm" onclick="showAttHistory()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> الأيام السابقة</button>
+ <button id="att-filter-btn" onclick="toggleAttFilter()" style="display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border2);border-radius:10px;padding:7px 12px;color:var(--text-3);font-family:var(--font);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> بحث متقدم
+ </button>
  </div>
  <div style="font-size:10px;color:var(--muted);margin-bottom:10px"><span style="display:inline-flex;align-items:center;gap:4px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> اضغط على الطالب لتبديل الحالة — الكل غائب افتراضياً</div>
+ <!-- بحث متقدم الحضور -->
+ <div id="att-adv-panel" style="display:none;background:var(--card);border:2px solid rgba(168,134,90,0.35);border-radius:16px;padding:16px;margin-bottom:14px;">
+ <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+ <div style="display:flex;align-items:center;gap:6px">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+ <span style="font-size:12px;font-weight:700;color:var(--gold)">بحث وفلترة</span>
+ </div>
+ <button onclick="resetAttFilters()" style="background:transparent;border:1px solid var(--border2);border-radius:8px;padding:5px 10px;color:var(--text-3);font-family:var(--font);font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:5px">
+ <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.32"/></svg> إعادة ضبط
+ </button>
+ </div>
+ <input type="text" id="att-student-search" placeholder="بحث باسم الطالب أو رقم الهاتف..." oninput="renderAttGrid()"
+ style="width:100%;box-sizing:border-box;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;margin-bottom:12px;">
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
+ <div>
+ <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">حالة الحضور</div>
+ <select id="att-filter-status" onchange="renderAttGrid()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <option value="">الكل</option><option value="present">🟢 حاضر</option><option value="absent">🔴 غائب</option><option value="excused">🟡 بعلم ولي الأمر</option><option value="late">🟣 متأخر</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">المرحلة</div>
+ <select id="att-filter-stage" onchange="renderAttGrid()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <option value="">الكل</option><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option>
+ </select>
+ </div>
+ </div>
+ <div id="att-filter-stats" style="font-size:10px;color:var(--gold);margin-top:8px;min-height:12px"></div>
+ </div>
  <div class="att-grid" id="att-grid"></div>
  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
  <button class="btn btn-success" onclick="notifyAllArrival()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> إشعار وصول للكل</button>
@@ -4047,12 +4124,62 @@ function renderDashboard(){
 // ══════════════════════════════════════════════
 // STUDENTS
 // ══════════════════════════════════════════════
+function resetStudentFilters(){
+ ['student-search','filter-stage','filter-fees','filter-att'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+ var fs=document.getElementById('filter-sort');if(fs)fs.value='name';
+ renderStudents();
+}
+function toggleStudentFilter(){
+ var panel=document.getElementById('students-adv-panel');
+ var btn=document.getElementById('students-filter-btn');
+ if(!panel)return;
+ var open=panel.style.display==='none';
+ panel.style.display=open?'block':'none';
+ if(btn){
+ btn.style.color=open?'var(--gold)':'var(--text-3)';
+ btn.style.borderColor=open?'rgba(168,134,90,0.5)':'var(--border2)';
+ btn.style.background=open?'rgba(168,134,90,0.08)':'transparent';
+ }
+ if(!open)resetStudentFilters();
+}
+function toggleAttFilter(){
+ var panel=document.getElementById('att-adv-panel');
+ var btn=document.getElementById('att-filter-btn');
+ if(!panel)return;
+ var open=panel.style.display==='none';
+ panel.style.display=open?'block':'none';
+ if(btn){
+ btn.style.color=open?'var(--gold)':'var(--text-3)';
+ btn.style.borderColor=open?'rgba(168,134,90,0.5)':'var(--border2)';
+ btn.style.background=open?'rgba(168,134,90,0.08)':'transparent';
+ }
+ if(!open)resetAttFilters();
+}
 function renderStudents(){
  var el0=document.getElementById('students-cards');if(el0&&!el0.dataset.loaded){showCardsLoading('students-cards',3);}
- var q=gVal('student-search').toLowerCase();
- var list=data.students.filter(s=>`${s.fname} ${s.lname}`.toLowerCase().includes(q));
+ var q=(document.getElementById('student-search')?document.getElementById('student-search').value:'').toLowerCase().trim();
+ var stageF=document.getElementById('filter-stage')?document.getElementById('filter-stage').value:'';
+ var feesF=document.getElementById('filter-fees')?document.getElementById('filter-fees').value:'';
+ var attF=document.getElementById('filter-att')?document.getElementById('filter-att').value:'';
+ var sortF=(document.getElementById('filter-sort')?document.getElementById('filter-sort').value:'')||'name';
+ var list=data.students.filter(function(s){
+ if(q){var h=(s.fname+' '+s.lname+' '+(s.phone||'')+' '+(s.parentName||'')+' '+(s.parentPhone||'')).toLowerCase();if(!h.includes(q))return false;}
+ if(stageF&&(s.stage||'ابتدائي')!==stageF)return false;
+ if(feesF){var _fs=feeStats(s.id);if(feesF==='none'&&_fs.total>0)return false;if(feesF==='paid'&&(_fs.total===0||_fs.remaining>0))return false;if(feesF==='partial'&&(_fs.total===0||_fs.remaining<=0))return false;}
+ if(attF){var rate=attRate(s.id);if(attF==='none'&&rate!==null)return false;if(attF==='excellent'&&(rate===null||rate<75))return false;if(attF==='average'&&(rate===null||rate<50||rate>=75))return false;if(attF==='poor'&&(rate===null||rate>=50))return false;}
+ return true;
+ });
+ list=list.slice().sort(function(a,b){
+ if(sortF==='att_desc'){var ra=attRate(a.id),rb=attRate(b.id);return(rb||0)-(ra||0);}
+ if(sortF==='att_asc'){var ra2=attRate(a.id),rb2=attRate(b.id);return(ra2||0)-(rb2||0);}
+ if(sortF==='grade_desc'){var ga=avgGrade(a.id),gb=avgGrade(b.id);return(gb||0)-(ga||0);}
+ if(sortF==='grade_asc'){var ga2=avgGrade(a.id),gb2=avgGrade(b.id);return(ga2||0)-(gb2||0);}
+ return(a.fname+a.lname).localeCompare(b.fname+b.lname,'ar');
+ });
+ var statsEl=document.getElementById('student-filter-stats');
+ if(statsEl){var hasF=q||stageF||feesF||attF;statsEl.textContent=hasF?'يُعرض '+list.length+' من أصل '+data.students.length+' طالب':'';}
  var el=document.getElementById('students-cards');
- if(!list.length){el.innerHTML=`<div class="empty"><div class="empty-icon"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg></div><p>لا يوجد طلبة حتى الآن</p></div>`;return;}
+ if(!list.length){var msg=q||stageF||feesF||attF?'لا توجد نتائج مطابقة':'لا يوجد طلبة حتى الآن';el.innerHTML=`<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><p>${msg}</p></div>`;return;}
  el.innerHTML=list.map(s=>{
  var rate=attRate(s.id),avg=avgGrade(s.id);
  var _fs=feeStats(s.id);var total=_fs.total;var paid=_fs.paid;var remaining=_fs.remaining;
@@ -4066,7 +4193,7 @@ function renderStudents(){
  <div>
  <div class="item-name" style="cursor:pointer" onclick="openStudentProfile(${s.id})">${s.fname} ${s.lname}</div>
  <div class="item-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'ابتدائي'} ${getSubStatus(s)}</div>
- <div class="item-sub">${s.phone||''} ${s.parentPhone?`| <a href="https://wa.me/${s.parentPhone.replace(/\\D/g,'')}" style="color:var(--wa);text-decoration:none"> ${s.parentPhone}</a>`:''}</div>
+ <div class="item-sub">${s.phone||''} ${s.parentPhone?`| <a href="https://wa.me/${s.parentPhone.replace(/\D/g,'')}" style="color:var(--wa);text-decoration:none"> ${s.parentPhone}</a>`:''}</div>
  ${beh?`<div style="font-size:11px;margin-top:2px">${starsHtml(beh.stars)}</div>`:''}
  </div>
  </div>
@@ -4085,7 +4212,6 @@ function renderStudents(){
  </div>`;
  }).join('');
 }
-
 function addStudent(){
  var fname=document.getElementById('s-fname').value.trim(),lname=document.getElementById('s-lname').value.trim();
  if(!fname||!lname){toast('يرجى إدخال الاسم');return;}
@@ -5669,14 +5795,32 @@ function renderAttendance(){
  renderAttGrid();
 }
 function attDateChanged(){attState={};renderAttGrid();var badge=document.getElementById('att-date-badge');if(badge){var d=document.getElementById('att-date').value;badge.textContent=d===today()?'اليوم':'يوم سابق';}}
+function resetAttFilters(){
+ var e1=document.getElementById('att-student-search');if(e1)e1.value='';
+ var e2=document.getElementById('att-filter-status');if(e2)e2.value='';
+ var e3=document.getElementById('att-filter-stage');if(e3)e3.value='';
+ renderAttGrid();
+}
 function renderAttGrid(){
- var dv=document.getElementById('att-date').value;
- var g=document.getElementById('att-grid');
+ var dv=(document.getElementById('att-date')?document.getElementById('att-date').value:'')||today();
+ var dateEl=document.getElementById('att-date');if(dateEl&&!dateEl.value)dateEl.value=dv;
+ var g=document.getElementById('att-grid');if(!g)return;
+ var attSearch=(document.getElementById('att-student-search')?document.getElementById('att-student-search').value:'').toLowerCase().trim();
+ var statusF=document.getElementById('att-filter-status')?document.getElementById('att-filter-status').value:'';
+ var stageF=document.getElementById('att-filter-stage')?document.getElementById('att-filter-stage').value:'';
  if(!data.students.length){g.innerHTML=`<div class="empty"><div class="empty-icon"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/></svg></div><p>لا يوجد طلبة</p></div>`;return;}
  data.students.forEach(s=>{if(attState[s.id]===undefined){var ex=data.attendance.find(a=>a.studentId===s.id&&a.date===dv);attState[s.id]=ex?ex.status:'absent';}});
- g.innerHTML=data.students.map(s=>{
+ var filtered=data.students.filter(function(s){
+ if(attSearch){var h=(s.fname+' '+s.lname+' '+(s.phone||'')+' '+(s.parentPhone||'')).toLowerCase();if(!h.includes(attSearch))return false;}
+ if(stageF&&(s.stage||'ابتدائي')!==stageF)return false;
+ if(statusF&&(attState[s.id]||'absent')!==statusF)return false;
+ return true;
+ });
+ var statsEl=document.getElementById('att-filter-stats');
+ if(statsEl){var hasF=attSearch||statusF||stageF;statsEl.textContent=hasF?'يُعرض '+filtered.length+' من أصل '+data.students.length+' طالب':'';}
+ if(!filtered.length){g.innerHTML=`<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p>لا توجد نتائج مطابقة</p></div>`;return;}
+ g.innerHTML=filtered.map(s=>{
  var state=attState[s.id]||'absent';
- var rate=attRate(s.id);
  var isPresent=state==='present';
  var isExcused=state==='excused';
  var isLate=state==='late';
@@ -5690,12 +5834,12 @@ function renderAttGrid(){
  return '<div class="att-card" style="border-color:'+stBorder+';flex-direction:column;align-items:stretch;gap:8px">'+
  '<div style="display:flex;align-items:center;justify-content:space-between">'+
  '<div style="display:flex;align-items:center;gap:9px">'+
- '<div class="avatar avatar-gold" style="width:36px;height:36px;font-size:13px">'+s.fname[0]+'</div>'+
+ '<div class="avatar avatar-gold" style="width:36px;height:36px;font-size:13px;cursor:pointer" onclick="openStudentProfile('+s.id+')">'+s.fname[0]+'</div>'+
  '<div>'+
- '<div style="font-size:11px;font-weight:600">'+s.fname+' '+s.lname+'</div>'+
- '<div style="font-size:9px;color:var(--text-3)">'+
- (arrivalTime?'● دخول: '+formatTime12(arrivalTime)+' ':'')+
- (departTime?'● خروج: '+formatTime12(departTime):'')+'</div>'+
+ '<div style="font-size:11px;font-weight:700;cursor:pointer" onclick="openStudentProfile('+s.id+')">'+s.fname+' '+s.lname+'</div>'+
+ '<div style="font-size:9px;color:var(--text-3)">'+(s.stage?s.stage+' | ':'')+
+ (arrivalTime?'دخول: '+formatTime12(arrivalTime)+' ':'')+
+ (departTime?'خروج: '+formatTime12(departTime):'')+'</div>'+
  '</div>'+
  '</div>'+
  '<button onclick="cycleAtt('+s.id+')" style="padding:8px 12px;border-radius:9px;border:1px solid '+stBorder+';background:'+stBg+';color:'+stColor+';cursor:pointer;font-size:11px;font-weight:700;font-family:var(--font);transition:all 0.2s;max-width:120px;text-align:center">'+
@@ -5712,19 +5856,9 @@ function renderAttGrid(){
  '<button onclick="notifyExcused('+s.id+')" style="flex:1;padding:7px;border-radius:8px;border:1px solid rgba(212,160,23,0.3);background:rgba(212,160,23,0.08);color:#d4a017;cursor:pointer;font-size:10px;font-weight:700;font-family:var(--font)">🟡 إشعار غياب بعلم ولي الأمر</button>'+
  '</div>':
  (state==='absent'?
- '<div style="display:flex;gap:6px">'+
- (s.parentPhone?
-  '<button onclick="sendAbsentWA('+s.id+')" style="flex:1;padding:7px;border-radius:8px;border:1px solid rgba(248,113,113,0.3);background:rgba(248,113,113,0.08);color:var(--danger);cursor:pointer;font-size:10px;font-weight:700;font-family:var(--font)">🔴 إشعار الغياب لولي الأمر</button>':
-  '<div style="flex:1;padding:7px;border-radius:8px;background:rgba(248,113,113,0.05);color:var(--text-3);font-size:10px;text-align:center">لا يوجد رقم ولي أمر</div>'
- )+
- '</div>':
+ '<div style="display:flex;gap:6px">'+(s.parentPhone?'<button onclick="sendAbsentWA('+s.id+')" style="flex:1;padding:7px;border-radius:8px;border:1px solid rgba(248,113,113,0.3);background:rgba(248,113,113,0.08);color:var(--danger);cursor:pointer;font-size:10px;font-weight:700;font-family:var(--font)">🔴 إشعار الغياب لولي الأمر</button>':'<div style="flex:1;padding:7px;border-radius:8px;background:rgba(248,113,113,0.05);color:var(--text-3);font-size:10px;text-align:center">لا يوجد رقم ولي أمر</div>')+'</div>':
  (state==='late'?
- '<div style="display:flex;gap:6px">'+
- (s.parentPhone?
-  '<button onclick="notifyLate('+s.id+')" style="flex:1;padding:7px;border-radius:8px;border:1px solid rgba(139,92,246,0.3);background:rgba(139,92,246,0.08);color:var(--purple);cursor:pointer;font-size:10px;font-weight:700;font-family:var(--font)">🟣 إشعار التأخر لولي الأمر</button>':
-  '<div style="flex:1;padding:7px;border-radius:8px;background:rgba(139,92,246,0.05);color:var(--text-3);font-size:10px;text-align:center">لا يوجد رقم ولي أمر</div>'
- )+
- '</div>':'')
+ '<div style="display:flex;gap:6px">'+(s.parentPhone?'<button onclick="notifyLate('+s.id+')" style="flex:1;padding:7px;border-radius:8px;border:1px solid rgba(139,92,246,0.3);background:rgba(139,92,246,0.08);color:var(--purple);cursor:pointer;font-size:10px;font-weight:700;font-family:var(--font)">🟣 إشعار التأخر لولي الأمر</button>':'<div style="flex:1;padding:7px;border-radius:8px;background:rgba(139,92,246,0.05);color:var(--text-3);font-size:10px;text-align:center">لا يوجد رقم ولي أمر</div>')+'</div>':'')
  ))
  )+
  '</div>';
