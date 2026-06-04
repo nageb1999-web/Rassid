@@ -1886,6 +1886,77 @@ html:not([data-theme=light]) #activation-screen {
 /* empty-action-btn removed */
 .empty-action-btn{display:none !important;}
 
+/* ══ BEHAVIOR SYSTEM ══ */
+.beh-indicator{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;border-radius:999px;
+  font-size:10px;font-weight:700;
+  white-space:nowrap;cursor:default;
+}
+.beh-excellent{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25);}
+.beh-watch{background:rgba(234,179,8,.12);color:#eab308;border:1px solid rgba(234,179,8,.25);}
+.beh-repeat{background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.25);}
+.beh-warning{background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.25);}
+
+.sev-low{background:rgba(52,211,153,.10);color:#34d399;border:1px solid rgba(52,211,153,.22);padding:3px 9px;border-radius:999px;font-size:10px;font-weight:700;}
+.sev-medium{background:rgba(234,179,8,.10);color:#eab308;border:1px solid rgba(234,179,8,.22);padding:3px 9px;border-radius:999px;font-size:10px;font-weight:700;}
+.sev-high{background:rgba(249,115,22,.10);color:#f97316;border:1px solid rgba(249,115,22,.22);padding:3px 9px;border-radius:999px;font-size:10px;font-weight:700;}
+.sev-critical{background:rgba(239,68,68,.10);color:#ef4444;border:1px solid rgba(239,68,68,.22);padding:3px 9px;border-radius:999px;font-size:10px;font-weight:700;}
+
+.beh-timeline{display:flex;flex-direction:column;gap:12px;}
+.beh-timeline-item{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:12px 14px;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:var(--r-md);
+  transition:border-color .2s;
+}
+.beh-timeline-item:hover{border-color:var(--brand-border);}
+.beh-timeline-dot{
+  width:10px;height:10px;border-radius:50%;
+  flex-shrink:0;margin-top:4px;
+}
+.beh-timeline-body{flex:1;min-width:0;}
+.beh-timeline-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.beh-timeline-meta{font-size:10px;color:var(--text-3);display:flex;gap:10px;flex-wrap:wrap;}
+
+.warn-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 12px;border-radius:10px;
+  font-size:11px;font-weight:700;
+}
+.warn-verbal{background:rgba(52,211,153,.10);color:#34d399;border:1px solid rgba(52,211,153,.2);}
+.warn-1{background:rgba(234,179,8,.10);color:#eab308;border:1px solid rgba(234,179,8,.2);}
+.warn-2{background:rgba(249,115,22,.10);color:#f97316;border:1px solid rgba(249,115,22,.2);}
+.warn-final{background:rgba(239,68,68,.10);color:#ef4444;border:1px solid rgba(239,68,68,.2);}
+.warn-referral{background:rgba(139,92,246,.12);color:var(--purple);border:1px solid rgba(139,92,246,.2);}
+
+.disc-stat-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;margin-bottom:20px;
+}
+.disc-stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-md);padding:16px;text-align:center;
+}
+.disc-stat-val{font-size:28px;font-weight:900;line-height:1;}
+.disc-stat-lbl{font-size:10px;color:var(--text-3);margin-top:5px;font-weight:600;}
+
+.vtype-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 11px;border-radius:8px;
+  background:var(--surface-2);border:1px solid var(--border);
+  font-size:11px;font-weight:600;color:var(--text-2);
+  cursor:pointer;transition:all .15s;
+}
+.vtype-chip:hover{border-color:var(--brand-border);color:var(--brand-light);}
+.vtype-chip.selected{background:var(--brand-tint);border-color:var(--brand-border);color:var(--brand-light);}
+
+html[data-theme=light] .beh-excellent{background:rgba(16,185,129,.10);color:#059669;}
+html[data-theme=light] .beh-watch{background:rgba(202,138,4,.10);color:#92400e;}
+html[data-theme=light] .beh-repeat{background:rgba(234,88,12,.10);color:#c2410c;}
+html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c;}
 
 </style>
 </head>
@@ -2053,6 +2124,7 @@ html:not([data-theme=light]) #activation-screen {
  <div class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span> لوحة التحكم</div>
  <div class="nav-section">الطلبة</div>
  <div class="nav-item" onclick="showPage('students')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> الطلبة</div>
+ <div class="nav-item" onclick="showPage('discipline')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> السلوك والانضباط</div>
  <div class="nav-item" onclick="showPage('results')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></span> النتائج</div>
  <div class="nav-item" onclick="showPage('slips')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></span> القصاصات</div>
  <div class="nav-section">الحضور</div>
@@ -2332,7 +2404,40 @@ html:not([data-theme=light]) #activation-screen {
  <div id="student-profile-content"></div>
  </div>
 
- <!-- RESULTS -->
+ <!-- DISCIPLINE PAGE -->
+ <div class="page" id="page-discipline">
+ <div class="sec-header">
+ <span class="sec-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> السلوك والانضباط</span></span>
+ <button class="btn btn-gold btn-sm" style="display:inline-flex;align-items:center;gap:6px" onclick="openAddViolationModal(null)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة مخالفة</button>
+ </div>
+ <div class="tab-bar">
+ <button class="tab-btn active" onclick="switchDiscTab('overview',this)">نظرة عامة</button>
+ <button class="tab-btn" onclick="switchDiscTab('violations',this)">المخالفات</button>
+ <button class="tab-btn" onclick="switchDiscTab('warnings',this)">الإنذارات</button>
+ <button class="tab-btn" onclick="switchDiscTab('students-status',this)">حالة الطلبة</button>
+ </div>
+ <div id="disc-tab-overview" class="tab-content active">
+ <div class="disc-stat-grid" id="disc-stats-grid"></div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px" id="disc-top-grid"></div>
+ <div class="chart-wrap" id="disc-monthly-chart-wrap">
+ <div style="font-size:12px;font-weight:700;margin-bottom:12px"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> المخالفات — آخر 6 أشهر</span></div>
+ <div id="disc-monthly-bars" class="bar-chart"></div>
+ <div id="disc-monthly-labels" style="display:flex;gap:6px;margin-top:8px"></div>
+ </div>
+ </div>
+ <div id="disc-tab-violations" class="tab-content">
+ <div class="search-bar"><input class="search-input" type="text" id="disc-search" placeholder="بحث..." oninput="renderViolationsTable()"></div>
+ <div id="disc-violations-list"></div>
+ </div>
+ <div id="disc-tab-warnings" class="tab-content">
+ <div id="disc-warnings-list"></div>
+ </div>
+ <div id="disc-tab-students-status" class="tab-content">
+ <div id="disc-students-status-list"></div>
+ </div>
+ </div>
+
+
  <div class="page" id="page-results">
  <div class="sec-header">
  <span class="sec-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg> النتائج والمحاولات</span></span>
@@ -2542,6 +2647,14 @@ html:not([data-theme=light]) #activation-screen {
  <div style="display:flex;gap:7px;margin-top:10px">
  <input type="text" id="new-task-type" placeholder="نوع جديد..." style="flex:1;background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-family:var(--font);font-size:11px;outline:none;">
  <button class="btn btn-success btn-sm" onclick="addTaskType()">+ إضافة</button>
+ </div>
+ </div>
+ <div class="profile-section">
+ <div class="profile-sec-title"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg> أنواع المخالفات السلوكية</span></div>
+ <div id="violation-types-list"></div>
+ <div style="display:flex;gap:7px;margin-top:10px">
+ <input type="text" id="new-violation-type" placeholder="نوع مخالفة جديد..." style="flex:1;background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-family:var(--font);font-size:11px;outline:none;">
+ <button class="btn btn-danger btn-sm" onclick="addViolationType()">+ إضافة</button>
  </div>
  </div>
  <div class="profile-section">
@@ -3103,6 +3216,89 @@ html:not([data-theme=light]) #activation-screen {
  </div>
 </div>
 
+<!-- Modal: Add Violation -->
+<div class="modal-overlay" id="modal-add-violation">
+ <div class="modal modal-wide">
+ <h3><span style="display:inline-flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> تسجيل مخالفة سلوكية</span></h3>
+ <input type="hidden" id="viol-student-id">
+ <div class="form-row">
+ <div class="form-group">
+ <label>الطالب</label>
+ <select id="viol-student" onchange="onViolStudentChange()"></select>
+ </div>
+ <div class="form-group">
+ <label>التاريخ</label>
+ <input type="date" id="viol-date">
+ </div>
+ </div>
+ <div class="form-group">
+ <label>المدرس / الموظف المُسجِّل</label>
+ <input type="text" id="viol-recorder" placeholder="اسم المدرس أو الموظف...">
+ </div>
+ <div class="form-group">
+ <label>نوع المخالفة</label>
+ <div id="viol-type-chips" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px"></div>
+ <input type="hidden" id="viol-type">
+ </div>
+ <div class="form-group">
+ <label>وصف تفصيلي</label>
+ <textarea id="viol-desc" rows="3" placeholder="اشرح ما حدث بالتفصيل..."></textarea>
+ </div>
+ <div class="form-group">
+ <label>مستوى الخطورة</label>
+ <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px" id="viol-severity-btns">
+ <button type="button" class="vtype-chip" data-sev="low" onclick="selectSeverity('low')">🟢 بسيطة</button>
+ <button type="button" class="vtype-chip" data-sev="medium" onclick="selectSeverity('medium')">🟡 متوسطة</button>
+ <button type="button" class="vtype-chip" data-sev="high" onclick="selectSeverity('high')">🟠 عالية</button>
+ <button type="button" class="vtype-chip" data-sev="critical" onclick="selectSeverity('critical')">🔴 خطيرة</button>
+ </div>
+ <input type="hidden" id="viol-severity" value="low">
+ </div>
+ <div class="form-group">
+ <label>ملاحظات إضافية</label>
+ <textarea id="viol-notes" rows="2" placeholder="أي ملاحظة إضافية... (اختياري)"></textarea>
+ </div>
+ <div id="viol-warn-preview" style="display:none;margin-bottom:8px;padding:12px;border-radius:10px;font-size:11px;font-weight:700;text-align:center"></div>
+ <div class="modal-footer">
+ <button class="btn btn-outline" onclick="closeModal('add-violation')">إلغاء</button>
+ <button class="btn btn-gold" onclick="saveViolation()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> حفظ المخالفة</button>
+ </div>
+ </div>
+</div>
+
+<!-- Modal: Parent Notification -->
+<div class="modal-overlay" id="modal-parent-notif">
+ <div class="modal">
+ <h3><span style="display:inline-flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> إشعار ولي الأمر</span></h3>
+ <div id="pnotif-student-name" style="font-size:13px;font-weight:700;color:var(--brand-light);margin-bottom:14px"></div>
+ <div class="form-group">
+ <label>الرسالة المُعدَّة تلقائياً</label>
+ <textarea id="pnotif-msg" rows="8" style="font-size:12px;line-height:1.7"></textarea>
+ </div>
+ <div id="pnotif-no-phone" style="display:none;padding:10px 14px;background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:9px;font-size:11px;color:var(--danger);margin-bottom:8px">
+ ⚠ لا يوجد رقم ولي أمر مسجل لهذا الطالب
+ </div>
+ <div class="modal-footer" style="flex-wrap:wrap">
+ <button class="btn btn-outline" onclick="closeModal('parent-notif')">إغلاق</button>
+ <button class="btn btn-info" onclick="copyParentNotif()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> نسخ</button>
+ <button class="btn btn-wa" id="pnotif-wa-btn" onclick="sendParentNotifWA()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> إرسال واتساب</button>
+ </div>
+ </div>
+</div>
+
+<!-- Modal: Violation Detail -->
+<div class="modal-overlay" id="modal-viol-detail">
+ <div class="modal">
+ <h3><span style="display:inline-flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg> تفاصيل المخالفة</span></h3>
+ <div id="viol-detail-body"></div>
+ <div class="modal-footer">
+ <button class="btn btn-outline" onclick="closeModal('viol-detail')">إغلاق</button>
+ <button class="btn btn-wa btn-sm" id="viol-detail-notify-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> إشعار ولي الأمر</button>
+ <button class="btn btn-danger btn-sm" id="viol-detail-del-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> حذف</button>
+ </div>
+ </div>
+</div>
+
 <div class="modal-overlay" id="modal-backup">
  <div class="modal" style="max-width:380px">
  <h3><span style="display:inline-flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> النسخ الاحتياطي</span></h3>
@@ -3208,20 +3404,26 @@ function defaultData(){
  return {
  students:[],teachers:[],attendance:[],teacherAttendance:[],
 results:[],fees:[],payments:[],behaviors:[],waLog:[],
+ violationRecords:[],warningRecords:[],parentNotifications:[],
 expenses:[],salaries:[],salaryPayments:[],subPayments:[],slips:[],financialAuditLog:[],
  settings:{
  instName:'راصد',instAddr:'',instPhone:'',
  taskTypes:['واجب','امتحان','مراجعة','إعادة'],
- templates:{result:'',absent:'',fees:''}
+ templates:{result:'',absent:'',fees:''},
+ violationTypes:['التأخر المتكرر','الغياب بدون عذر','إزعاج داخل الصف','عدم الالتزام بالتعليمات','إساءة لزميل','إساءة للمدرس','استخدام الهاتف أثناء الدرس','التخريب المتعمد','مخالفة أخرى'],
+ warningThresholds:{1:'تنبيه شفهي',2:'إنذار أول',3:'إنذار ثانٍ',4:'إنذار نهائي',5:'تحويل للإدارة'}
  },
  nextId:{student:1,teacher:1,attendance:1,teacherAtt:1,result:1,fee:1,
-payment:1,behavior:1,waLog:1,expense:1,salary:1,salaryPayment:1,financialAuditLog:1}
+payment:1,behavior:1,waLog:1,expense:1,salary:1,salaryPayment:1,financialAuditLog:1,violationRecord:1,warningRecord:1,parentNotification:1}
  };
 }
 
 function migrateData(d){
  // Add missing fields from older versions
  d.behaviors = d.behaviors || [];
+ d.violationRecords = d.violationRecords || [];
+ d.warningRecords = d.warningRecords || [];
+ d.parentNotifications = d.parentNotifications || [];
  d.waLog = d.waLog || [];
 d.expenses = d.expenses || [];
 d.subPayments = d.subPayments || [];
@@ -3232,7 +3434,12 @@ d.nextId.subPayment = d.nextId.subPayment||1;
  d.salaries = d.salaries || [];
  d.salaryPayments= d.salaryPayments|| [];
  d.settings = d.settings || {instName:'راصد',instAddr:'',instPhone:'',taskTypes:['واجب','امتحان','مراجعة','إعادة'],templates:{result:'',absent:'',fees:''}};
+ d.settings.violationTypes = d.settings.violationTypes || ['التأخر المتكرر','الغياب بدون عذر','إزعاج داخل الصف','عدم الالتزام بالتعليمات','إساءة لزميل','إساءة للمدرس','استخدام الهاتف أثناء الدرس','التخريب المتعمد','مخالفة أخرى'];
+ d.settings.warningThresholds = d.settings.warningThresholds || {1:'تنبيه شفهي',2:'إنذار أول',3:'إنذار ثانٍ',4:'إنذار نهائي',5:'تحويل للإدارة'};
  d.nextId.behavior = d.nextId.behavior || 1;
+ d.nextId.violationRecord = d.nextId.violationRecord || 1;
+ d.nextId.warningRecord = d.nextId.warningRecord || 1;
+ d.nextId.parentNotification = d.nextId.parentNotification || 1;
  d.nextId.waLog = d.nextId.waLog || 1;
 d.nextId.expense = d.nextId.expense || 1;
 d.nextId.salary = d.nextId.salary || 1;
@@ -3411,7 +3618,7 @@ function getAttemptNum(sid,subject,type){return data.results.filter(r=>r.student
 // ══════════════════════════════════════════════
 // NAVIGATION
 // ══════════════════════════════════════════════
-var pageTitles={dashboard:'لوحة التحكم',students:'الطلبة','student-profile':'ملف الطالب',results:'النتائج',attendance:'الحضور',teachers:'المدرسون',fees:'الاشتراكات والدفعات',expenses:'المصروفات والأرباح',slips:'القصاصات',whatsapp:'إشعارات واتساب',reports:'التقارير',settings:'الإعدادات'};
+var pageTitles={dashboard:'لوحة التحكم',students:'الطلبة','student-profile':'ملف الطالب',results:'النتائج',attendance:'الحضور',teachers:'المدرسون',fees:'الاشتراكات والدفعات',expenses:'المصروفات والأرباح',slips:'القصاصات',whatsapp:'إشعارات واتساب',reports:'التقارير',settings:'الإعدادات',discipline:'السلوك والانضباط'};
 var currentPage='dashboard';
 
 
@@ -3423,7 +3630,7 @@ function showPage(name){
  if(el)el.classList.add('active');
  document.querySelectorAll('.nav-item').forEach(n=>{if(n.textContent.trim().includes(pageTitles[currentPage]?pageTitles[currentPage].substring(0,4):''||''))n.classList.add('active');});
  document.getElementById('page-title').textContent=pageTitles[currentPage]||currentPage;
- var renders={dashboard:renderDashboard,students:renderStudents,results:renderResults,attendance:renderAttendance,teachers:renderTeachers,fees:renderFees,expenses:renderExpenses,slips:renderSlips,whatsapp:renderWhatsapp,reports:renderReports,settings:renderSettings};
+ var renders={dashboard:renderDashboard,students:renderStudents,results:renderResults,attendance:renderAttendance,teachers:renderTeachers,fees:renderFees,expenses:renderExpenses,slips:renderSlips,whatsapp:renderWhatsapp,reports:renderReports,settings:renderSettings,discipline:renderDisciplinePage};
  if(renders[currentPage])renders[currentPage]();
  closeSidebar();
 }
@@ -4184,21 +4391,26 @@ function renderStudents(){
  var rate=attRate(s.id),avg=avgGrade(s.id);
  var _fs=feeStats(s.id);var total=_fs.total;var paid=_fs.paid;var remaining=_fs.remaining;
  var beh=getBeh(s.id);
+ var behStatus=getBehaviorStatus(s.id);
+ var violCnt=getViolations(s.id).length;
  var rc=rate===null?'var(--muted)':rate>=75?'var(--success)':'var(--danger)';
  var ac=avg===null?'var(--muted)':avg>=75?'var(--success)':avg>=50?'var(--warning)':'var(--danger)';
  return`<div class="item-card">
  <div class="item-card-header">
  <div class="item-card-info">
- <div class="avatar avatar-gold" style="cursor:pointer" onclick="openStudentProfile(${s.id})">${s.fname[0]}</div>
+ <div class="avatar avatar-gold" style="cursor:pointer;position:relative" onclick="openStudentProfile(${s.id})">${s.fname[0]}${violCnt>0?`<span style="position:absolute;top:-3px;left:-3px;width:14px;height:14px;border-radius:50%;background:var(--danger);color:white;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)">${violCnt}</span>`:''}</div>
  <div>
  <div class="item-name" style="cursor:pointer" onclick="openStudentProfile(${s.id})">${s.fname} ${s.lname}</div>
  <div class="item-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'ابتدائي'} ${getSubStatus(s)}</div>
  <div class="item-sub">${s.phone||''} ${s.parentPhone?`| <a href="https://wa.me/${s.parentPhone.replace(/\D/g,'')}" style="color:var(--wa);text-decoration:none"> ${s.parentPhone}</a>`:''}</div>
- ${beh?`<div style="font-size:11px;margin-top:2px">${starsHtml(beh.stars)}</div>`:''}
+ <div style="margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+ ${beh?`<span style="font-size:10px">${starsHtml(beh.stars)}</span>`:''}
+ <span class="beh-indicator ${behStatus.cls}" style="font-size:9px;padding:2px 7px">${behStatus.label}</span>
+ </div>
  </div>
  </div>
  <div class="item-card-actions">
- <button class="btn btn-purple btn-sm" onclick="openBehModal(${s.id})" title="تقييم السلوك" style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> سلوك</button>
+ <button class="btn btn-gold btn-sm" onclick="openAddViolationModal(${s.id})" title="إضافة مخالفة" style="display:inline-flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></button>
  <button class="btn btn-info btn-sm" onclick="openEditStudent(${s.id})"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
  <button class="btn btn-danger btn-sm" onclick="delStudent(${s.id})"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
  </div>
@@ -4284,8 +4496,8 @@ async function saveEditStudent(){
 }
 function delStudent(id){
  var st=gS(id);var stName=st?(st.fname+' '+st.lname):'هذا الطالب';
- showConfirm({title:'حذف '+stName,msg:'سيتم حذف جميع بياناته بشكل نهائي (الحضور، النتائج، الرسوم، السلوك).',confirmText:'نعم، احذف'},function(){
-  ['students','attendance','results','fees','payments','behaviors'].forEach(function(k){data[k]=data[k].filter(function(x){return x.id!==id&&x.studentId!==id;});});
+ showConfirm({title:'حذف '+stName,msg:'سيتم حذف جميع بياناته بشكل نهائي (الحضور، النتائج، الرسوم، السلوك، المخالفات).',confirmText:'نعم، احذف'},function(){
+  ['students','attendance','results','fees','payments','behaviors','violationRecords','warningRecords','parentNotifications'].forEach(function(k){if(data[k])data[k]=data[k].filter(function(x){return x.id!==id&&x.studentId!==id;});});
   save();renderStudents();toast('تم حذف '+stName);
  });
 }
@@ -4298,6 +4510,7 @@ function openStudentProfile(id){
  var rate=attRate(s.id),avg=avgGrade(s.id);
  var _fs=feeStats(s.id);var total=_fs.total;var paid=_fs.paid;var remaining=_fs.remaining;
  var beh=getBeh(s.id);
+ var behStatus=getBehaviorStatus(s.id);
  var sResults=data.results.filter(r=>r.studentId===id);
  var subDays=s.subEnd?daysDiff(s.subEnd):null;
  var subBadge=s.subEnd?getSubBadge(s.subEnd):'<span style="color:var(--muted);font-size:9px">لم يحدد</span>';
@@ -4309,6 +4522,7 @@ function openStudentProfile(id){
 
  // build attempt progress chart data
  var subjects=[...new Set(sResults.map(r=>r.subject))];
+ var violCount=getViolations(id).length;
 
  var profileHtml=`
  <div class="profile-header">
@@ -4317,11 +4531,16 @@ function openStudentProfile(id){
  <div class="profile-name">${s.fname} ${s.lname}</div>
  <div class="profile-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'—'} | ${s.phone||'—'} ${s.parentPhone?`| <a href="https://wa.me/${s.parentPhone.replace(/\\D/g,'')}" style="color:var(--wa)">${s.parentPhone}</a>`:''}</div>
  ${beh?`<div style="margin-top:6px;font-size:14px">${starsHtml(beh.stars)} <span style="font-size:10px;color:var(--muted)">${beh.note||''}</span></div>`:''}
+ <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+ <span class="beh-indicator ${behStatus.cls}" style="font-size:9px">${behStatus.label}</span>
+ ${violCount>0?`<span style="font-size:9px;color:var(--danger);font-weight:600">${violCount} مخالفة</span>`:''}
+ </div>
  <div style="margin-top:4px;font-size:10px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> الاشتراك: ${s.subStart||'—'} ← ${s.subEnd||'—'} ${subBadge}</div>
  </div>
- <div style="margin-right:auto;display:flex;gap:7px">
+ <div style="margin-right:auto;display:flex;gap:7px;flex-wrap:wrap">
  <button class="btn btn-info btn-sm" onclick="openEditStudent(${id})"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> تعديل</button>
- <button class="btn btn-purple btn-sm" onclick="openBehModal(${id})" style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> سلوك</button>
+ <button class="btn btn-gold btn-sm" onclick="openAddViolationModal(${id})" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg> مخالفة</button>
+ <button class="btn btn-purple btn-sm" onclick="openBehModal(${id})" style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> تقييم</button>
  ${s.parentPhone?`<button class="btn btn-wa btn-sm" onclick="sendCustomWAStudent(${id})"> واتساب</button>`:''}
  </div>
  </div>
@@ -4380,14 +4599,617 @@ function openStudentProfile(id){
  profileHtml+=`</div>`;
  }
 
+ // Behavior Section
+ profileHtml+=renderProfileBehaviorSection(id);
+
  profileHtml+=`</div>`;
  document.getElementById('student-profile-content').innerHTML=profileHtml;
  showPage('student-profile');
 }
 
 // ══════════════════════════════════════════════
-// BEHAVIOR
+// BEHAVIOR & DISCIPLINE — نظام السلوك والانضباط
 // ══════════════════════════════════════════════
+
+// ── Helpers ──
+function getViolations(sid){
+ return (data.violationRecords||[]).filter(function(v){return v.studentId===sid;}).sort(function(a,b){return b.id-a.id;});
+}
+function getWarnings(sid){
+ return (data.warningRecords||[]).filter(function(w){return w.studentId===sid;}).sort(function(a,b){return b.id-a.id;});
+}
+function getBehaviorStatus(sid){
+ var viols=getViolations(sid);
+ var warns=getWarnings(sid);
+ var n=viols.length;
+ if(n===0)return{level:'excellent',label:'ممتاز',cls:'beh-excellent',dot:'#34d399'};
+ if(n<=2)return{level:'watch',label:'يحتاج متابعة',cls:'beh-watch',dot:'#eab308'};
+ if(n<=4){
+ var lastWarn=warns[0];
+ if(lastWarn&&(lastWarn.level===4||lastWarn.level===5))return{level:'warning',label:'تحت الإنذار',cls:'beh-warning',dot:'#ef4444'};
+ return{level:'repeat',label:'ملاحظات متكررة',cls:'beh-repeat',dot:'#f97316'};
+ }
+ return{level:'warning',label:'تحت الإنذار',cls:'beh-warning',dot:'#ef4444'};
+}
+function getWarningLevelLabel(n){
+ var t=data.settings&&data.settings.warningThresholds?data.settings.warningThresholds:{1:'تنبيه شفهي',2:'إنذار أول',3:'إنذار ثانٍ',4:'إنذار نهائي',5:'تحويل للإدارة'};
+ return t[n]||('إجراء '+n);
+}
+function getWarningClass(level){
+ if(level===1)return'warn-verbal';
+ if(level===2)return'warn-1';
+ if(level===3)return'warn-2';
+ if(level===4)return'warn-final';
+ return'warn-referral';
+}
+function getSevLabel(sev){
+ if(sev==='low')return'🟢 بسيطة';
+ if(sev==='medium')return'🟡 متوسطة';
+ if(sev==='high')return'🟠 عالية';
+ if(sev==='critical')return'🔴 خطيرة';
+ return sev||'—';
+}
+function getSevClass(sev){
+ if(sev==='low')return'sev-low';
+ if(sev==='medium')return'sev-medium';
+ if(sev==='high')return'sev-high';
+ if(sev==='critical')return'sev-critical';
+ return'badge badge-info';
+}
+
+// ── Auto Warning Generation ──
+function autoGenerateWarning(sid){
+ var viols=getViolations(sid);
+ var n=viols.length;
+ if(n<1)return null;
+ var level=Math.min(n,5);
+ var label=getWarningLevelLabel(level);
+ var lastViol=viols[0];
+ // avoid duplicate for same level already generated by this last violation
+ var existing=(data.warningRecords||[]).filter(function(w){return w.studentId===sid&&w.violationId===lastViol.id;});
+ if(existing.length)return null;
+ if(!data.warningRecords)data.warningRecords=[];
+ if(!data.nextId.warningRecord)data.nextId.warningRecord=1;
+ var warn={id:data.nextId.warningRecord++,studentId:sid,level:level,levelLabel:label,date:today(),violationId:lastViol.id,violationCount:n};
+ data.warningRecords.push(warn);
+ return warn;
+}
+
+// ── Add Violation Modal ──
+var _violCurrentSid=null;
+var _violSelectedType=null;
+var _violSelectedSeverity='low';
+
+function openAddViolationModal(sid){
+ _violCurrentSid=sid;
+ _violSelectedType=null;
+ _violSelectedSeverity='low';
+
+ // populate student dropdown
+ var sel=document.getElementById('viol-student');
+ if(sel){
+ sel.innerHTML=data.students.map(function(s){return'<option value="'+s.id+'">'+s.fname+' '+s.lname+'</option>';}).join('');
+ if(sid)sel.value=sid;
+ }
+
+ document.getElementById('viol-date').value=today();
+ var recEl=document.getElementById('viol-recorder');
+ if(recEl)recEl.value=currentUser?currentUser.email.replace(/@.*/,''):'';
+ document.getElementById('viol-desc').value='';
+ document.getElementById('viol-notes').value='';
+ document.getElementById('viol-type').value='';
+ document.getElementById('viol-severity').value='low';
+
+ // severity buttons
+ document.querySelectorAll('#viol-severity-btns .vtype-chip').forEach(function(b){
+ b.classList.toggle('selected',b.dataset.sev==='low');
+ });
+
+ // type chips
+ renderViolTypeChips();
+ updateViolWarnPreview();
+ openModal('add-violation');
+}
+
+function renderViolTypeChips(){
+ var types=(data.settings&&data.settings.violationTypes)||[];
+ var el=document.getElementById('viol-type-chips');
+ if(!el)return;
+ el.innerHTML=types.map(function(t){
+ return'<div class="vtype-chip" data-type="'+t+'" onclick="selectViolType(\''+t.replace(/'/g,'\\\'')+'\')">'+ t+'</div>';
+ }).join('');
+}
+
+function selectViolType(t){
+ _violSelectedType=t;
+ document.getElementById('viol-type').value=t;
+ document.querySelectorAll('#viol-type-chips .vtype-chip').forEach(function(c){
+ c.classList.toggle('selected',c.dataset.type===t);
+ });
+ updateViolWarnPreview();
+}
+
+function selectSeverity(sev){
+ _violSelectedSeverity=sev;
+ document.getElementById('viol-severity').value=sev;
+ document.querySelectorAll('#viol-severity-btns .vtype-chip').forEach(function(b){
+ b.classList.toggle('selected',b.dataset.sev===sev);
+ });
+}
+
+function onViolStudentChange(){
+ updateViolWarnPreview();
+}
+
+function updateViolWarnPreview(){
+ var sel=document.getElementById('viol-student');
+ if(!sel)return;
+ var sid=parseInt(sel.value);
+ if(!sid)return;
+ var viols=getViolations(sid);
+ var nextCount=viols.length+1;
+ var level=Math.min(nextCount,5);
+ var label=getWarningLevelLabel(level);
+ var prev=document.getElementById('viol-warn-preview');
+ if(!prev)return;
+ var cls=getWarningClass(level);
+ prev.style.display='block';
+ prev.className='';
+ prev.style.cssText='display:block;padding:12px;border-radius:10px;font-size:11px;font-weight:700;text-align:center;margin-bottom:8px;';
+ var colorMap={'warn-verbal':'rgba(52,211,153,.12)','warn-1':'rgba(234,179,8,.12)','warn-2':'rgba(249,115,22,.12)','warn-final':'rgba(239,68,68,.12)','warn-referral':'rgba(139,92,246,.12)'};
+ prev.style.background=colorMap[cls]||'rgba(184,138,68,.1)';
+ prev.style.border='1px solid rgba(184,138,68,.2)';
+ prev.style.color='var(--text)';
+ prev.textContent='بعد هذه المخالفة ستكون المخالفة رقم '+nextCount+' → سيُنشأ تلقائياً: '+label;
+}
+
+function saveViolation(){
+ var sel=document.getElementById('viol-student');
+ var sid=parseInt(sel?sel.value:'');
+ var date=document.getElementById('viol-date').value||today();
+ var recorder=document.getElementById('viol-recorder').value.trim();
+ var type=document.getElementById('viol-type').value||_violSelectedType;
+ var desc=document.getElementById('viol-desc').value.trim();
+ var severity=document.getElementById('viol-severity').value||_violSelectedSeverity;
+ var notes=document.getElementById('viol-notes').value.trim();
+
+ var s=gS(sid);
+ if(!s){toast('اختر الطالب');return;}
+ if(!type){toast('اختر نوع المخالفة');return;}
+ if(!desc){toast('أدخل وصفاً للمخالفة');return;}
+
+ if(!data.violationRecords)data.violationRecords=[];
+ if(!data.nextId.violationRecord)data.nextId.violationRecord=1;
+
+ var rec={
+ id:data.nextId.violationRecord++,
+ studentId:sid,
+ date:date,
+ type:type,
+ description:desc,
+ severity:severity,
+ recordedBy:recorder||(currentUser?currentUser.email:'إدارة'),
+ notes:notes,
+ createdAt:new Date().toISOString()
+ };
+ data.violationRecords.push(rec);
+
+ // auto-generate warning
+ var warn=autoGenerateWarning(sid);
+ save();
+ closeModal('add-violation');
+ renderStudents();
+ if(typeof renderDisciplinePage==='function')renderDisciplinePage();
+
+ if(warn){
+ toast('تمت إضافة المخالفة — '+warn.levelLabel+' مُنشأ تلقائياً');
+ } else {
+ toast('تمت إضافة المخالفة بنجاح');
+ }
+
+ // if we came from student profile, refresh it
+ if(_violCurrentSid){
+ openStudentProfile(_violCurrentSid);
+ }
+}
+
+function deleteViolation(vid){
+ var v=(data.violationRecords||[]).find(function(x){return x.id===vid;});
+ var s=v?gS(v.studentId):null;
+ var lbl=(s?s.fname+' — ':'')+( v?v.type:'المخالفة');
+ showConfirm({title:'حذف المخالفة',msg:'سيتم حذف: '+lbl+' بشكل نهائي.',confirmText:'احذف'},function(){
+ data.violationRecords=(data.violationRecords||[]).filter(function(x){return x.id!==vid;});
+ // remove associated warning if exists
+ data.warningRecords=(data.warningRecords||[]).filter(function(w){return w.violationId!==vid;});
+ save();
+ closeModal('viol-detail');
+ if(typeof renderDisciplinePage==='function')renderDisciplinePage();
+ renderStudents();
+ toast('تم الحذف');
+ });
+}
+
+function openViolationDetail(vid){
+ var v=(data.violationRecords||[]).find(function(x){return x.id===vid;});
+ if(!v)return;
+ var s=gS(v.studentId);
+ var warn=(data.warningRecords||[]).find(function(w){return w.violationId===vid;});
+ var el=document.getElementById('viol-detail-body');
+ el.innerHTML='<div style="display:flex;flex-direction:column;gap:12px">'+
+ '<div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface-2);border-radius:10px">'+
+ '<div class="avatar avatar-gold" style="width:40px;height:40px;font-size:16px">'+(s?s.fname[0]:'?')+'</div>'+
+ '<div><div style="font-weight:700;font-size:13px">'+(s?s.fname+' '+s.lname:'طالب غير موجود')+'</div>'+
+ '<div style="font-size:10px;color:var(--text-3)">'+(s?s.stage||'—':'—')+'</div></div>'+
+ '</div>'+
+ '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+ '<div style="background:var(--surface-2);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--text-3);font-weight:700;margin-bottom:4px">نوع المخالفة</div><div style="font-size:12px;font-weight:700">'+v.type+'</div></div>'+
+ '<div style="background:var(--surface-2);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--text-3);font-weight:700;margin-bottom:4px">الخطورة</div><div class="'+getSevClass(v.severity)+'">'+getSevLabel(v.severity)+'</div></div>'+
+ '<div style="background:var(--surface-2);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--text-3);font-weight:700;margin-bottom:4px">التاريخ</div><div style="font-size:12px;font-weight:600">'+v.date+'</div></div>'+
+ '<div style="background:var(--surface-2);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--text-3);font-weight:700;margin-bottom:4px">بواسطة</div><div style="font-size:11px">'+v.recordedBy+'</div></div>'+
+ '</div>'+
+ '<div style="background:var(--surface-2);border-radius:8px;padding:12px"><div style="font-size:9px;color:var(--text-3);font-weight:700;margin-bottom:6px">الوصف</div><div style="font-size:12px;line-height:1.6">'+v.description+'</div></div>'+
+ (v.notes?'<div style="background:var(--surface-2);border-radius:8px;padding:12px"><div style="font-size:9px;color:var(--text-3);font-weight:700;margin-bottom:6px">ملاحظات إضافية</div><div style="font-size:11px;line-height:1.6">'+v.notes+'</div></div>':'')+
+ (warn?'<div style="padding:12px;border-radius:10px;border:1px solid var(--brand-border);background:var(--brand-tint)"><div style="font-size:10px;color:var(--brand-light);font-weight:700;margin-bottom:4px">الإجراء المُتخَذ تلقائياً</div><div style="font-size:13px;font-weight:800;color:var(--brand-light)">'+warn.levelLabel+'</div></div>':'')+
+ '</div>';
+
+ var notifBtn=document.getElementById('viol-detail-notify-btn');
+ var delBtn=document.getElementById('viol-detail-del-btn');
+ if(notifBtn)notifBtn.onclick=function(){openParentNotifModal(v.studentId,v.id);};
+ if(delBtn)delBtn.onclick=function(){deleteViolation(v.id);};
+ openModal('viol-detail');
+}
+
+// ── Parent Notification ──
+var _pnotifSid=null,_pnotifVid=null;
+
+function openParentNotifModal(sid,vid){
+ _pnotifSid=sid;_pnotifVid=vid;
+ var s=gS(sid);if(!s)return;
+ var v=vid?(data.violationRecords||[]).find(function(x){return x.id===vid;}):null;
+ var warn=vid?(data.warningRecords||[]).find(function(w){return w.violationId===vid;}):null;
+
+ document.getElementById('pnotif-student-name').textContent=s.fname+' '+s.lname;
+
+ var instName=data.settings&&data.settings.instName?data.settings.instName:'راصد';
+ var nl='\n';
+ var msg='السيد / السيدة ولي أمر الطالب '+s.fname+' '+s.lname+nl;
+ msg+=nl+'السلام عليكم ورحمة الله وبركاته،'+nl;
+ msg+=nl+'نحيطكم علماً بتسجيل ملاحظة سلوكية على ابنكم';
+ if(v){
+ msg+=' بتاريخ '+v.date+' بسبب: '+v.type+'.'+nl;
+ msg+=nl+' وصف الملاحظة: '+v.description;
+ }
+ msg+=nl;
+ if(warn){
+ msg+=nl+'الإجراء المُتخَذ: '+warn.levelLabel;
+ }
+ msg+=nl+nl+'نرجو منكم التكرم بمراجعتنا والتعاون معنا لما فيه مصلحة الطالب.'+nl;
+ msg+=nl+'مع تحيات إدارة '+instName+' 📚';
+
+ document.getElementById('pnotif-msg').value=msg;
+
+ var noPhone=document.getElementById('pnotif-no-phone');
+ var waBtn=document.getElementById('pnotif-wa-btn');
+ if(!s.parentPhone){
+ if(noPhone)noPhone.style.display='block';
+ if(waBtn)waBtn.disabled=true;
+ } else {
+ if(noPhone)noPhone.style.display='none';
+ if(waBtn)waBtn.disabled=false;
+ }
+ closeModal('viol-detail');
+ openModal('parent-notif');
+}
+
+function copyParentNotif(){
+ var ta=document.getElementById('pnotif-msg');
+ if(!ta)return;
+ ta.select();ta.setSelectionRange(0,99999);
+ try{document.execCommand('copy');toast('تم نسخ الرسالة');}catch(e){toast('اضغط مطولاً واختر نسخ الكل');}
+}
+
+function sendParentNotifWA(){
+ if(!_pnotifSid)return;
+ var s=gS(_pnotifSid);if(!s||!s.parentPhone){toast('لا يوجد رقم ولي أمر');return;}
+ var msg=document.getElementById('pnotif-msg').value;
+ var phone=waPhone(s.parentPhone);
+ window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
+ // log notification
+ if(!data.parentNotifications)data.parentNotifications=[];
+ if(!data.nextId.parentNotification)data.nextId.parentNotification=1;
+ data.parentNotifications.push({id:data.nextId.parentNotification++,studentId:_pnotifSid,violationId:_pnotifVid,message:msg,date:today(),sentAt:new Date().toISOString(),sentVia:'whatsapp'});
+ save();
+ toast('جاري فتح واتساب...');
+}
+
+// ── Student Profile Behavior Section ──
+function renderProfileBehaviorSection(sid){
+ var s=gS(sid);if(!s)return'';
+ var viols=getViolations(sid);
+ var warns=getWarnings(sid);
+ var notifs=(data.parentNotifications||[]).filter(function(n){return n.studentId===sid;});
+ var status=getBehaviorStatus(sid);
+
+ // Timeline: merge all events
+ var timeline=[];
+ viols.forEach(function(v){
+ timeline.push({type:'violation',date:v.date,v:v,ts:v.id});
+ });
+ warns.forEach(function(w){
+ timeline.push({type:'warning',date:w.date,w:w,ts:w.id});
+ });
+ notifs.forEach(function(n){
+ timeline.push({type:'notification',date:n.date,n:n,ts:n.id});
+ });
+ timeline.sort(function(a,b){return b.ts-a.ts;});
+
+ var html='<div class="profile-section" style="grid-column:1/-1">';
+ html+='<div class="profile-sec-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">';
+ html+='<span style="display:inline-flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg> السلوك والانضباط</span>';
+ html+='<div style="display:flex;align-items:center;gap:8px">';
+ html+='<span class="beh-indicator '+status.cls+'">'+status.label+'</span>';
+ html+='<button class="btn btn-gold btn-xs" onclick="openAddViolationModal('+sid+')" style="display:inline-flex;align-items:center;gap:4px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة مخالفة</button>';
+ html+='</div></div>';
+
+ // Stats row
+ html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0">';
+ html+='<div class="item-stat"><div class="item-stat-val" style="color:var(--danger)">'+(viols.length)+'</div><div class="item-stat-lbl">مخالفة</div></div>';
+ html+='<div class="item-stat"><div class="item-stat-val" style="color:var(--warning)">'+(warns.length)+'</div><div class="item-stat-lbl">إنذار / إجراء</div></div>';
+ html+='<div class="item-stat"><div class="item-stat-val" style="color:var(--info)">'+(notifs.length)+'</div><div class="item-stat-lbl">إشعار لولي الأمر</div></div>';
+ html+='</div>';
+
+ if(timeline.length===0){
+ html+='<div class="empty" style="padding:24px 12px"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><p style="margin:0">سجل سلوكي نظيف</p></div>';
+ } else {
+ html+='<div class="beh-timeline" style="margin-top:8px">';
+ timeline.forEach(function(item){
+ if(item.type==='violation'){
+ var v=item.v;
+ html+='<div class="beh-timeline-item">';
+ html+='<div class="beh-timeline-dot" style="background:'+getDotColor(v.severity)+'"></div>';
+ html+='<div class="beh-timeline-body">';
+ html+='<div class="beh-timeline-title" style="display:flex;align-items:center;gap:6px">';
+ html+='<span class="'+getSevClass(v.severity)+'" style="padding:2px 7px;font-size:9px">'+getSevLabel(v.severity)+'</span>';
+ html+=v.type;
+ html+='</div>';
+ html+='<div style="font-size:11px;color:var(--text-2);margin:3px 0 4px">'+v.description+'</div>';
+ html+='<div class="beh-timeline-meta"><span>'+v.date+'</span><span>بواسطة: '+v.recordedBy+'</span></div>';
+ html+='<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">';
+ html+='<button class="btn btn-info btn-xs" onclick="openViolationDetail('+v.id+')">تفاصيل</button>';
+ html+='<button class="btn btn-wa btn-xs" onclick="openParentNotifModal('+sid+','+v.id+')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> إشعار ولي الأمر</button>';
+ html+='</div>';
+ html+='</div></div>';
+ } else if(item.type==='warning'){
+ var w=item.w;
+ var wcls=getWarningClass(w.level);
+ html+='<div class="beh-timeline-item">';
+ html+='<div class="beh-timeline-dot" style="background:var(--brand)"></div>';
+ html+='<div class="beh-timeline-body">';
+ html+='<div class="beh-timeline-title"><span class="warn-badge '+wcls+'">'+w.levelLabel+'</span></div>';
+ html+='<div class="beh-timeline-meta" style="margin-top:4px"><span>'+w.date+'</span><span>إجراء تلقائي — مخالفة رقم '+w.violationCount+'</span></div>';
+ html+='</div></div>';
+ } else if(item.type==='notification'){
+ var n=item.n;
+ html+='<div class="beh-timeline-item">';
+ html+='<div class="beh-timeline-dot" style="background:var(--info)"></div>';
+ html+='<div class="beh-timeline-body">';
+ html+='<div class="beh-timeline-title">إشعار ولي الأمر</div>';
+ html+='<div class="beh-timeline-meta" style="margin-top:4px"><span>'+n.date+'</span><span>عبر: '+(n.sentVia==='whatsapp'?'واتساب':'نسخ')+'</span></div>';
+ html+='</div></div>';
+ }
+ });
+ html+='</div>';
+ }
+ html+='</div>';
+ return html;
+}
+
+function getDotColor(sev){
+ if(sev==='low')return'#34d399';
+ if(sev==='medium')return'#eab308';
+ if(sev==='high')return'#f97316';
+ if(sev==='critical')return'#ef4444';
+ return'var(--text-3)';
+}
+
+// ── Discipline Page ──
+function renderDisciplinePage(){
+ renderDiscStats();
+ renderDiscTopGrid();
+ renderDiscMonthlyChart();
+ renderViolationsTable();
+ renderWarningsList();
+ renderStudentsStatusList();
+}
+
+function switchDiscTab(tab,btn){
+ document.querySelectorAll('#page-discipline .tab-content').forEach(function(e){e.classList.remove('active');});
+ document.querySelectorAll('#page-discipline .tab-btn').forEach(function(b){b.classList.remove('active');});
+ var el=document.getElementById('disc-tab-'+tab);
+ if(el)el.classList.add('active');
+ if(btn)btn.classList.add('active');
+}
+
+function renderDiscStats(){
+ var el=document.getElementById('disc-stats-grid');
+ if(!el)return;
+ var allViols=data.violationRecords||[];
+ var allWarns=data.warningRecords||[];
+ var allNotifs=data.parentNotifications||[];
+
+ var now=new Date();
+ var thisMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+ var monthViols=allViols.filter(function(v){return v.date&&v.date.startsWith(thisMonth);}).length;
+ var finalWarns=allWarns.filter(function(w){return w.level>=4;}).length;
+ var studentsWithViols=new Set(allViols.map(function(v){return v.studentId;})).size;
+
+ el.innerHTML=
+ '<div class="disc-stat-card"><div class="disc-stat-val" style="color:var(--danger)">'+allViols.length+'</div><div class="disc-stat-lbl">إجمالي المخالفات</div></div>'+
+ '<div class="disc-stat-card"><div class="disc-stat-val" style="color:var(--warning)">'+monthViols+'</div><div class="disc-stat-lbl">مخالفات هذا الشهر</div></div>'+
+ '<div class="disc-stat-card"><div class="disc-stat-val" style="color:var(--brand-light)">'+allWarns.length+'</div><div class="disc-stat-lbl">إجمالي الإنذارات</div></div>'+
+ '<div class="disc-stat-card"><div class="disc-stat-val" style="color:var(--danger)">'+finalWarns+'</div><div class="disc-stat-lbl">إنذارات نهائية</div></div>'+
+ '<div class="disc-stat-card"><div class="disc-stat-val" style="color:var(--purple)">'+studentsWithViols+'</div><div class="disc-stat-lbl">طلبة في السجل</div></div>'+
+ '<div class="disc-stat-card"><div class="disc-stat-val" style="color:var(--info)">'+allNotifs.length+'</div><div class="disc-stat-lbl">إشعارات لأولياء الأمور</div></div>';
+}
+
+function renderDiscTopGrid(){
+ var el=document.getElementById('disc-top-grid');
+ if(!el)return;
+ var allViols=data.violationRecords||[];
+
+ // top violation types
+ var typeCount={};
+ allViols.forEach(function(v){typeCount[v.type]=(typeCount[v.type]||0)+1;});
+ var topTypes=Object.entries(typeCount).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+
+ // top students by violations
+ var studentCount={};
+ allViols.forEach(function(v){studentCount[v.studentId]=(studentCount[v.studentId]||0)+1;});
+ var topStudents=Object.entries(studentCount).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+
+ el.innerHTML=
+ '<div class="profile-section"><div class="profile-sec-title">أكثر أنواع المخالفات</div>'+
+ (topTypes.length?topTypes.map(function(t,i){
+ var pct=allViols.length?Math.round(t[1]/allViols.length*100):0;
+ return'<div style="margin-bottom:8px">'+
+ '<div style="display:flex;justify-content:space-between;font-size:11px;font-weight:600;margin-bottom:4px"><span>'+t[0]+'</span><span style="color:var(--danger)">'+t[1]+'</span></div>'+
+ '<div style="height:4px;background:var(--border);border-radius:2px"><div style="height:100%;background:var(--danger);border-radius:2px;width:'+pct+'%"></div></div>'+
+ '</div>';
+ }).join(''):'<div style="color:var(--text-3);font-size:11px">لا توجد بيانات</div>')+
+ '</div>'+
+ '<div class="profile-section"><div class="profile-sec-title">الطلبة الأكثر مخالفات</div>'+
+ (topStudents.length?topStudents.map(function(e){
+ var s=gS(parseInt(e[0]));if(!s)return'';
+ var status=getBehaviorStatus(parseInt(e[0]));
+ return'<div style="display:flex;align-items:center;gap:9px;margin-bottom:9px;cursor:pointer" onclick="openStudentProfile('+s.id+')">'+
+ '<div class="avatar avatar-gold" style="width:32px;height:32px;font-size:13px">'+s.fname[0]+'</div>'+
+ '<div style="flex:1"><div style="font-size:11px;font-weight:700">'+s.fname+' '+s.lname+'</div></div>'+
+ '<span class="beh-indicator '+status.cls+'" style="padding:2px 8px">'+e[1]+' مخالفة</span>'+
+ '</div>';
+ }).join(''):'<div style="color:var(--text-3);font-size:11px">لا توجد بيانات</div>')+
+ '</div>';
+}
+
+function renderDiscMonthlyChart(){
+ var barsEl=document.getElementById('disc-monthly-bars');
+ var labelsEl=document.getElementById('disc-monthly-labels');
+ if(!barsEl||!labelsEl)return;
+ var allViols=data.violationRecords||[];
+ var months=[];
+ var now=new Date();
+ for(var i=5;i>=0;i--){
+ var d=new Date(now.getFullYear(),now.getMonth()-i,1);
+ months.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'));
+ }
+ var counts=months.map(function(m){return allViols.filter(function(v){return v.date&&v.date.startsWith(m);}).length;});
+ var max=Math.max.apply(null,counts)||1;
+ barsEl.innerHTML=counts.map(function(c){
+ var pct=Math.round(c/max*100);
+ return'<div class="bar-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">'+
+ '<div style="font-size:10px;font-weight:700;color:var(--text-2)">'+c+'</div>'+
+ '<div style="width:100%;background:var(--border);border-radius:4px 4px 0 0;height:80px;display:flex;align-items:flex-end">'+
+ '<div style="width:100%;height:'+Math.max(pct,3)+'%;background:linear-gradient(180deg,var(--danger),rgba(239,68,68,.4));border-radius:4px 4px 0 0;transition:height .5s"></div>'+
+ '</div></div>';
+ }).join('');
+ var monthNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+ labelsEl.innerHTML=months.map(function(m){
+ var parts=m.split('-');
+ return'<div style="flex:1;text-align:center;font-size:9px;color:var(--text-3)">'+monthNames[parseInt(parts[1])-1]+'</div>';
+ }).join('');
+}
+
+function renderViolationsTable(){
+ var el=document.getElementById('disc-violations-list');
+ if(!el)return;
+ var q=(document.getElementById('disc-search')||{value:''}).value.toLowerCase();
+ var allViols=[...(data.violationRecords||[])].reverse();
+ if(q)allViols=allViols.filter(function(v){
+ var s=gS(v.studentId);
+ return((s?s.fname+' '+s.lname:'')+v.type+v.description).toLowerCase().includes(q);
+ });
+ if(!allViols.length){
+ el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><p>لا توجد مخالفات مسجلة</p></div>';
+ return;
+ }
+ el.innerHTML='<div class="beh-timeline">'+allViols.map(function(v){
+ var s=gS(v.studentId);
+ var warn=(data.warningRecords||[]).find(function(w){return w.violationId===v.id;});
+ return'<div class="beh-timeline-item" style="cursor:pointer" onclick="openViolationDetail('+v.id+')">'+
+ '<div class="beh-timeline-dot" style="background:'+getDotColor(v.severity)+'"></div>'+
+ '<div class="beh-timeline-body">'+
+ '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'+
+ '<div style="font-size:12px;font-weight:700;cursor:pointer">'+
+ (s?'<span style="color:var(--brand-light)">'+(s.fname+' '+s.lname)+'</span> — ':'')+v.type+
+ '</div>'+
+ '<div style="display:flex;gap:5px;align-items:center">'+
+ '<span class="'+getSevClass(v.severity)+'" style="padding:2px 7px;font-size:9px">'+getSevLabel(v.severity)+'</span>'+
+ (warn?'<span class="warn-badge '+getWarningClass(warn.level)+'" style="padding:2px 8px;font-size:9px">'+warn.levelLabel+'</span>':'')+
+ '</div>'+
+ '</div>'+
+ '<div style="font-size:10px;color:var(--text-3);margin-top:3px">'+v.date+' • '+v.recordedBy+'</div>'+
+ '</div></div>';
+ }).join('')+'</div>';
+}
+
+function renderWarningsList(){
+ var el=document.getElementById('disc-warnings-list');
+ if(!el)return;
+ var allWarns=[...(data.warningRecords||[])].reverse();
+ if(!allWarns.length){
+ el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><p>لا توجد إنذارات</p></div>';
+ return;
+ }
+ el.innerHTML='<div class="beh-timeline">'+allWarns.map(function(w){
+ var s=gS(w.studentId);
+ var wcls=getWarningClass(w.level);
+ return'<div class="beh-timeline-item">'+
+ '<div class="beh-timeline-dot" style="background:var(--brand)"></div>'+
+ '<div class="beh-timeline-body">'+
+ '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'+
+ '<div>'+(s?'<span style="font-size:12px;font-weight:700;color:var(--brand-light);cursor:pointer" onclick="openStudentProfile('+w.studentId+')">'+(s.fname+' '+s.lname)+'</span>':'')+
+ '</div>'+
+ '<span class="warn-badge '+wcls+'">'+w.levelLabel+'</span>'+
+ '</div>'+
+ '<div style="font-size:10px;color:var(--text-3);margin-top:4px">'+w.date+' • مخالفة رقم '+w.violationCount+'</div>'+
+ '</div></div>';
+ }).join('')+'</div>';
+}
+
+function renderStudentsStatusList(){
+ var el=document.getElementById('disc-students-status-list');
+ if(!el)return;
+ var students=data.students.slice().sort(function(a,b){
+ return getViolations(b.id).length - getViolations(a.id).length;
+ });
+ if(!students.length){
+ el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><p>لا يوجد طلبة</p></div>';
+ return;
+ }
+ el.innerHTML='<div class="cards-grid">'+students.map(function(s){
+ var viols=getViolations(s.id);
+ var warns=getWarnings(s.id);
+ var status=getBehaviorStatus(s.id);
+ return'<div class="item-card" style="cursor:pointer" onclick="openStudentProfile('+s.id+')">'+
+ '<div class="item-card-header">'+
+ '<div class="item-card-info">'+
+ '<div class="avatar avatar-gold">'+s.fname[0]+'</div>'+
+ '<div>'+
+ '<div class="item-name">'+s.fname+' '+s.lname+'</div>'+
+ '<div class="item-sub">'+s.stage+'</div>'+
+ '</div>'+
+ '</div>'+
+ '<span class="beh-indicator '+status.cls+'">'+status.label+'</span>'+
+ '</div>'+
+ '<div class="item-stats">'+
+ '<div class="item-stat"><div class="item-stat-val" style="color:var(--danger)">'+viols.length+'</div><div class="item-stat-lbl">مخالفة</div></div>'+
+ '<div class="item-stat"><div class="item-stat-val" style="color:var(--warning)">'+warns.length+'</div><div class="item-stat-lbl">إنذار</div></div>'+
+ '<div class="item-stat"><div class="item-stat-val">'+
+ (warns.length?'<span class="warn-badge '+getWarningClass(warns[0].level)+'" style="padding:2px 7px;font-size:9px">'+warns[0].levelLabel+'</span>':'—')+'</div><div class="item-stat-lbl">آخر إجراء</div></div>'+
+ '</div></div>';
+ }).join('')+'</div>';
+}
+
+// Old behavior system kept for star ratings
 var behSid=null,behStars=3;
 function openBehModal(sid){
  behSid=sid;var s=gS(sid);var beh=getBeh(sid);
@@ -4404,6 +5226,7 @@ function saveBehavior(){
  data.behaviors.push({id:data.nextId.behavior++,studentId:behSid,stars:behStars,note:document.getElementById('beh-note').value.trim(),date:today()});
  save();closeModal('behavior');renderStudents();toast('تم حفظ تقييم السلوك');
 }
+
 
 // ══════════════════════════════════════════════
 // ATTENDANCE
@@ -5288,10 +6111,12 @@ function renderSettings(){
   if(el)setTimeout(function(){autoResizeTA(el);},50);
  });
  renderTaskTypes();
+ renderViolationTypes();
 }
 function renderTaskTypes(){
  var types=data.settings.taskTypes||[];
- document.getElementById('task-types-list').innerHTML=types.map((t,i)=>`<div class="inst-item"><span style="font-size:12px">${t}</span><button class="btn btn-danger btn-xs" onclick="removeTaskType(${i})">×</button></div>`).join('');
+ var el=document.getElementById('task-types-list');
+ if(el)el.innerHTML=types.map(function(t,i){return'<div class="inst-item"><span style="font-size:12px">'+t+'</span><button class="btn btn-danger btn-xs" onclick="removeTaskType('+i+')">×</button></div>';}).join('');
 }
 function addTaskType(){
  var v=document.getElementById('new-task-type').value.trim();
@@ -5301,6 +6126,26 @@ function addTaskType(){
  save();document.getElementById('new-task-type').value='';renderTaskTypes();toast('تمت الإضافة');
 }
 function removeTaskType(i){data.settings.taskTypes.splice(i,1);save();renderTaskTypes();}
+
+function renderViolationTypes(){
+ var types=(data.settings&&data.settings.violationTypes)||[];
+ var el=document.getElementById('violation-types-list');
+ if(!el)return;
+ el.innerHTML=types.map(function(t,i){
+ return'<div class="inst-item"><span style="font-size:12px">'+t+'</span><button class="btn btn-danger btn-xs" onclick="removeViolationType('+i+')">×</button></div>';
+ }).join('');
+}
+function addViolationType(){
+ var v=document.getElementById('new-violation-type').value.trim();
+ if(!v)return;
+ if(!data.settings.violationTypes)data.settings.violationTypes=[];
+ data.settings.violationTypes.push(v);
+ save();document.getElementById('new-violation-type').value='';renderViolationTypes();toast('تمت إضافة نوع المخالفة');
+}
+function removeViolationType(i){
+ data.settings.violationTypes.splice(i,1);
+ save();renderViolationTypes();
+}
 function saveSettings(){
  data.settings.instName=document.getElementById('set-inst-name').value.trim()||'راصد';
  data.settings.instAddr=document.getElementById('set-inst-addr').value.trim();
@@ -5759,6 +6604,8 @@ function exportExcel(){
  {name:'الرسوم',headers:['الطالب','الوصف','الإجمالي','المسدد','المتبقي','الحالة'],rows:data.fees.map(f=>{var s=gS(f.studentId);var p=data.payments.filter(x=>x.feeId===f.id).reduce((a,x)=>a+x.amount,0);return[s?s.fname+' '+s.lname:'',f.desc,f.amount,p,f.amount-p,f.amount-p===0?'مسدد':'متبقي'];})},
  {name:'سجل الدفعات',headers:['الطالب','الرسوم','المبلغ','التاريخ','ملاحظة'],rows:data.payments.map(p=>{var s=gS(p.studentId);var f=data.fees.find(x=>x.id===p.feeId);return[s?s.fname+' '+s.lname:'',f?f.desc:'',p.amount,p.date,p.note||''];})},
  {name:'السلوك',headers:['الطالب','النجوم','الملاحظة','التاريخ'],rows:data.behaviors.map(b=>{var s=gS(b.studentId);return[s?s.fname+' '+s.lname:'',b.stars,b.note||'',b.date];})},
+ {name:'المخالفات السلوكية',headers:['الطالب','التاريخ','نوع المخالفة','الخطورة','الوصف','بواسطة'],rows:(data.violationRecords||[]).map(function(v){var s=gS(v.studentId);return[s?s.fname+' '+s.lname:'',v.date,v.type,getSevLabel(v.severity),v.description,v.recordedBy];})},
+ {name:'الإنذارات',headers:['الطالب','التاريخ','الإجراء','عدد المخالفات'],rows:(data.warningRecords||[]).map(function(w){var s=gS(w.studentId);return[s?s.fname+' '+s.lname:'',w.date,w.levelLabel,w.violationCount];})},
  {name:'سجل واتساب',headers:['الطالب','النوع','التاريخ'],rows:data.waLog.map(l=>[sName(l.studentId),l.type,l.date])},
  ];
  var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets>';
@@ -8283,6 +9130,14 @@ body {
             '</div>' +
             '<span class="mobile-more-btn-label">التقارير</span>' +
             '<span class="mobile-more-btn-sub">إحصائيات</span>' +
+          '</button>' +
+          // السلوك والانضباط
+          '<button class="mobile-more-btn" onclick="mbnMoreNav(\'discipline\')">' +
+            '<div class="mobile-more-btn-icon">' +
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
+            '</div>' +
+            '<span class="mobile-more-btn-label">السلوك</span>' +
+            '<span class="mobile-more-btn-sub">والانضباط</span>' +
           '</button>' +
           // الإعدادات
           '<button class="mobile-more-btn" onclick="mbnMoreNav(\'settings\')">' +
