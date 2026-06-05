@@ -3814,20 +3814,16 @@ function _loadFromLS(){
     var d = JSON.parse(raw);
     if(d && d.students){
      data = migrateData(d);
-     // إذا كان مفتاحاً قديماً — احفظه بالمفتاح الجديد
      if(keys[i] !== 'institute_v4'){
       try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
      }
-     // انقل البيانات لـ IndexedDB إذا كان متاحاً
-     if(_idb){
-      _idbSet(JSON.stringify(data), null);
-     }
+     if(_idb){ _idbSet(JSON.stringify(data), null); }
      return;
     }
    }catch(e){ continue; }
   }
  }
- // لا توجد بيانات محفوظة — ابدأ من جديد بدون كتابة فوق أي شيء
+ // لا توجد بيانات محفوظة — ابدأ بيانات جديدة بدون كتابة فوق أي شيء
  data = defaultData();
 }
 
@@ -8240,6 +8236,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 async function startApp(){
  try{ await initDB(); }catch(e){ console.warn('DB init:',e); }
+ // تفعيل النسخ التلقائي إذا كان مُفعَّلاً سابقاً — لا يلمس Auth
  try{ if(localStorage.getItem(AUTO_BACKUP_KEY)==='true') startAutoBackupTimer(); }catch(e){}
  if(data.settings&&!data.settings.instName){
   data.settings.instName='راصد';
@@ -8250,7 +8247,7 @@ async function startApp(){
  checkPendingNotifications();
  currentPage='dashboard';
  renderDashboard();
- _appReady = true; // الآن فقط يُسمح بـ renderCurrentPage
+ _appReady = true; // الآن فقط يُسمح لـ save() بتحديث الواجهة
 }
 
 // ════════════════════════════════════════════════
@@ -8291,33 +8288,32 @@ function showConfirm(opts, onConfirm) {
 }
 
 // ════════════════════════════════════════════════
-// AUTO RENDER — تحديث الصفحة الحالية بعد الحفظ
+// AUTO RENDER + SAVE INDICATOR
 // ════════════════════════════════════════════════
-var _appReady = false; // يصبح true فقط بعد اكتمال startApp
-var _renderTimer = null;
-var _renderMap = {
- 'dashboard' : function(){ renderDashboard(); },
- 'students'  : function(){ renderStudents(); },
- 'results'   : function(){ renderResults(); },
- 'attendance': function(){ renderAttendance(); },
- 'teachers'  : function(){ renderTeachers(); },
- 'fees'      : function(){ renderFees(); },
- 'expenses'  : function(){ renderExpenses(); },
- 'slips'     : function(){ renderSlips(); },
- 'whatsapp'  : function(){ renderWhatsapp(); },
- 'reports'   : function(){ renderReports(); },
- 'settings'  : function(){ renderSettings(); },
- 'discipline': function(){ if(typeof renderDisciplinePage==='function') renderDisciplinePage(); }
+var _appReady   = false;
+var _saveTimer  = null;
+var _renderTimer= null;
+var _renderMap  = {
+ dashboard : function(){ renderDashboard(); },
+ students  : function(){ renderStudents(); },
+ results   : function(){ renderResults(); },
+ attendance: function(){ renderAttendance(); },
+ teachers  : function(){ renderTeachers(); },
+ fees      : function(){ renderFees(); },
+ expenses  : function(){ renderExpenses(); },
+ slips     : function(){ renderSlips(); },
+ whatsapp  : function(){ renderWhatsapp(); },
+ reports   : function(){ renderReports(); },
+ settings  : function(){ renderSettings(); },
+ discipline: function(){ if(typeof renderDisciplinePage==='function') renderDisciplinePage(); }
 };
 function renderCurrentPage(){
- if(!_appReady) return; // لا تعمل أثناء التهيئة
+ if(!_appReady) return;
  clearTimeout(_renderTimer);
  _renderTimer = setTimeout(function(){
   try{ var fn=_renderMap[currentPage]; if(fn) fn(); }catch(e){}
  }, 0);
 }
-
-var _saveTimer = null;
 function saveWithIndicator() {
  var ind = document.getElementById('save-indicator');
  if(ind){
