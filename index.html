@@ -200,8 +200,8 @@ html[data-theme=light] .auth-loader-text{color:#8c7d6b;}
  --info-border:rgba(74,128,190,.18);
  --purple:#7B64C0;
  --purple-bg:rgba(123,100,192,.09);
- --wa:#22C55E;
- --wa-bg:rgba(34,197,94,.09);
+ --wa:#6b9071;
+ --wa-bg:rgba(107,144,113,.09);
 
  /* ── النصوص — تدرج ناعم بدون أبيض ناصع ── */
  --text:#F3F4F6;
@@ -639,8 +639,8 @@ tr:hover td{background:var(--surface-hover);}
 .btn-info{background:var(--info-bg);border-color:var(--info-border);color:var(--info);}
 .btn-info:hover{background:rgba(59,130,246,0.18);}
 
-.btn-wa{background:var(--wa-bg);border-color:rgba(37,211,102,0.2);color:var(--wa);}
-.btn-wa:hover{background:rgba(37,211,102,0.18);}
+.btn-wa{background:var(--wa-bg);border-color:rgba(107,144,113,0.22);color:var(--wa);}
+.btn-wa:hover{background:rgba(107,144,113,0.15);}
 
 .btn-purple{background:var(--purple-bg);border-color:rgba(139,92,246,0.2);color:var(--purple);}
 
@@ -1221,6 +1221,15 @@ html[data-theme=light] .btn-outline:hover{
  border-color:#ced4da;
  color:#212529;
 }
+html[data-theme=light] .btn-wa{
+ background:rgba(107,144,113,.11);
+ border-color:rgba(107,144,113,.20);
+ color:#5a6b57;
+}
+html[data-theme=light] .btn-wa:hover{
+ background:rgba(107,144,113,.18);
+ color:#4a5a47;
+}
 
 /* ── inputs ── */
 html[data-theme=light] .search-input,
@@ -1603,12 +1612,12 @@ html:not([data-theme=light]) .btn-info {
   color:#4A80BE;
 }
 html:not([data-theme=light]) .btn-wa {
-  background:rgba(34,197,94,.10);
-  border-color:rgba(34,197,94,.20);
-  color:#22C55E;
+  background:rgba(107,144,113,.12);
+  border-color:rgba(107,144,113,.22);
+  color:#88b39e;
 }
 html:not([data-theme=light]) .btn-wa:hover {
-  background:rgba(34,197,94,.16);
+  background:rgba(107,144,113,.18);
 }
 
 /* ── Forms ── */
@@ -2522,13 +2531,193 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  </div>
  </div>
  <div id="disc-tab-violations" class="tab-content">
- <div class="search-bar"><input class="search-input" type="text" id="disc-search" placeholder="بحث..." oninput="renderViolationsTable()"></div>
+ <!-- شريط البحث الأساسي -->
+ <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+ <input class="search-input" type="text" id="disc-v-search" placeholder="بحث بالاسم أو نوع المخالفة أو الوصف..." oninput="renderViolationsTable()" style="flex:1">
+ <button id="disc-v-filter-btn" onclick="toggleDiscFilter('v')" style="display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border);border-radius:10px;padding:8px 13px;color:var(--text-3);font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+ تصفية
+ </button>
+ </div>
+ <!-- لوحة البحث المتقدم -->
+ <div id="disc-v-adv-panel" style="display:none;background:var(--surface);border:2px solid rgba(168,134,90,.32);border-radius:16px;padding:16px;margin-bottom:14px">
+ <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+ <div style="display:flex;align-items:center;gap:6px">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+ <span style="font-size:12px;font-weight:800;color:var(--gold)">بحث وتصفية متقدم</span>
+ </div>
+ <button onclick="resetDiscViolFilters()" style="display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 11px;color:var(--text-3);font-family:var(--font);font-size:11px;cursor:pointer">
+ <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.32"/></svg>
+ إعادة ضبط
+ </button>
+ </div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">نوع المخالفة</div>
+ <select id="disc-v-type" onchange="renderViolationsTable()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <option value="">الكل</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">مستوى الخطورة</div>
+ <select id="disc-v-severity" onchange="renderViolationsTable()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <option value="">الكل</option>
+ <option value="low">🟢 بسيطة</option>
+ <option value="medium">🟡 متوسطة</option>
+ <option value="high">🟠 عالية</option>
+ <option value="critical">🔴 خطيرة</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">من تاريخ</div>
+ <input type="date" id="disc-v-date-from" onchange="renderViolationsTable()" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">إلى تاريخ</div>
+ <input type="date" id="disc-v-date-to" onchange="renderViolationsTable()" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">الإجراء المُتخَذ</div>
+ <select id="disc-v-warning" onchange="renderViolationsTable()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <option value="">الكل</option>
+ <option value="has">لها إجراء</option>
+ <option value="none">بدون إجراء</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">ترتيب حسب</div>
+ <select id="disc-v-sort" onchange="renderViolationsTable()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <option value="newest">الأحدث أولاً</option>
+ <option value="oldest">الأقدم أولاً</option>
+ <option value="severity_high">الأعلى خطورة</option>
+ <option value="severity_low">الأقل خطورة</option>
+ <option value="student">اسم الطالب</option>
+ </select>
+ </div>
+ </div>
+ <div id="disc-v-filter-stats" style="font-size:10px;color:var(--gold);font-weight:700;min-height:14px"></div>
+ </div>
  <div id="disc-violations-list"></div>
  </div>
+
  <div id="disc-tab-warnings" class="tab-content">
+ <!-- شريط البحث -->
+ <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+ <input class="search-input" type="text" id="disc-w-search" placeholder="بحث باسم الطالب..." oninput="renderWarningsList()" style="flex:1">
+ <button id="disc-w-filter-btn" onclick="toggleDiscFilter('w')" style="display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border);border-radius:10px;padding:8px 13px;color:var(--text-3);font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+ تصفية
+ </button>
+ </div>
+ <!-- لوحة البحث المتقدم -->
+ <div id="disc-w-adv-panel" style="display:none;background:var(--surface);border:2px solid rgba(168,134,90,.32);border-radius:16px;padding:16px;margin-bottom:14px">
+ <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+ <div style="display:flex;align-items:center;gap:6px">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+ <span style="font-size:12px;font-weight:800;color:var(--gold)">بحث وتصفية متقدم</span>
+ </div>
+ <button onclick="resetDiscWarnFilters()" style="display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 11px;color:var(--text-3);font-family:var(--font);font-size:11px;cursor:pointer">
+ <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.32"/></svg>
+ إعادة ضبط
+ </button>
+ </div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">مستوى الإنذار</div>
+ <select id="disc-w-level" onchange="renderWarningsList()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <option value="">الكل</option>
+ <option value="1">تنبيه شفهي</option>
+ <option value="2">إنذار أول</option>
+ <option value="3">إنذار ثانٍ</option>
+ <option value="4">إنذار نهائي</option>
+ <option value="5">تحويل للإدارة</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">ترتيب حسب</div>
+ <select id="disc-w-sort" onchange="renderWarningsList()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <option value="newest">الأحدث أولاً</option>
+ <option value="oldest">الأقدم أولاً</option>
+ <option value="level_high">الأعلى مستوى</option>
+ <option value="level_low">الأدنى مستوى</option>
+ <option value="student">اسم الطالب</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">من تاريخ</div>
+ <input type="date" id="disc-w-date-from" onchange="renderWarningsList()" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">إلى تاريخ</div>
+ <input type="date" id="disc-w-date-to" onchange="renderWarningsList()" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ </div>
+ </div>
+ <div id="disc-w-filter-stats" style="font-size:10px;color:var(--gold);font-weight:700;min-height:14px"></div>
+ </div>
  <div id="disc-warnings-list"></div>
  </div>
+
  <div id="disc-tab-students-status" class="tab-content">
+ <!-- شريط البحث -->
+ <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+ <input class="search-input" type="text" id="disc-s-search" placeholder="بحث باسم الطالب..." oninput="renderStudentsStatusList()" style="flex:1">
+ <button id="disc-s-filter-btn" onclick="toggleDiscFilter('s')" style="display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border);border-radius:10px;padding:8px 13px;color:var(--text-3);font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+ تصفية
+ </button>
+ </div>
+ <!-- لوحة البحث المتقدم -->
+ <div id="disc-s-adv-panel" style="display:none;background:var(--surface);border:2px solid rgba(168,134,90,.32);border-radius:16px;padding:16px;margin-bottom:14px">
+ <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+ <div style="display:flex;align-items:center;gap:6px">
+ <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+ <span style="font-size:12px;font-weight:800;color:var(--gold)">بحث وتصفية متقدم</span>
+ </div>
+ <button onclick="resetDiscStudFilters()" style="display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 11px;color:var(--text-3);font-family:var(--font);font-size:11px;cursor:pointer">
+ <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.32"/></svg>
+ إعادة ضبط
+ </button>
+ </div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">الحالة السلوكية</div>
+ <select id="disc-s-status" onchange="renderStudentsStatusList()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <option value="">الكل</option>
+ <option value="excellent">🟢 ممتاز</option>
+ <option value="watch">🟡 يحتاج متابعة</option>
+ <option value="repeat">🟠 ملاحظات متكررة</option>
+ <option value="warning">🔴 تحت الإنذار</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">المرحلة الدراسية</div>
+ <select id="disc-s-stage" onchange="renderStudentsStatusList()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <option value="">الكل</option>
+ <option value="ابتدائي">ابتدائي</option>
+ <option value="متوسط">متوسط</option>
+ <option value="اعدادي">اعدادي</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">المخالفات</div>
+ <select id="disc-s-viols" onchange="renderStudentsStatusList()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <option value="">الكل</option>
+ <option value="has">لديه مخالفات</option>
+ <option value="none">بدون مخالفات</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">ترتيب حسب</div>
+ <select id="disc-s-sort" onchange="renderStudentsStatusList()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <option value="viols_desc">الأكثر مخالفات</option>
+ <option value="viols_asc">الأقل مخالفات</option>
+ <option value="status">الحالة السلوكية</option>
+ <option value="name">الاسم أبجدياً</option>
+ </select>
+ </div>
+ </div>
+ <div id="disc-s-filter-stats" style="font-size:10px;color:var(--gold);font-weight:700;min-height:14px"></div>
+ </div>
  <div id="disc-students-status-list"></div>
  </div>
  </div>
@@ -5214,35 +5403,112 @@ function renderDiscMonthlyChart(){
  }).join('');
 }
 
+// ── Toggle advanced filter panels ──
+function toggleDiscFilter(tab){
+ var panel=document.getElementById('disc-'+tab+'-adv-panel');
+ var btn=document.getElementById('disc-'+tab+'-filter-btn');
+ if(!panel)return;
+ var open=panel.style.display==='none'||panel.style.display==='';
+ panel.style.display=open?'block':'none';
+ if(btn){
+ btn.style.borderColor=open?'rgba(168,134,90,.55)':'var(--border)';
+ btn.style.color=open?'var(--brand-light)':'var(--text-3)';
+ btn.style.background=open?'rgba(168,134,90,.08)':'transparent';
+ }
+ // populate type options dynamically
+ if(open&&tab==='v'){
+ var sel=document.getElementById('disc-v-type');
+ if(sel){
+ var cur=sel.value;
+ var types=(data.settings&&data.settings.violationTypes)||[];
+ sel.innerHTML='<option value="">الكل</option>'+types.map(function(t){return'<option value="'+t+'"'+(cur===t?' selected':'')+'>'+t+'</option>';}).join('');
+ }
+ }
+}
+
+function resetDiscViolFilters(){
+ ['disc-v-search','disc-v-type','disc-v-severity','disc-v-date-from','disc-v-date-to','disc-v-warning'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+ var s=document.getElementById('disc-v-sort');if(s)s.value='newest';
+ renderViolationsTable();
+}
+function resetDiscWarnFilters(){
+ ['disc-w-search','disc-w-level','disc-w-date-from','disc-w-date-to'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+ var s=document.getElementById('disc-w-sort');if(s)s.value='newest';
+ renderWarningsList();
+}
+function resetDiscStudFilters(){
+ ['disc-s-search','disc-s-status','disc-s-stage','disc-s-viols'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+ var s=document.getElementById('disc-s-sort');if(s)s.value='viols_desc';
+ renderStudentsStatusList();
+}
+
+// ── gVal helper ──
+function _dv(id){var e=document.getElementById(id);return e?e.value:'';}
+
 function renderViolationsTable(){
  var el=document.getElementById('disc-violations-list');
  if(!el)return;
- var q=(document.getElementById('disc-search')||{value:''}).value.toLowerCase();
- var allViols=[...(data.violationRecords||[])].reverse();
- if(q)allViols=allViols.filter(function(v){
- var s=gS(v.studentId);
- return((s?s.fname+' '+s.lname:'')+v.type+v.description).toLowerCase().includes(q);
+
+ // read filters
+ var q=_dv('disc-v-search').toLowerCase().trim();
+ var typeF=_dv('disc-v-type');
+ var sevF=_dv('disc-v-severity');
+ var dateFrom=_dv('disc-v-date-from');
+ var dateTo=_dv('disc-v-date-to');
+ var warnF=_dv('disc-v-warning');
+ var sortF=_dv('disc-v-sort')||'newest';
+
+ var all=data.violationRecords||[];
+ var filtered=all.filter(function(v){
+ if(q){var s=gS(v.studentId);if(!((s?s.fname+' '+s.lname:'')+v.type+(v.description||'')+v.recordedBy).toLowerCase().includes(q))return false;}
+ if(typeF&&v.type!==typeF)return false;
+ if(sevF&&v.severity!==sevF)return false;
+ if(dateFrom&&v.date<dateFrom)return false;
+ if(dateTo&&v.date>dateTo)return false;
+ if(warnF==='has'&&!(data.warningRecords||[]).find(function(w){return w.violationId===v.id;}))return false;
+ if(warnF==='none'&&(data.warningRecords||[]).find(function(w){return w.violationId===v.id;}))return false;
+ return true;
  });
- if(!allViols.length){
- el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><p>لا توجد مخالفات مسجلة</p></div>';
+
+ // sort
+ var sevOrder={low:1,medium:2,high:3,critical:4};
+ filtered=filtered.slice().sort(function(a,b){
+ if(sortF==='newest')return b.id-a.id;
+ if(sortF==='oldest')return a.id-b.id;
+ if(sortF==='severity_high')return (sevOrder[b.severity]||0)-(sevOrder[a.severity]||0);
+ if(sortF==='severity_low')return (sevOrder[a.severity]||0)-(sevOrder[b.severity]||0);
+ if(sortF==='student'){var sa=gS(a.studentId),sb=gS(b.studentId);return((sa?sa.fname+sa.lname:'')).localeCompare((sb?sb.fname+sb.lname:''),'ar');}
+ return b.id-a.id;
+ });
+
+ // stats
+ var statsEl=document.getElementById('disc-v-filter-stats');
+ if(statsEl){
+ var hasF=q||typeF||sevF||dateFrom||dateTo||warnF;
+ statsEl.textContent=hasF?'يُعرض '+filtered.length+' من أصل '+all.length+' مخالفة':'';
+ }
+
+ if(!filtered.length){
+ el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><p>'+(hasF?'لا توجد نتائج مطابقة':'لا توجد مخالفات مسجلة')+'</p></div>';
  return;
  }
- el.innerHTML='<div class="beh-timeline">'+allViols.map(function(v){
+ el.innerHTML='<div class="beh-timeline">'+filtered.map(function(v){
  var s=gS(v.studentId);
  var warn=(data.warningRecords||[]).find(function(w){return w.violationId===v.id;});
  return'<div class="beh-timeline-item" style="cursor:pointer" onclick="openViolationDetail('+v.id+')">'+
  '<div class="beh-timeline-dot" style="background:'+getDotColor(v.severity)+'"></div>'+
  '<div class="beh-timeline-body">'+
  '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'+
- '<div style="font-size:12px;font-weight:700;cursor:pointer">'+
- (s?'<span style="color:var(--brand-light)">'+(s.fname+' '+s.lname)+'</span> — ':'')+v.type+
+ '<div style="font-size:12px;font-weight:700">'+
+ (s?'<span style="color:var(--brand-light);cursor:pointer" onclick="event.stopPropagation();openStudentProfile('+v.studentId+')">'+(s.fname+' '+s.lname)+'</span> — ':'')+v.type+
  '</div>'+
- '<div style="display:flex;gap:5px;align-items:center">'+
+ '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">'+
  '<span class="'+getSevClass(v.severity)+'" style="padding:2px 7px;font-size:9px">'+getSevLabel(v.severity)+'</span>'+
  (warn?'<span class="warn-badge '+getWarningClass(warn.level)+'" style="padding:2px 8px;font-size:9px">'+warn.levelLabel+'</span>':'')+
  '</div>'+
  '</div>'+
  '<div style="font-size:10px;color:var(--text-3);margin-top:3px">'+v.date+' • '+v.recordedBy+'</div>'+
+ (v.description?'<div style="font-size:10px;color:var(--text-2);margin-top:4px;line-height:1.5">'+v.description+'</div>':'')+
  '</div></div>';
  }).join('')+'</div>';
 }
@@ -5250,23 +5516,56 @@ function renderViolationsTable(){
 function renderWarningsList(){
  var el=document.getElementById('disc-warnings-list');
  if(!el)return;
- var allWarns=[...(data.warningRecords||[])].reverse();
- if(!allWarns.length){
- el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><p>لا توجد إنذارات</p></div>';
+
+ var q=_dv('disc-w-search').toLowerCase().trim();
+ var levelF=_dv('disc-w-level');
+ var dateFrom=_dv('disc-w-date-from');
+ var dateTo=_dv('disc-w-date-to');
+ var sortF=_dv('disc-w-sort')||'newest';
+
+ var all=data.warningRecords||[];
+ var filtered=all.filter(function(w){
+ if(q){var s=gS(w.studentId);if(!(s&&(s.fname+' '+s.lname).toLowerCase().includes(q)))return false;}
+ if(levelF&&String(w.level)!==levelF)return false;
+ if(dateFrom&&w.date<dateFrom)return false;
+ if(dateTo&&w.date>dateTo)return false;
+ return true;
+ });
+
+ filtered=filtered.slice().sort(function(a,b){
+ if(sortF==='newest')return b.id-a.id;
+ if(sortF==='oldest')return a.id-b.id;
+ if(sortF==='level_high')return b.level-a.level;
+ if(sortF==='level_low')return a.level-b.level;
+ if(sortF==='student'){var sa=gS(a.studentId),sb=gS(b.studentId);return((sa?sa.fname+sa.lname:'')).localeCompare((sb?sb.fname+sb.lname:''),'ar');}
+ return b.id-a.id;
+ });
+
+ var statsEl=document.getElementById('disc-w-filter-stats');
+ if(statsEl){
+ var hasF=q||levelF||dateFrom||dateTo;
+ statsEl.textContent=hasF?'يُعرض '+filtered.length+' من أصل '+all.length+' إنذار':'';
+ }
+
+ if(!filtered.length){
+ el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><p>'+(q||levelF||dateFrom||dateTo?'لا توجد نتائج مطابقة':'لا توجد إنذارات')+'</p></div>';
  return;
  }
- el.innerHTML='<div class="beh-timeline">'+allWarns.map(function(w){
+ el.innerHTML='<div class="beh-timeline">'+filtered.map(function(w){
  var s=gS(w.studentId);
  var wcls=getWarningClass(w.level);
+ var viol=(data.violationRecords||[]).find(function(v){return v.id===w.violationId;});
  return'<div class="beh-timeline-item">'+
  '<div class="beh-timeline-dot" style="background:var(--brand)"></div>'+
  '<div class="beh-timeline-body">'+
  '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'+
- '<div>'+(s?'<span style="font-size:12px;font-weight:700;color:var(--brand-light);cursor:pointer" onclick="openStudentProfile('+w.studentId+')">'+(s.fname+' '+s.lname)+'</span>':'')+
+ '<div>'+(s?'<span style="font-size:12px;font-weight:700;color:var(--brand-light);cursor:pointer" onclick="openStudentProfile('+w.studentId+')">'+(s.fname+' '+s.lname)+'</span>':'—')+
  '</div>'+
  '<span class="warn-badge '+wcls+'">'+w.levelLabel+'</span>'+
  '</div>'+
- '<div style="font-size:10px;color:var(--text-3);margin-top:4px">'+w.date+' • مخالفة رقم '+w.violationCount+'</div>'+
+ '<div style="font-size:10px;color:var(--text-3);margin-top:4px">'+w.date+' • مخالفة رقم '+w.violationCount+(viol?' — '+viol.type:'')+
+ '</div>'+
+ (viol?'<div style="display:flex;gap:5px;margin-top:6px;align-items:center"><span class="'+getSevClass(viol.severity)+'" style="padding:2px 7px;font-size:9px">'+getSevLabel(viol.severity)+'</span><span style="font-size:10px;color:var(--text-2)">'+viol.type+'</span></div>':'')+
  '</div></div>';
  }).join('')+'</div>';
 }
@@ -5274,14 +5573,44 @@ function renderWarningsList(){
 function renderStudentsStatusList(){
  var el=document.getElementById('disc-students-status-list');
  if(!el)return;
- var students=data.students.slice().sort(function(a,b){
- return getViolations(b.id).length - getViolations(a.id).length;
+
+ var q=_dv('disc-s-search').toLowerCase().trim();
+ var statusF=_dv('disc-s-status');
+ var stageF=_dv('disc-s-stage');
+ var violsF=_dv('disc-s-viols');
+ var sortF=_dv('disc-s-sort')||'viols_desc';
+
+ var statusOrder={excellent:0,watch:1,repeat:2,warning:3};
+
+ var filtered=data.students.filter(function(s){
+ if(q&&!(s.fname+' '+s.lname).toLowerCase().includes(q))return false;
+ if(stageF&&(s.stage||'ابتدائي')!==stageF)return false;
+ var vCnt=getViolations(s.id).length;
+ if(violsF==='has'&&vCnt===0)return false;
+ if(violsF==='none'&&vCnt>0)return false;
+ if(statusF){var st=getBehaviorStatus(s.id);if(st.level!==statusF)return false;}
+ return true;
  });
- if(!students.length){
- el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><p>لا يوجد طلبة</p></div>';
+
+ filtered=filtered.slice().sort(function(a,b){
+ if(sortF==='viols_desc')return getViolations(b.id).length-getViolations(a.id).length;
+ if(sortF==='viols_asc')return getViolations(a.id).length-getViolations(b.id).length;
+ if(sortF==='status'){var sa=statusOrder[getBehaviorStatus(a.id).level]||0,sb=statusOrder[getBehaviorStatus(b.id).level]||0;return sb-sa;}
+ if(sortF==='name')return(a.fname+a.lname).localeCompare(b.fname+b.lname,'ar');
+ return getViolations(b.id).length-getViolations(a.id).length;
+ });
+
+ var statsEl=document.getElementById('disc-s-filter-stats');
+ if(statsEl){
+ var hasF=q||statusF||stageF||violsF;
+ statsEl.textContent=hasF?'يُعرض '+filtered.length+' من أصل '+data.students.length+' طالب':'';
+ }
+
+ if(!filtered.length){
+ el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><p>'+(q||statusF||stageF||violsF?'لا توجد نتائج مطابقة':'لا يوجد طلبة')+'</p></div>';
  return;
  }
- el.innerHTML='<div class="cards-grid">'+students.map(function(s){
+ el.innerHTML='<div class="cards-grid">'+filtered.map(function(s){
  var viols=getViolations(s.id);
  var warns=getWarnings(s.id);
  var status=getBehaviorStatus(s.id);
@@ -5291,7 +5620,7 @@ function renderStudentsStatusList(){
  '<div class="avatar avatar-gold">'+s.fname[0]+'</div>'+
  '<div>'+
  '<div class="item-name">'+s.fname+' '+s.lname+'</div>'+
- '<div class="item-sub">'+s.stage+'</div>'+
+ '<div class="item-sub">'+(s.stage||'ابتدائي')+'</div>'+
  '</div>'+
  '</div>'+
  '<span class="beh-indicator '+status.cls+'">'+status.label+'</span>'+
@@ -5304,6 +5633,7 @@ function renderStudentsStatusList(){
  '</div></div>';
  }).join('')+'</div>';
 }
+
 
 // Old behavior system kept for star ratings
 var behSid=null,behStars=3;
