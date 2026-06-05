@@ -1850,71 +1850,6 @@ html:not([data-theme=light]) #activation-screen {
   border:1px solid var(--success-border);
   color:var(--success);
 }
-/* ══ مؤشر حالة الاتصال + مزامنة ══ */
-.conn-indicator{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:11px;font-weight:700;padding:3px 10px;
-  border-radius:20px;border:1px solid transparent;
-  transition:all .35s ease;white-space:nowrap;
-  font-family:var(--font,'Tajawal',sans-serif);
-  cursor:default;
-  line-height:1.4;
-}
-.conn-indicator.online{
-  background:rgba(52,211,153,.10);
-  border-color:rgba(52,211,153,.22);
-  color:#34d399;
-}
-.conn-indicator.offline{
-  background:rgba(248,113,113,.10);
-  border-color:rgba(248,113,113,.22);
-  color:#f87171;
-}
-.conn-indicator.syncing{
-  background:rgba(168,134,90,.10);
-  border-color:rgba(168,134,90,.22);
-  color:var(--brand-light,#D5AD6D);
-  animation:connPulse 1.2s ease-in-out infinite;
-}
-.conn-indicator.sync-ok{
-  background:rgba(52,211,153,.10);
-  border-color:rgba(52,211,153,.22);
-  color:#34d399;
-}
-@keyframes connPulse{
-  0%,100%{opacity:1}
-  50%{opacity:.55}
-}
-.conn-dot{
-  width:6px;height:6px;border-radius:50%;
-  display:inline-block;flex-shrink:0;
-  transition:background .35s;
-}
-.conn-indicator.online .conn-dot{ background:#34d399; }
-.conn-indicator.offline .conn-dot{ background:#f87171; }
-.conn-indicator.syncing .conn-dot{ background:var(--brand-light,#D5AD6D); }
-.conn-indicator.sync-ok .conn-dot{ background:#34d399; }
-/* pending badge */
-.sync-pending-badge{
-  background:rgba(248,113,113,.75);color:#fff;
-  border-radius:10px;padding:1px 5px;font-size:9px;
-  font-weight:800;margin-right:1px;
-}
-html[data-theme=light] .conn-indicator.online{
-  background:rgba(22,163,74,.09);border-color:rgba(22,163,74,.22);color:#16a34a;
-}
-html[data-theme=light] .conn-indicator.online .conn-dot{ background:#16a34a; }
-html[data-theme=light] .conn-indicator.offline{
-  background:rgba(220,38,38,.09);border-color:rgba(220,38,38,.20);color:#dc2626;
-}
-html[data-theme=light] .conn-indicator.offline .conn-dot{ background:#dc2626; }
-html[data-theme=light] .conn-indicator.syncing,
-html[data-theme=light] .conn-indicator.sync-ok{
-  background:rgba(90,69,40,.09);border-color:rgba(90,69,40,.18);color:#5a4528;
-}
-html[data-theme=light] .conn-indicator.syncing .conn-dot,
-html[data-theme=light] .conn-indicator.sync-ok .conn-dot{ background:#5a4528; }
-
 .save-indicator.error{
   opacity:1;
   background:var(--danger-bg);
@@ -2329,10 +2264,6 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
    <div class="topbar-actions">
     <button class="hamburger" onclick="openSidebar()" style="display:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <span class="save-indicator" id="save-indicator"></span>
-    <span class="conn-indicator online" id="conn-indicator" title="حالة الاتصال والمزامنة">
-      <span class="conn-dot"></span>
-      <span id="conn-label">متصل</span>
-    </span>
    </div>
   </div>
   <div class="topbar-search-row">
@@ -3852,28 +3783,29 @@ function save(){
 }
 
 // تحميل البيانات: IndexedDB أولاً، ثم localStorage كاحتياطي
+// ترجع Promise حتى يمكن الانتظار قبل رسم الواجهة
 function initDB(){
- // محاولة IndexedDB أولاً
- _openIDB(function(){
-  // IndexedDB يعمل — اقرأ منه
-  _idbGet(function(raw){
-   if(raw){
-    try{
-     var d = typeof raw === 'string' ? JSON.parse(raw) : raw;
-     if(d && d.students){
-      data = migrateData(d);
-      // حدّث localStorage ليكون متزامناً
-      try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
-      return;
-     }
-    }catch(e){}
-   }
-   // IndexedDB فارغ — جرّب localStorage (ترقية من نسخة قديمة)
+ return new Promise(function(resolve){
+  _openIDB(function(){
+   _idbGet(function(raw){
+    if(raw){
+     try{
+      var d = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      if(d && d.students){
+       data = migrateData(d);
+       try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
+       resolve();
+       return;
+      }
+     }catch(e){}
+    }
+    _loadFromLS();
+    resolve();
+   });
+  }, function(){
    _loadFromLS();
+   resolve();
   });
- }, function(){
-  // IndexedDB غير متاح — استخدم localStorage
-  _loadFromLS();
  });
 }
 
@@ -3899,9 +3831,9 @@ function _loadFromLS(){
    }catch(e){ continue; }
   }
  }
- // لا توجد بيانات — ابدأ من جديد
+ // لا توجد بيانات محلية — ابدأ من جديد بصمت دون كتابة فوق أي شيء
  data = defaultData();
- save();
+ // لا تستدعِ save() هنا لأن ذلك يمكن أن يمسح بيانات لا تزال في IDB
 }
 
 // ══════════════════════════════════════════════
@@ -8311,8 +8243,8 @@ document.addEventListener('DOMContentLoaded', function(){
  if(unInput) unInput.addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('login-password').focus(); });
 });
 
-function startApp(){
- try{ initDB(); }catch(e){ console.warn('DB init:',e); }
+async function startApp(){
+ try{ await initDB(); }catch(e){ console.warn('DB init:',e); }
  // تفعيل النسخ التلقائي إذا كان مُفعَّلاً سابقاً — لا يلمس Auth
  try{ if(localStorage.getItem(AUTO_BACKUP_KEY)==='true') startAutoBackupTimer(); }catch(e){}
  if(data.settings&&!data.settings.instName){
@@ -8326,441 +8258,9 @@ function startApp(){
  renderDashboard();
 }
 
-// ════════════════════════════════════════════════════════════════════
-// OFFLINE-FIRST AUTO SYNC SYSTEM — راصد
-// ════════════════════════════════════════════════════════════════════
-// المبدأ: كل تغيير يُحفظ محلياً أولاً (IndexedDB + localStorage)،
-//         ثم عند الاتصال يُرسل لـ Supabase تلقائياً.
-//         معالجة التعارضات: updated_at — الأحدث يفوز.
-// ════════════════════════════════════════════════════════════════════
-
-var _SYNC_IDB_NAME   = 'rasid_sync_db';
-var _SYNC_IDB_VER    = 1;
-var _SYNC_STORE      = 'sync_queue';
-var _DATA_STORE      = 'main_data';
-var _syncIdb         = null;
-var _isSyncing       = false;
-var _syncRetryTimer  = null;
-var _connCheckTimer  = null;
-var _isOnline        = navigator.onLine;
-
-// ─── فتح قاعدة بيانات المزامنة ──────────────────────────────────────
-function _openSyncIDB(cb){
-  if(_syncIdb){ cb(_syncIdb); return; }
-  try{
-    var req = window.indexedDB.open(_SYNC_IDB_NAME, _SYNC_IDB_VER);
-    req.onupgradeneeded = function(e){
-      var db = e.target.result;
-      if(!db.objectStoreNames.contains(_SYNC_STORE)){
-        var qs = db.createObjectStore(_SYNC_STORE, {keyPath:'id', autoIncrement:true});
-        qs.createIndex('ts','ts',{unique:false});
-      }
-      if(!db.objectStoreNames.contains(_DATA_STORE)){
-        db.createObjectStore(_DATA_STORE, {keyPath:'key'});
-      }
-    };
-    req.onsuccess = function(e){
-      _syncIdb = e.target.result;
-      cb(_syncIdb);
-    };
-    req.onerror = function(){ cb(null); };
-  }catch(e){ cb(null); }
-}
-
-// ─── إضافة عملية للـ sync queue ─────────────────────────────────────
-function _enqueueSyncOp(type, payload){
-  _openSyncIDB(function(db){
-    if(!db) return;
-    try{
-      var tx = db.transaction(_SYNC_STORE,'readwrite');
-      var st = tx.objectStore(_SYNC_STORE);
-      st.add({
-        type   : type,
-        payload: JSON.stringify(payload),
-        ts     : Date.now(),
-        retries: 0
-      });
-    }catch(e){ console.warn('[Sync] enqueue error',e); }
-  });
-}
-
-// ─── قراءة كل العمليات المعلقة ──────────────────────────────────────
-function _getPendingOps(cb){
-  _openSyncIDB(function(db){
-    if(!db){ cb([]); return; }
-    try{
-      var tx  = db.transaction(_SYNC_STORE,'readonly');
-      var st  = tx.objectStore(_SYNC_STORE);
-      var req = st.getAll();
-      req.onsuccess = function(e){ cb(e.target.result||[]); };
-      req.onerror   = function(){ cb([]); };
-    }catch(e){ cb([]); }
-  });
-}
-
-// ─── حذف عملية منجزة من الـ queue ────────────────────────────────────
-function _dequeueOp(id){
-  _openSyncIDB(function(db){
-    if(!db) return;
-    try{
-      var tx = db.transaction(_SYNC_STORE,'readwrite');
-      tx.objectStore(_SYNC_STORE).delete(id);
-    }catch(e){}
-  });
-}
-
-// ─── تحديث عدد محاولات عملية ────────────────────────────────────────
-function _incrementRetries(id, retries){
-  _openSyncIDB(function(db){
-    if(!db) return;
-    try{
-      var tx  = db.transaction(_SYNC_STORE,'readwrite');
-      var st  = tx.objectStore(_SYNC_STORE);
-      var req = st.get(id);
-      req.onsuccess = function(e){
-        if(!e.target.result) return;
-        var rec = e.target.result;
-        rec.retries = retries + 1;
-        st.put(rec);
-      };
-    }catch(e){}
-  });
-}
-
-// ─── حفظ snapshot البيانات في IDB للمزامنة ──────────────────────────
-function _saveDataSnapshot(userId, snapshot){
-  _openSyncIDB(function(db){
-    if(!db) return;
-    try{
-      var tx = db.transaction(_DATA_STORE,'readwrite');
-      tx.objectStore(_DATA_STORE).put({
-        key       : 'data_' + userId,
-        snapshot  : snapshot,
-        updated_at: new Date().toISOString()
-      });
-    }catch(e){}
-  });
-}
-
-// ─── الدالة الرئيسية للمزامنة ────────────────────────────────────────
-async function syncWithCloud(){
-  if(_isSyncing) return;
-  if(!_isOnline) return;
-  if(!_supabase) return;
-  if(!currentUser || !currentUser.id) return;
-
-  _isSyncing = true;
-  _setConnState('syncing');
-
-  var userId = currentUser.id;
-
-  try{
-    // 1. اجلب آخر بيانات من السحابة
-    var cloudRes = await Promise.race([
-      _supabase
-        .from('institute_data')
-        .select('data_json, updated_at')
-        .eq('user_id', userId)
-        .maybeSingle(),
-      new Promise(function(_,rej){ setTimeout(function(){ rej(new Error('timeout')); }, 8000); })
-    ]);
-
-    // 2. حل التعارض: updated_at — الأحدث يفوز
-    if(!cloudRes.error && cloudRes.data && cloudRes.data.data_json){
-      var cloudUpdated = new Date(cloudRes.data.updated_at||0).getTime();
-      var localUpdated = new Date(data.settings && data.settings._updated_at ? data.settings._updated_at : 0).getTime();
-      if(cloudUpdated > localUpdated + 2000){ // هامش ثانيتين
-        // السحابة أحدث → دمج بذكاء
-        try{
-          var cloudData = typeof cloudRes.data.data_json === 'string'
-            ? JSON.parse(cloudRes.data.data_json)
-            : cloudRes.data.data_json;
-          // دمج: حافظ على بيانات السحابة الأحدث
-          _mergeCloudData(cloudData);
-        }catch(pe){ console.warn('[Sync] parse cloud data:', pe); }
-      }
-    }
-
-    // 3. احسب updated_at المحلي الحالي
-    var nowIso = new Date().toISOString();
-    if(!data.settings) data.settings = {};
-    data.settings._updated_at = nowIso;
-
-    // 4. ارسل البيانات المحلية للسحابة
-    var snapshot = JSON.stringify(data);
-    var upsertRes = await Promise.race([
-      _supabase
-        .from('institute_data')
-        .upsert({
-          user_id    : userId,
-          data_json  : snapshot,
-          updated_at : nowIso
-        }, { onConflict: 'user_id' }),
-      new Promise(function(_,rej){ setTimeout(function(){ rej(new Error('timeout')); }, 10000); })
-    ]);
-
-    if(upsertRes.error){
-      throw new Error(upsertRes.error.message);
-    }
-
-    // 5. حفظ snapshot محلياً
-    _saveDataSnapshot(userId, snapshot);
-    _lsSave();
-
-    // 6. معالجة الـ sync queue
-    await _processSyncQueue(userId);
-
-    _setConnState('sync-ok');
-    setTimeout(function(){ _setConnState('online'); }, 3000);
-
-  }catch(err){
-    console.warn('[Sync] syncWithCloud error:', err && err.message ? err.message : err);
-    _setConnState('online');
-    // إعادة المحاولة بعد 30 ثانية
-    if(_syncRetryTimer) clearTimeout(_syncRetryTimer);
-    _syncRetryTimer = setTimeout(syncWithCloud, 30000);
-  }finally{
-    _isSyncing = false;
-  }
-}
-
-// ─── دمج بيانات السحابة مع المحلية ─────────────────────────────────
-function _mergeCloudData(cloudData){
-  if(!cloudData || typeof cloudData !== 'object') return;
-
-  // الحقول التي ندمجها بدقة (بدلاً من الاستبدال الكلي)
-  var ARRAY_FIELDS = [
-    'students','teachers','attendance','teacherAttendance',
-    'results','fees','payments','subPayments','expenses',
-    'slips','behaviors','violations','notifications'
-  ];
-
-  ARRAY_FIELDS.forEach(function(field){
-    if(!Array.isArray(cloudData[field])) return;
-    if(!Array.isArray(data[field])) data[field] = [];
-
-    // دمج: للسجلات ذات id — الـ updated_at الأحدث يفوز
-    var localMap = {};
-    data[field].forEach(function(item){
-      if(item && item.id != null) localMap[item.id] = item;
-    });
-
-    cloudData[field].forEach(function(cItem){
-      if(!cItem || cItem.id == null) return;
-      var lItem = localMap[cItem.id];
-      if(!lItem){
-        // سجل جديد من السحابة
-        data[field].push(cItem);
-      } else {
-        // قارن التوقيت — الأحدث يفوز
-        var cT = new Date(cItem._updated_at||cItem.updatedAt||0).getTime();
-        var lT = new Date(lItem._updated_at||lItem.updatedAt||0).getTime();
-        if(cT > lT){
-          localMap[cItem.id] = cItem;
-          var idx = data[field].findIndex(function(x){ return x.id === cItem.id; });
-          if(idx >= 0) data[field][idx] = cItem;
-        }
-      }
-    });
-  });
-
-  // الإعدادات: دمج حقل بحقل
-  if(cloudData.settings && typeof cloudData.settings === 'object'){
-    var cST = new Date(cloudData.settings._updated_at||0).getTime();
-    var lST = new Date((data.settings&&data.settings._updated_at)||0).getTime();
-    if(cST > lST){
-      Object.assign(data.settings, cloudData.settings);
-    }
-  }
-
-  save();
-}
-
-// ─── معالجة الـ sync queue ───────────────────────────────────────────
-async function _processSyncQueue(userId){
-  var ops = await new Promise(function(res){ _getPendingOps(res); });
-  if(!ops || !ops.length) return;
-
-  for(var i=0; i<ops.length; i++){
-    var op = ops[i];
-    if(op.retries >= 5){ _dequeueOp(op.id); continue; } // تجاهل بعد 5 محاولات
-
-    try{
-      var payload = JSON.parse(op.payload);
-      var ok = await _executeSyncOp(op.type, payload, userId);
-      if(ok){ _dequeueOp(op.id); }
-      else { _incrementRetries(op.id, op.retries); }
-    }catch(e){
-      _incrementRetries(op.id, op.retries);
-    }
-  }
-}
-
-// ─── تنفيذ عملية مزامنة محددة ───────────────────────────────────────
-async function _executeSyncOp(type, payload, userId){
-  // حالياً: كل العمليات تُرسل كـ full sync
-  // يمكن توسيع هذا لدعم granular ops في المستقبل
-  if(type === 'full_save'){
-    var res = await _supabase
-      .from('institute_data')
-      .upsert({
-        user_id   : userId,
-        data_json : payload.snapshot,
-        updated_at: payload.updated_at||new Date().toISOString()
-      }, { onConflict: 'user_id' });
-    return !res.error;
-  }
-  return true; // نوع غير معروف → تجاهل
-}
-
-// ─── تحديث مؤشر الاتصال ─────────────────────────────────────────────
-var _connLabelMap = {
-  online  : 'متصل',
-  offline : 'غير متصل',
-  syncing : 'جاري المزامنة...',
-  'sync-ok': 'تمت المزامنة'
-};
-
-function _setConnState(state){
-  var ind = document.getElementById('conn-indicator');
-  var lbl = document.getElementById('conn-label');
-  if(!ind) return;
-
-  // احسب عدد العمليات المعلقة
-  _getPendingOps(function(ops){
-    var pendingCount = ops ? ops.length : 0;
-    var badge = pendingCount > 0 && state !== 'syncing'
-      ? '<span class="sync-pending-badge">'+pendingCount+'</span>'
-      : '';
-    ind.className = 'conn-indicator ' + state;
-    if(lbl) lbl.innerHTML = (_connLabelMap[state]||state) + badge;
-  });
-}
-
-// ─── مراقبة حالة الاتصال ────────────────────────────────────────────
-function _initConnMonitor(){
-  function onOnline(){
-    _isOnline = true;
-    _setConnState('online');
-    // مزامنة فورية عند عودة الاتصال
-    clearTimeout(_syncRetryTimer);
-    _syncRetryTimer = setTimeout(function(){
-      syncWithCloud();
-    }, 1500); // انتظر 1.5 ث لاستقرار الاتصال
-  }
-
-  function onOffline(){
-    _isOnline = false;
-    _setConnState('offline');
-    if(_syncRetryTimer) clearTimeout(_syncRetryTimer);
-  }
-
-  window.addEventListener('online',  onOnline);
-  window.addEventListener('offline', onOffline);
-
-  // فحص دوري كل 30 ثانية
-  _connCheckTimer = setInterval(function(){
-    if(navigator.onLine !== _isOnline){
-      if(navigator.onLine) onOnline();
-      else onOffline();
-    }
-  }, 30000);
-
-  // حالة أولية
-  if(!navigator.onLine){
-    _isOnline = false;
-    _setConnState('offline');
-  } else {
-    _setConnState('online');
-    // مزامنة مبدئية بعد 3 ثوانٍ من بدء التطبيق
-    setTimeout(syncWithCloud, 3000);
-  }
-}
-
-// ─── AUTO SYNC: مزامنة دورية كل 2 دقيقة ────────────────────────────
-var _autoSyncTimer = null;
-function _startAutoSync(){
-  if(_autoSyncTimer) clearInterval(_autoSyncTimer);
-  _autoSyncTimer = setInterval(function(){
-    if(_isOnline && !_isSyncing) syncWithCloud();
-  }, 120000); // كل دقيقتين
-}
-
-// ─── تعديل دالة save() لتضيف للـ sync queue عند الأوفلاين ───────────
-// نحتفظ بالدالة الأصلية ونلفّها
-var _origSave = save;
-save = function(){
-  // أضف timestamp للبيانات
-  if(!data.settings) data.settings = {};
-  data.settings._updated_at = new Date().toISOString();
-
-  // استدعِ الحفظ المحلي الأصلي
-  _origSave.apply(this, arguments);
-
-  // إذا أوفلاين → ضع في الـ sync queue
-  if(!_isOnline || !_supabase || !currentUser){
-    var snap = JSON.stringify(data);
-    _enqueueSyncOp('full_save', {
-      snapshot  : snap,
-      updated_at: data.settings._updated_at
-    });
-  }
-};
-
-// ─── تعديل saveWithIndicator لتعكس حالة المزامنة ────────────────────
-var _origSaveWithIndicator = saveWithIndicator;
-saveWithIndicator = function(){
-  _origSaveWithIndicator.apply(this, arguments);
-  // بعد الحفظ المحلي — إذا أوفلاين أظهر مؤشر المزامنة المعلقة
-  if(!_isOnline){
-    _setConnState('offline');
-  }
-};
-
-// ─── تهيئة النظام بعد تسجيل الدخول ─────────────────────────────────
-var _origStartApp = startApp;
-startApp = function(){
-  _origStartApp.apply(this, arguments);
-  // ابدأ مراقبة الاتصال والمزامنة التلقائية
-  try{
-    _initConnMonitor();
-    _startAutoSync();
-  }catch(e){ console.warn('[Sync] init error:', e); }
-};
-
-// ─── دالة مزامنة يدوية (من الإعدادات مثلاً) ─────────────────────────
-function manualSync(){
-  if(!_isOnline){
-    toast('لا يوجد اتصال بالإنترنت');
-    return;
-  }
-  if(_isSyncing){
-    toast('المزامنة جارية...');
-    return;
-  }
-  toast('جاري المزامنة مع السحابة...');
-  syncWithCloud().then(function(){
-    toast('تمت المزامنة بنجاح ✓');
-  }).catch(function(){
-    toast('فشلت المزامنة — سيُعاد المحاولة تلقائياً');
-  });
-}
-
-// ─── SQL Schema للـ Supabase (في ملف README) ────────────────────────
-// CREATE TABLE IF NOT EXISTS institute_data (
-//   user_id    UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-//   data_json  TEXT NOT NULL,
-//   updated_at TIMESTAMPTZ DEFAULT NOW()
-// );
-// ALTER TABLE institute_data ENABLE ROW LEVEL SECURITY;
-// CREATE POLICY "owner" ON institute_data
-//   USING (auth.uid() = user_id)
-//   WITH CHECK (auth.uid() = user_id);
-
-// ════════════════════════════════════════════════════════════════════
-// END OFFLINE-FIRST AUTO SYNC SYSTEM
-// ════════════════════════════════════════════════════════════════════
-
+// ════════════════════════════════════════════════
+// CONFIRM DIALOG — بديل احترافي عن confirm()
+// ════════════════════════════════════════════════
 function showConfirm(opts, onConfirm) {
   var existing = document.getElementById('confirm-overlay');
   if (existing) existing.remove();
