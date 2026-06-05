@@ -3759,10 +3759,7 @@ var data = defaultData();
 
 // الحفظ: IndexedDB أولاً + localStorage دائماً كنسخة احتياطية
 function save(){
- // طابع زمني للحفظ المحلي — يُستخدم لمقارنة السحابة
- if(!data.settings) data.settings = {};
- data.settings._localSavedAt = new Date().toISOString();
- _lsSave();
+ _lsSave(); // localStorage دائماً — ضمان عدم فقدان البيانات
  if(_idbAvailable === false){ saveWithIndicator(); return; }
  if(_idb){
   // IndexedDB متاح — احفظ فيه
@@ -3818,7 +3815,8 @@ function _loadFromLS(){
    }catch(e){ continue; }
   }
  }
- data = defaultData(); // لا توجد بيانات — بدون save() لتجنب مسح أي شيء
+ data = defaultData();
+ // لا نستدعي save() هنا — لتجنب الكتابة فوق بيانات لم تُحمَّل بعد
 }
 
 // ══════════════════════════════════════════════
@@ -8229,99 +8227,45 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 // ══════════════════════════════════════════════
-// AUTO RENDER + SAVE INDICATOR
-// ══════════════════════════════════════════════
-var _appReady    = false;
-var _saveTimer   = null;
-var _renderTimer = null;
-var _renderMap   = {
- dashboard : function(){ renderDashboard(); },
- students  : function(){ renderStudents(); },
- results   : function(){ renderResults(); },
- attendance: function(){ renderAttendance(); },
- teachers  : function(){ renderTeachers(); },
- fees      : function(){ renderFees(); },
- expenses  : function(){ renderExpenses(); },
- slips     : function(){ renderSlips(); },
- whatsapp  : function(){ renderWhatsapp(); },
- reports   : function(){ renderReports(); },
- settings  : function(){ renderSettings(); },
- discipline: function(){ if(typeof renderDisciplinePage==='function') renderDisciplinePage(); }
-};
-function renderCurrentPage(){
- if(!_appReady) return;
- clearTimeout(_renderTimer);
- _renderTimer = setTimeout(function(){
-  try{ var fn=_renderMap[currentPage]; if(fn) fn(); }catch(e){}
- }, 0);
-}
-function saveWithIndicator(){
- var ind = document.getElementById('save-indicator');
- if(ind){ ind.className='save-indicator saving'; ind.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> جاري الحفظ...'; }
- try{
-  localStorage.setItem('institute_v4', JSON.stringify(data));
-  if(ind){
-   ind.className='save-indicator saved';
-   ind.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> تم الحفظ';
-   clearTimeout(_saveTimer);
-   _saveTimer=setTimeout(function(){ ind.className='save-indicator'; ind.innerHTML=''; },2500);
-  }
-  renderCurrentPage();
- }catch(e){
-  if(ind){ ind.className='save-indicator error'; ind.innerHTML='فشل الحفظ'; }
-  console.warn('save error',e);
- }
-}
-
-// ══════════════════════════════════════════════
-// AUTO CLOUD RESTORE — استعادة تلقائية عند الدخول
+// AUTO CLOUD RESTORE — استعادة صامتة عند الدخول
 // ══════════════════════════════════════════════
 async function autoCloudRestore(){
- if(!navigator.onLine) return;
- if(!_supabase || !currentUser) return;
+ if(!navigator.onLine || !_supabase || !currentUser) return;
  try{
   var res = await Promise.race([
    _supabase.from('app_backups').select('data,updated_at').eq('user_id', currentUser.id).maybeSingle(),
    new Promise(function(_,rej){ setTimeout(function(){ rej(new Error('timeout')); }, 8000); })
   ]);
   if(res.error || !res.data || !res.data.data) return;
-
   var cloudUpdated = new Date(res.data.updated_at || 0).getTime();
-  var localUpdated = new Date(
-   (data.settings && data.settings._localSavedAt) ? data.settings._localSavedAt : 0
-  ).getTime();
-  var hasLocalData = data.students && data.students.length > 0;
-
-  // استعادة السحابة إذا: لا توجد بيانات محلية، أو السحابة أحدث بأكثر من دقيقة
-  if(!hasLocalData || cloudUpdated > localUpdated + 60000){
-   var cloudData = res.data.data;
-   if(typeof cloudData === 'string') try{ cloudData = JSON.parse(cloudData); }catch(e){ return; }
-   if(!cloudData || !cloudData.students) return;
-   data = migrateData(cloudData);
-   // احفظ محلياً
+  var localUpdated = new Date((data.settings && data.settings._localSavedAt) || 0).getTime();
+  var hasLocal = data.students && data.students.length > 0;
+  if(!hasLocal || cloudUpdated > localUpdated + 60000){
+   var cd = res.data.data;
+   if(typeof cd === 'string') try{ cd = JSON.parse(cd); }catch(e){ return; }
+   if(!cd || !cd.students) return;
+   data = migrateData(cd);
    try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
    if(_idb){ _idbSet(JSON.stringify(data), null); }
   }
- }catch(e){
-  console.warn('autoCloudRestore:', e && e.message ? e.message : e);
- }
+ }catch(e){ console.warn('autoCloudRestore:', e && e.message ? e.message : e); }
 }
 
 async function startApp(){
- // 1. حمّل البيانات المحلية أولاً
  try{ await initDB(); }catch(e){ console.warn('DB init:',e); }
- // 2. استعد من السحابة إن كانت أحدث (صامتة — بدون confirm)
  await autoCloudRestore();
- // 3. ابدأ التطبيق
  try{ if(localStorage.getItem(AUTO_BACKUP_KEY)==='true') startAutoBackupTimer(); }catch(e){}
- if(data.settings&&!data.settings.instName){ data.settings.instName='راصد'; }
+ if(data.settings && !data.settings.instName){ data.settings.instName = 'راصد'; }
  updateInstName();
- setInterval(checkPendingNotifications,60000);
+ setInterval(checkPendingNotifications, 60000);
  checkPendingNotifications();
- currentPage='dashboard';
+ currentPage = 'dashboard';
  renderDashboard();
  _appReady = true;
 }
+
+// ════════════════════════════════════════════════
+// CONFIRM DIALOG — بديل احترافي عن confirm()
 // ════════════════════════════════════════════════
 function showConfirm(opts, onConfirm) {
   var existing = document.getElementById('confirm-overlay');
@@ -8358,33 +8302,69 @@ function showConfirm(opts, onConfirm) {
 }
 
 // ════════════════════════════════════════════════
-// SAVE INDICATOR — مؤشر الحفظ
+// AUTO RENDER + SAVE INDICATOR + CLOUD SYNC
 // ════════════════════════════════════════════════
-var _saveTimer = null;
-function saveWithIndicator() {
-  var ind = document.getElementById('save-indicator');
-  if (ind) {
-    ind.className = 'save-indicator saving';
-    ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> جاري الحفظ...';
+var _appReady      = false;
+var _saveTimer     = null;
+var _renderTimer   = null;
+var _cloudSyncTimer= null;
+
+var _renderMap = {
+ dashboard : function(){ renderDashboard(); },
+ students  : function(){ renderStudents(); },
+ results   : function(){ renderResults(); },
+ attendance: function(){ renderAttendance(); },
+ teachers  : function(){ renderTeachers(); },
+ fees      : function(){ renderFees(); },
+ expenses  : function(){ renderExpenses(); },
+ slips     : function(){ renderSlips(); },
+ whatsapp  : function(){ renderWhatsapp(); },
+ reports   : function(){ renderReports(); },
+ settings  : function(){ renderSettings(); },
+ discipline: function(){ if(typeof renderDisciplinePage==='function') renderDisciplinePage(); }
+};
+
+function renderCurrentPage(){
+ if(!_appReady) return;
+ clearTimeout(_renderTimer);
+ _renderTimer = setTimeout(function(){
+  try{ var fn = _renderMap[currentPage]; if(fn) fn(); }catch(e){}
+ }, 0);
+}
+
+// مزامنة سحابية مع debounce 5 ثوانٍ — تُشغَّل بعد كل save()
+function _scheduledCloudSync(){
+ clearTimeout(_cloudSyncTimer);
+ _cloudSyncTimer = setTimeout(function(){
+  autoBackupSilent();
+ }, 5000);
+}
+
+function saveWithIndicator(){
+ var ind = document.getElementById('save-indicator');
+ if(ind){
+  ind.className = 'save-indicator saving';
+  ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> جاري الحفظ...';
+ }
+ try{
+  // أضف طابع زمني للمقارنة مع السحابة
+  if(!data.settings) data.settings = {};
+  data.settings._localSavedAt = new Date().toISOString();
+  localStorage.setItem('institute_v4', JSON.stringify(data));
+  if(ind){
+   ind.className = 'save-indicator saved';
+   ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> تم الحفظ';
+   clearTimeout(_saveTimer);
+   _saveTimer = setTimeout(function(){ ind.className='save-indicator'; ind.innerHTML=''; }, 2500);
   }
-  try {
-    localStorage.setItem('institute_v4', JSON.stringify(data));
-    if (ind) {
-      ind.className = 'save-indicator saved';
-      ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> تم الحفظ';
-      clearTimeout(_saveTimer);
-      _saveTimer = setTimeout(function() {
-        ind.className = 'save-indicator';
-        ind.innerHTML = '';
-      }, 2500);
-    }
-  } catch(e) {
-    if (ind) {
-      ind.className = 'save-indicator error';
-      ind.innerHTML = 'فشل الحفظ';
-    }
-    console.warn('save error', e);
-  }
+  // تحديث الواجهة فوراً
+  renderCurrentPage();
+  // مزامنة السحابة بعد 5 ثوانٍ من آخر تغيير
+  if(_appReady) _scheduledCloudSync();
+ }catch(e){
+  if(ind){ ind.className='save-indicator error'; ind.innerHTML='فشل الحفظ'; }
+  console.warn('save error', e);
+ }
 }
 
 // ════════════════════════════════════════════════
