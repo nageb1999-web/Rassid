@@ -3783,29 +3783,28 @@ function save(){
 }
 
 // تحميل البيانات: IndexedDB أولاً، ثم localStorage كاحتياطي
-// ترجع Promise حتى يمكن الانتظار قبل رسم الواجهة
 function initDB(){
- return new Promise(function(resolve){
-  _openIDB(function(){
-   _idbGet(function(raw){
-    if(raw){
-     try{
-      var d = typeof raw === 'string' ? JSON.parse(raw) : raw;
-      if(d && d.students){
-       data = migrateData(d);
-       try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
-       resolve();
-       return;
-      }
-     }catch(e){}
-    }
-    _loadFromLS();
-    resolve();
-   });
-  }, function(){
+ // محاولة IndexedDB أولاً
+ _openIDB(function(){
+  // IndexedDB يعمل — اقرأ منه
+  _idbGet(function(raw){
+   if(raw){
+    try{
+     var d = typeof raw === 'string' ? JSON.parse(raw) : raw;
+     if(d && d.students){
+      data = migrateData(d);
+      // حدّث localStorage ليكون متزامناً
+      try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
+      return;
+     }
+    }catch(e){}
+   }
+   // IndexedDB فارغ — جرّب localStorage (ترقية من نسخة قديمة)
    _loadFromLS();
-   resolve();
   });
+ }, function(){
+  // IndexedDB غير متاح — استخدم localStorage
+  _loadFromLS();
  });
 }
 
@@ -3831,9 +3830,9 @@ function _loadFromLS(){
    }catch(e){ continue; }
   }
  }
- // لا توجد بيانات محلية — ابدأ من جديد بصمت دون كتابة فوق أي شيء
+ // لا توجد بيانات — ابدأ من جديد
  data = defaultData();
- // لا تستدعِ save() هنا لأن ذلك يمكن أن يمسح بيانات لا تزال في IDB
+ save();
 }
 
 // ══════════════════════════════════════════════
@@ -8243,8 +8242,8 @@ document.addEventListener('DOMContentLoaded', function(){
  if(unInput) unInput.addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('login-password').focus(); });
 });
 
-async function startApp(){
- try{ await initDB(); }catch(e){ console.warn('DB init:',e); }
+function startApp(){
+ try{ initDB(); }catch(e){ console.warn('DB init:',e); }
  // تفعيل النسخ التلقائي إذا كان مُفعَّلاً سابقاً — لا يلمس Auth
  try{ if(localStorage.getItem(AUTO_BACKUP_KEY)==='true') startAutoBackupTimer(); }catch(e){}
  if(data.settings&&!data.settings.instName){
@@ -8299,6 +8298,35 @@ function showConfirm(opts, onConfirm) {
 // SAVE INDICATOR — مؤشر الحفظ
 // ════════════════════════════════════════════════
 var _saveTimer = null;
+// ════════════════════════════════════════════════
+// RENDER CURRENT PAGE — تحديث الصفحة الحالية
+// ════════════════════════════════════════════════
+var _renderMap = {
+  'dashboard'       : function(){ renderDashboard(); },
+  'students'        : function(){ renderStudents(); },
+  'results'         : function(){ renderResults(); },
+  'attendance'      : function(){ renderAttendance(); },
+  'teachers'        : function(){ renderTeachers(); },
+  'fees'            : function(){ renderFees(); },
+  'expenses'        : function(){ renderExpenses(); },
+  'slips'           : function(){ renderSlips(); },
+  'whatsapp'        : function(){ renderWhatsapp(); },
+  'reports'         : function(){ renderReports(); },
+  'settings'        : function(){ renderSettings(); },
+  'discipline'      : function(){ if(typeof renderDisciplinePage==='function') renderDisciplinePage(); }
+};
+
+var _renderTimer = null;
+function renderCurrentPage(){
+  clearTimeout(_renderTimer);
+  _renderTimer = setTimeout(function(){
+    try{
+      var fn = _renderMap[currentPage];
+      if(fn) fn();
+    }catch(e){ console.warn('renderCurrentPage error', e); }
+  }, 0);
+}
+
 function saveWithIndicator() {
   var ind = document.getElementById('save-indicator');
   if (ind) {
@@ -8316,6 +8344,8 @@ function saveWithIndicator() {
         ind.innerHTML = '';
       }, 2500);
     }
+    // تحديث الصفحة الحالية تلقائياً
+    renderCurrentPage();
   } catch(e) {
     if (ind) {
       ind.className = 'save-indicator error';
