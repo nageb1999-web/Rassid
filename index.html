@@ -3784,27 +3784,24 @@ function save(){
 
 // تحميل البيانات: IndexedDB أولاً، ثم localStorage كاحتياطي
 function initDB(){
- // محاولة IndexedDB أولاً
- _openIDB(function(){
-  // IndexedDB يعمل — اقرأ منه
-  _idbGet(function(raw){
-   if(raw){
-    try{
-     var d = typeof raw === 'string' ? JSON.parse(raw) : raw;
-     if(d && d.students){
-      data = migrateData(d);
-      // حدّث localStorage ليكون متزامناً
-      try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
-      return;
-     }
-    }catch(e){}
-   }
-   // IndexedDB فارغ — جرّب localStorage (ترقية من نسخة قديمة)
-   _loadFromLS();
+ return new Promise(function(resolve){
+  _openIDB(function(){
+   _idbGet(function(raw){
+    if(raw){
+     try{
+      var d = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      if(d && d.students){
+       data = migrateData(d);
+       try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
+       resolve(); return;
+      }
+     }catch(e){}
+    }
+    _loadFromLS(); resolve();
+   });
+  }, function(){
+   _loadFromLS(); resolve();
   });
- }, function(){
-  // IndexedDB غير متاح — استخدم localStorage
-  _loadFromLS();
  });
 }
 
@@ -3830,9 +3827,8 @@ function _loadFromLS(){
    }catch(e){ continue; }
   }
  }
- // لا توجد بيانات — ابدأ من جديد
+ // لا توجد بيانات محفوظة — ابدأ من جديد بدون كتابة فوق أي شيء
  data = defaultData();
- save();
 }
 
 // ══════════════════════════════════════════════
@@ -8242,9 +8238,8 @@ document.addEventListener('DOMContentLoaded', function(){
  if(unInput) unInput.addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('login-password').focus(); });
 });
 
-function startApp(){
- try{ initDB(); }catch(e){ console.warn('DB init:',e); }
- // تفعيل النسخ التلقائي إذا كان مُفعَّلاً سابقاً — لا يلمس Auth
+async function startApp(){
+ try{ await initDB(); }catch(e){ console.warn('DB init:',e); }
  try{ if(localStorage.getItem(AUTO_BACKUP_KEY)==='true') startAutoBackupTimer(); }catch(e){}
  if(data.settings&&!data.settings.instName){
   data.settings.instName='راصد';
@@ -8255,6 +8250,7 @@ function startApp(){
  checkPendingNotifications();
  currentPage='dashboard';
  renderDashboard();
+ _appReady = true; // الآن فقط يُسمح بـ renderCurrentPage
 }
 
 // ════════════════════════════════════════════════
@@ -8295,64 +8291,52 @@ function showConfirm(opts, onConfirm) {
 }
 
 // ════════════════════════════════════════════════
-// SAVE INDICATOR — مؤشر الحفظ
+// AUTO RENDER — تحديث الصفحة الحالية بعد الحفظ
 // ════════════════════════════════════════════════
-var _saveTimer = null;
-// ════════════════════════════════════════════════
-// RENDER CURRENT PAGE — تحديث الصفحة الحالية
-// ════════════════════════════════════════════════
-var _renderMap = {
-  'dashboard'       : function(){ renderDashboard(); },
-  'students'        : function(){ renderStudents(); },
-  'results'         : function(){ renderResults(); },
-  'attendance'      : function(){ renderAttendance(); },
-  'teachers'        : function(){ renderTeachers(); },
-  'fees'            : function(){ renderFees(); },
-  'expenses'        : function(){ renderExpenses(); },
-  'slips'           : function(){ renderSlips(); },
-  'whatsapp'        : function(){ renderWhatsapp(); },
-  'reports'         : function(){ renderReports(); },
-  'settings'        : function(){ renderSettings(); },
-  'discipline'      : function(){ if(typeof renderDisciplinePage==='function') renderDisciplinePage(); }
-};
-
+var _appReady = false; // يصبح true فقط بعد اكتمال startApp
 var _renderTimer = null;
+var _renderMap = {
+ 'dashboard' : function(){ renderDashboard(); },
+ 'students'  : function(){ renderStudents(); },
+ 'results'   : function(){ renderResults(); },
+ 'attendance': function(){ renderAttendance(); },
+ 'teachers'  : function(){ renderTeachers(); },
+ 'fees'      : function(){ renderFees(); },
+ 'expenses'  : function(){ renderExpenses(); },
+ 'slips'     : function(){ renderSlips(); },
+ 'whatsapp'  : function(){ renderWhatsapp(); },
+ 'reports'   : function(){ renderReports(); },
+ 'settings'  : function(){ renderSettings(); },
+ 'discipline': function(){ if(typeof renderDisciplinePage==='function') renderDisciplinePage(); }
+};
 function renderCurrentPage(){
-  clearTimeout(_renderTimer);
-  _renderTimer = setTimeout(function(){
-    try{
-      var fn = _renderMap[currentPage];
-      if(fn) fn();
-    }catch(e){ console.warn('renderCurrentPage error', e); }
-  }, 0);
+ if(!_appReady) return; // لا تعمل أثناء التهيئة
+ clearTimeout(_renderTimer);
+ _renderTimer = setTimeout(function(){
+  try{ var fn=_renderMap[currentPage]; if(fn) fn(); }catch(e){}
+ }, 0);
 }
 
+var _saveTimer = null;
 function saveWithIndicator() {
-  var ind = document.getElementById('save-indicator');
-  if (ind) {
-    ind.className = 'save-indicator saving';
-    ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> جاري الحفظ...';
+ var ind = document.getElementById('save-indicator');
+ if(ind){
+  ind.className = 'save-indicator saving';
+  ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> جاري الحفظ...';
+ }
+ try {
+  localStorage.setItem('institute_v4', JSON.stringify(data));
+  if(ind){
+   ind.className = 'save-indicator saved';
+   ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> تم الحفظ';
+   clearTimeout(_saveTimer);
+   _saveTimer = setTimeout(function(){ ind.className='save-indicator'; ind.innerHTML=''; }, 2500);
   }
-  try {
-    localStorage.setItem('institute_v4', JSON.stringify(data));
-    if (ind) {
-      ind.className = 'save-indicator saved';
-      ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> تم الحفظ';
-      clearTimeout(_saveTimer);
-      _saveTimer = setTimeout(function() {
-        ind.className = 'save-indicator';
-        ind.innerHTML = '';
-      }, 2500);
-    }
-    // تحديث الصفحة الحالية تلقائياً
-    renderCurrentPage();
-  } catch(e) {
-    if (ind) {
-      ind.className = 'save-indicator error';
-      ind.innerHTML = 'فشل الحفظ';
-    }
-    console.warn('save error', e);
-  }
+  renderCurrentPage();
+ } catch(e) {
+  if(ind){ ind.className='save-indicator error'; ind.innerHTML='فشل الحفظ'; }
+  console.warn('save error', e);
+ }
 }
 
 // ════════════════════════════════════════════════
