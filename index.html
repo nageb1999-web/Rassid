@@ -2223,6 +2223,7 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div class="nav-item" onclick="showPage('discipline')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> السلوك والانضباط</div>
  <div class="nav-item" onclick="showPage('results')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></span> النتائج</div>
  <div class="nav-item" onclick="showPage('slips')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></span> القصاصات</div>
+ <div class="nav-item" onclick="showPage('courses')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/><circle cx="12" cy="10" r="1" fill="currentColor" stroke="none"/></svg></span> الدورات</div>
  <div class="nav-section">الحضور</div>
  <div class="nav-item" onclick="showPage('attendance')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> الحضور</div>
  <div class="nav-item" onclick="showPage('teachers')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></span> المدرسون</div>
@@ -2463,8 +2464,14 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
  <div>
  <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">المرحلة</div>
- <select id="filter-stage" onchange="renderStudents()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <select id="filter-stage" onchange="filterStageChanged();renderStudents();" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
  <option value="">الكل</option><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">الصف</div>
+ <select id="filter-grade" onchange="renderStudents()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <option value="">الكل</option>
  </select>
  </div>
  <div>
@@ -2682,11 +2689,17 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  </div>
  <div>
  <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">المرحلة الدراسية</div>
- <select id="disc-s-stage" onchange="renderStudentsStatusList()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <select id="disc-s-stage" onchange="discStageFilterChanged();renderStudentsStatusList();" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
  <option value="">الكل</option>
  <option value="ابتدائي">ابتدائي</option>
  <option value="متوسط">متوسط</option>
  <option value="اعدادي">اعدادي</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">الصف</div>
+ <select id="disc-s-grade" onchange="renderStudentsStatusList()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <option value="">الكل</option>
  </select>
  </div>
  <div>
@@ -2768,8 +2781,14 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  </div>
  <div>
  <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">المرحلة</div>
- <select id="att-filter-stage" onchange="renderAttGrid()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <select id="att-filter-stage" onchange="attStageFilterChanged();renderAttGrid();" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
  <option value="">الكل</option><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option>
+ </select>
+ </div>
+ <div>
+ <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">الصف</div>
+ <select id="att-filter-grade" onchange="renderAttGrid()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <option value="">الكل</option>
  </select>
  </div>
  </div>
@@ -2887,7 +2906,40 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  </div>
 
  <!-- REPORTS -->
- <!-- SLIPS PAGE -->
+ <!-- COURSES PAGE -->
+ <div class="page" id="page-courses">
+ <div class="sec-header">
+ <span class="sec-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> الدورات</span></span>
+ <button class="btn btn-gold btn-sm" style="display:inline-flex;align-items:center;gap:6px" onclick="openAddCourseModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة دورة</button>
+ </div>
+
+ <!-- Course filters -->
+ <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px">
+ <input type="text" id="course-search" placeholder="بحث بالدورة أو المدرس أو المادة..." oninput="renderCourses()"
+ style="width:100%;box-sizing:border-box;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:9px 13px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;margin-bottom:10px;">
+ <div style="display:flex;gap:8px;flex-wrap:wrap">
+ <button class="btn btn-sm" id="cf-all" onclick="setCourseFilter('all')" style="font-size:11px;padding:5px 12px;background:var(--gold);color:#000;border:none;border-radius:8px">الكل</button>
+ <button class="btn btn-sm" id="cf-ongoing" onclick="setCourseFilter('جارية')" style="font-size:11px;padding:5px 12px;background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:8px">جارية</button>
+ <button class="btn btn-sm" id="cf-completed" onclick="setCourseFilter('مكتملة')" style="font-size:11px;padding:5px 12px;background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:8px">مكتملة</button>
+ <button class="btn btn-sm" id="cf-paused" onclick="setCourseFilter('متوقفة')" style="font-size:11px;padding:5px 12px;background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:8px">متوقفة</button>
+ <button class="btn btn-sm" id="cf-notstarted" onclick="setCourseFilter('لم تبدأ')" style="font-size:11px;padding:5px 12px;background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:8px">لم تبدأ</button>
+ </div>
+ </div>
+
+ <div id="courses-list"></div>
+ </div>
+
+ <!-- COURSE DETAIL PAGE -->
+ <div class="page" id="page-course-detail">
+ <div class="sec-header">
+ <button class="btn btn-outline btn-sm" onclick="showPage('courses')">← رجوع</button>
+ <div style="display:flex;gap:8px">
+ <button class="btn btn-info btn-sm" id="course-edit-btn" onclick="openEditCurrentCourse()">تعديل</button>
+ <button class="btn btn-danger btn-sm" id="course-delete-btn" onclick="deleteCurrentCourse()">حذف</button>
+ </div>
+ </div>
+ <div id="course-detail-content"></div>
+ </div>
  <div class="page" id="page-slips">
  <div class="sec-header">
  <span class="sec-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> القصاصات</span></span>
@@ -3012,7 +3064,8 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div class="form-group"><label>هاتف الطالب</label><input type="text" id="s-phone" placeholder="07xxxxxxxxxx" inputmode="numeric" autocomplete="tel-national"></div>
  <div class="form-group"><label>هاتف ولي الأمر</label><input type="text" id="s-pphone" placeholder="07xxxxxxxxxx" inputmode="numeric" autocomplete="tel-national"></div>
  </div>
- <div class="form-group"><label>المرحلة الدراسية</label><select id="s-stage"><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> اعدادي</option></select></div>
+ <div class="form-group"><label>المرحلة الدراسية</label><select id="s-stage" onchange="updateGradeSelect('s-stage','s-grade')"><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option></select></div>
+ <div class="form-group"><label>الصف الدراسي <span style="color:var(--danger)">*</span></label><select id="s-grade"><option value="">-- اختر المرحلة أولاً --</option></select></div>
  <div class="form-row">
  <div class="form-group"><label><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> تاريخ بدء الاشتراك</label><input type="date" id="s-sub-start"></div>
  <div class="form-group"><label><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> تاريخ انتهاء الاشتراك</label><input type="date" id="s-sub-end"></div>
@@ -3040,7 +3093,8 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div class="form-group"><label>هاتف الطالب</label><input type="text" id="edit-s-phone"></div>
  <div class="form-group"><label>هاتف ولي الأمر</label><input type="text" id="edit-s-pphone"></div>
  </div>
- <div class="form-group"><label>المرحلة الدراسية</label><select id="edit-s-stage"><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> اعدادي</option></select></div>
+ <div class="form-group"><label>المرحلة الدراسية</label><select id="edit-s-stage" onchange="updateGradeSelect('edit-s-stage','edit-s-grade')"><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option></select></div>
+ <div class="form-group"><label>الصف الدراسي <span style="color:var(--danger)">*</span></label><select id="edit-s-grade"><option value="">-- اختر الصف --</option></select></div>
  <div class="form-row">
  <div class="form-group"><label><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> تاريخ بدء الاشتراك</label><input type="date" id="edit-s-sub-start"></div>
  <div class="form-group"><label><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> تاريخ انتهاء الاشتراك</label><input type="date" id="edit-s-sub-end"></div>
@@ -3609,6 +3663,67 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  </div>
 </div>
 
+<!-- Modal: إضافة/تعديل دورة -->
+<div class="modal-overlay" id="modal-add-course">
+ <div class="modal">
+ <h3><span style="display:inline-flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> <span id="course-modal-title">إضافة دورة جديدة</span></span></h3>
+ <input type="hidden" id="course-edit-id" value="">
+ <div class="form-row">
+ <div class="form-group"><label>اسم الدورة <span style="color:var(--danger)">*</span></label><input type="text" id="course-name" placeholder="دورة تأسيس رياضيات"></div>
+ <div class="form-group"><label>المادة <span style="color:var(--danger)">*</span></label><input type="text" id="course-subject" placeholder="الرياضيات"></div>
+ </div>
+ <div class="form-row">
+ <div class="form-group"><label>المدرس المسؤول</label>
+ <select id="course-teacher"><option value="">-- اختياري --</option></select></div>
+ <div class="form-group"><label>عدد الطلبة</label><input type="number" id="course-students-count" min="0" placeholder="0"></div>
+ </div>
+ <div class="form-row">
+ <div class="form-group"><label>تاريخ البدء</label><input type="date" id="course-start-date"></div>
+ <div class="form-group"><label>تاريخ الانتهاء (اختياري)</label><input type="date" id="course-end-date"></div>
+ </div>
+ <div class="form-group"><label>وصف الدورة</label><textarea id="course-desc" rows="2" placeholder="وصف مختصر عن محتوى الدورة..."></textarea></div>
+ <div class="form-group"><label>حالة الدورة</label>
+ <select id="course-status">
+ <option value="لم تبدأ">لم تبدأ</option>
+ <option value="جارية">جارية</option>
+ <option value="مكتملة">مكتملة</option>
+ <option value="متوقفة">متوقفة</option>
+ </select></div>
+ <div class="modal-footer">
+ <button class="btn btn-outline" onclick="closeModal('add-course')">إلغاء</button>
+ <button class="btn btn-gold" onclick="saveCourse()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> حفظ</button>
+ </div>
+ </div>
+</div>
+
+<!-- Modal: إضافة/تعديل فصل -->
+<div class="modal-overlay" id="modal-add-chapter">
+ <div class="modal">
+ <h3 id="chapter-modal-title">إضافة فصل جديد</h3>
+ <input type="hidden" id="chapter-course-id">
+ <input type="hidden" id="chapter-edit-id">
+ <div class="form-group"><label>عنوان الفصل <span style="color:var(--danger)">*</span></label><input type="text" id="chapter-title" placeholder="الفصل الأول: مقدمة"></div>
+ <div class="modal-footer">
+ <button class="btn btn-outline" onclick="closeModal('add-chapter')">إلغاء</button>
+ <button class="btn btn-gold" onclick="saveChapter()">حفظ</button>
+ </div>
+ </div>
+</div>
+
+<!-- Modal: إضافة/تعديل موضوع -->
+<div class="modal-overlay" id="modal-add-topic">
+ <div class="modal">
+ <h3 id="topic-modal-title">إضافة موضوع جديد</h3>
+ <input type="hidden" id="topic-chapter-id">
+ <input type="hidden" id="topic-edit-id">
+ <div class="form-group"><label>عنوان الموضوع <span style="color:var(--danger)">*</span></label><input type="text" id="topic-title" placeholder="الموضوع 1: التعريفات الأساسية"></div>
+ <div class="modal-footer">
+ <button class="btn btn-outline" onclick="closeModal('add-topic')">إلغاء</button>
+ <button class="btn btn-gold" onclick="saveTopic()">حفظ</button>
+ </div>
+ </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -3682,6 +3797,7 @@ function defaultData(){
 results:[],fees:[],payments:[],behaviors:[],waLog:[],
  violationRecords:[],warningRecords:[],parentNotifications:[],
 expenses:[],salaries:[],salaryPayments:[],subPayments:[],slips:[],financialAuditLog:[],
+courses:[],courseChapters:[],courseTopics:[],
  settings:{
  instName:'راصد',instAddr:'',instPhone:'',
  taskTypes:['واجب','امتحان','مراجعة','إعادة'],
@@ -3690,7 +3806,7 @@ expenses:[],salaries:[],salaryPayments:[],subPayments:[],slips:[],financialAudit
  warningThresholds:{1:'تنبيه شفهي',2:'إنذار أول',3:'إنذار ثانٍ',4:'إنذار نهائي',5:'تحويل للإدارة'}
  },
  nextId:{student:1,teacher:1,attendance:1,teacherAtt:1,result:1,fee:1,
-payment:1,behavior:1,waLog:1,expense:1,salary:1,salaryPayment:1,financialAuditLog:1,violationRecord:1,warningRecord:1,parentNotification:1}
+payment:1,behavior:1,waLog:1,expense:1,salary:1,salaryPayment:1,financialAuditLog:1,violationRecord:1,warningRecord:1,parentNotification:1,course:1,courseChapter:1,courseTopic:1}
  };
 }
 
@@ -3724,13 +3840,20 @@ d.nextId.financialAuditLog = d.nextId.financialAuditLog || 1;
  d.students = d.students.map(function(s){
  return {
  id:s.id,fname:s.fname||'',lname:s.lname||'',
- stage:s.stage||'ابتدائي',phone:s.phone||'',
+ stage:s.stage||'ابتدائي',grade:s.grade||'',phone:s.phone||'',
  parentPhone:s.parentPhone||'',parentName:s.parentName||'',
  subStart:s.subStart||'',subEnd:s.subEnd||'',
  subPrice:s.subPrice||0,subPaid:s.subPaid||0,
  school:s.school||''
  };
  });
+ // add courses array if missing
+ d.courses = d.courses || [];
+ d.courseChapters = d.courseChapters || [];
+ d.courseTopics = d.courseTopics || [];
+ d.nextId.course = d.nextId.course || 1;
+ d.nextId.courseChapter = d.nextId.courseChapter || 1;
+ d.nextId.courseTopic = d.nextId.courseTopic || 1;
  d.results = d.results.map(function(r){
  return {
  id:r.id,studentId:r.studentId,type:r.type||'امتحان',
@@ -3878,7 +4001,7 @@ function getAttemptNum(sid,subject,type){return data.results.filter(r=>r.student
 // ══════════════════════════════════════════════
 // NAVIGATION
 // ══════════════════════════════════════════════
-var pageTitles={dashboard:'لوحة التحكم',students:'الطلبة','student-profile':'ملف الطالب',results:'النتائج',attendance:'الحضور',teachers:'المدرسون',fees:'الاشتراكات والدفعات',expenses:'المصروفات والأرباح',slips:'القصاصات',whatsapp:'إشعارات واتساب',reports:'التقارير',settings:'الإعدادات',discipline:'السلوك والانضباط'};
+var pageTitles={dashboard:'لوحة التحكم',students:'الطلبة','student-profile':'ملف الطالب',results:'النتائج',attendance:'الحضور',teachers:'المدرسون',fees:'الاشتراكات والدفعات',expenses:'المصروفات والأرباح',slips:'القصاصات',courses:'الدورات','course-detail':'تفاصيل الدورة',whatsapp:'إشعارات واتساب',reports:'التقارير',settings:'الإعدادات',discipline:'السلوك والانضباط'};
 var currentPage='dashboard';
 
 
@@ -3890,7 +4013,7 @@ function showPage(name){
  if(el)el.classList.add('active');
  document.querySelectorAll('.nav-item').forEach(n=>{if(n.textContent.trim().includes(pageTitles[currentPage]?pageTitles[currentPage].substring(0,4):''||''))n.classList.add('active');});
  document.getElementById('page-title').textContent=pageTitles[currentPage]||currentPage;
- var renders={dashboard:renderDashboard,students:renderStudents,results:renderResults,attendance:renderAttendance,teachers:renderTeachers,fees:renderFees,expenses:renderExpenses,slips:renderSlips,whatsapp:renderWhatsapp,reports:renderReports,settings:renderSettings,discipline:renderDisciplinePage};
+ var renders={dashboard:renderDashboard,students:renderStudents,results:renderResults,attendance:renderAttendance,teachers:renderTeachers,fees:renderFees,expenses:renderExpenses,slips:renderSlips,courses:renderCourses,whatsapp:renderWhatsapp,reports:renderReports,settings:renderSettings,discipline:renderDisciplinePage};
  if(renders[currentPage])renders[currentPage]();
  closeSidebar();
 }
@@ -4034,6 +4157,9 @@ function initTheme(){
 // ══════════════════════════════════════════════
 function openModal(name){
  if(name==='add-slip'){openAddSlipModal();return;}
+ if(name==='add-student'){
+  updateGradeSelect('s-stage','s-grade');
+ }
  if(name==='add-sub-payment'){
  document.getElementById('sub-pay-student').innerHTML=data.students.map(function(s){return '<option value="'+s.id+'">'+s.fname+' '+s.lname+'</option>';}).join('');
  document.getElementById('sub-pay-date').value=today();
@@ -4116,6 +4242,26 @@ function sendAllExpiryWA(){
 
 // ══ SUBJECTS BY STAGE ══
 var SUBJECTS={'ابتدائي':['اللغة العربية','الرياضيات','العلوم','اللغة الانكليزية','التربية الاسلامية','الاجتماعيات'],'متوسط':['التربية الاسلامية_م','اللغة العربية_م','اللغة الانكليزية_م','الرياضيات_م','الفيزياء','الكيمياء','الاحياء','الاجتماعيات_م'],'اعدادي':['اللغة العربية_ع','التربية الاسلامية_ع','اللغة الانكليزية_ع','علم الاحياء','الفيزياء_ع','الكيمياء_ع','الرياضيات_ع']};
+
+// ══ GRADES BY STAGE ══
+var GRADES = {
+ 'ابتدائي': ['الأول الابتدائي','الثاني الابتدائي','الثالث الابتدائي','الرابع الابتدائي','الخامس الابتدائي','السادس الابتدائي'],
+ 'متوسط':  ['الأول المتوسط','الثاني المتوسط','الثالث المتوسط'],
+ 'اعدادي': ['الرابع العلمي','الرابع الأدبي','الخامس العلمي','الخامس الأدبي','السادس العلمي','السادس الأدبي']
+};
+
+function getGradesList(stage) {
+ return GRADES[stage] || GRADES['ابتدائي'];
+}
+
+function updateGradeSelect(stageId, gradeId) {
+ var stage = document.getElementById(stageId) ? document.getElementById(stageId).value : 'ابتدائي';
+ var gradeEl = document.getElementById(gradeId);
+ if (!gradeEl) return;
+ var grades = getGradesList(stage);
+ gradeEl.innerHTML = '<option value="">-- اختر الصف --</option>' +
+  grades.map(function(g){ return '<option value="'+g+'">'+g+'</option>'; }).join('');
+}
 function getSubjects(sid){var s=gS(sid);var stage=s&&s.stage?s.stage:'ابتدائي';return SUBJECTS[stage]||SUBJECTS['ابتدائي'];}
 function cleanSubjectName(subj){return subj?subj.replace(/_[معا]$/,''):subj;}
 function onResultStudentChange(){
@@ -4127,7 +4273,7 @@ function onResultStudentChange(){
 }
 
 function populateResultModal(){
- document.getElementById('r-student').innerHTML=data.students.map(s=>`<option value="${s.id}">${sName(s.id)} (${s.stage||'ابتدائي'})</option>`).join('');
+ document.getElementById('r-student').innerHTML=data.students.map(s=>`<option value="${s.id}">${sName(s.id)} (${s.stage||'ابتدائي'}${s.grade?' - '+s.grade:''})</option>`).join('');
  var types=data.settings.taskTypes||['واجب','امتحان','مراجعة','إعادة'];
  document.getElementById('r-type').innerHTML=types.map(t=>`<option value="${t}">${t}</option>`).join('');
  // تعبئة قائمة المدرسين
@@ -4169,7 +4315,7 @@ function loadSlipSubjects(){
  var subjects = (SUBJECTS[s.stage||'ابتدائي'] || SUBJECTS['ابتدائي']).map(function(x){return cleanSubjectName(x);});
  var infoEl = document.getElementById('slip-stage-info');
  infoEl.style.display = 'block';
- infoEl.querySelector('div').textContent = s.fname + ' ' + s.lname + ' — المرحلة ' + (s.stage||'ابتدائي');
+ infoEl.querySelector('div').textContent = s.fname + ' ' + s.lname + ' — ' + (s.stage||'ابتدائي') + (s.grade?' | '+s.grade:'');
  document.getElementById('slip-subjects-list').innerHTML = subjects.map(function(subj){
  // البحث عن المدرس المسؤول عن هذه المادة
  var teacher = data.teachers.find(function(t){
@@ -4277,7 +4423,7 @@ function sendSlipWA(slipId){
  setTimeout(function(){
  var msg = 'السلام عليكم استاذ ' + t.fname + ' ' + t.lname + nl;
  msg += 'قصاصة الطالب: ' + s.fname + ' ' + s.lname + nl;
- msg += 'المرحلة: ' + (s.stage||'ابتدائي') + nl;
+ msg += 'المرحلة: ' + (s.stage||'ابتدائي') + (s.grade?' - '+s.grade:'') + nl;
  msg += 'التاريخ: ' + slip.date + nl + nl;
  msg += 'التحضيرات المطلوبة لمادتكم:' + nl;
  items.forEach(function(item){
@@ -4592,9 +4738,19 @@ function renderDashboard(){
 // STUDENTS
 // ══════════════════════════════════════════════
 function resetStudentFilters(){
- ['student-search','filter-stage','filter-fees','filter-att'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+ ['student-search','filter-stage','filter-grade','filter-fees','filter-att'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
  var fs=document.getElementById('filter-sort');if(fs)fs.value='name';
  renderStudents();
+}
+
+function filterStageChanged(){
+ var stageEl=document.getElementById('filter-stage');
+ var gradeEl=document.getElementById('filter-grade');
+ if(!stageEl||!gradeEl)return;
+ var stage=stageEl.value;
+ if(!stage){gradeEl.innerHTML='<option value="">الكل</option>';return;}
+ var grades=getGradesList(stage);
+ gradeEl.innerHTML='<option value="">الكل</option>'+grades.map(function(g){return '<option value="'+g+'">'+g+'</option>';}).join('');
 }
 function toggleStudentFilter(){
  var panel=document.getElementById('students-adv-panel');
@@ -4626,12 +4782,14 @@ function renderStudents(){
  var el0=document.getElementById('students-cards');if(el0&&!el0.dataset.loaded){showCardsLoading('students-cards',3);}
  var q=(document.getElementById('student-search')?document.getElementById('student-search').value:'').toLowerCase().trim();
  var stageF=document.getElementById('filter-stage')?document.getElementById('filter-stage').value:'';
+ var gradeF=document.getElementById('filter-grade')?document.getElementById('filter-grade').value:'';
  var feesF=document.getElementById('filter-fees')?document.getElementById('filter-fees').value:'';
  var attF=document.getElementById('filter-att')?document.getElementById('filter-att').value:'';
  var sortF=(document.getElementById('filter-sort')?document.getElementById('filter-sort').value:'')||'name';
  var list=data.students.filter(function(s){
  if(q){var h=(s.fname+' '+s.lname+' '+(s.phone||'')+' '+(s.parentName||'')+' '+(s.parentPhone||'')).toLowerCase();if(!h.includes(q))return false;}
  if(stageF&&(s.stage||'ابتدائي')!==stageF)return false;
+ if(gradeF&&(s.grade||'')!==gradeF)return false;
  if(feesF){var _fs=feeStats(s.id);if(feesF==='none'&&_fs.total>0)return false;if(feesF==='paid'&&(_fs.total===0||_fs.remaining>0))return false;if(feesF==='partial'&&(_fs.total===0||_fs.remaining<=0))return false;}
  if(attF){var rate=attRate(s.id);if(attF==='none'&&rate!==null)return false;if(attF==='excellent'&&(rate===null||rate<75))return false;if(attF==='average'&&(rate===null||rate<50||rate>=75))return false;if(attF==='poor'&&(rate===null||rate>=50))return false;}
  return true;
@@ -4644,9 +4802,9 @@ function renderStudents(){
  return(a.fname+a.lname).localeCompare(b.fname+b.lname,'ar');
  });
  var statsEl=document.getElementById('student-filter-stats');
- if(statsEl){var hasF=q||stageF||feesF||attF;statsEl.textContent=hasF?'يُعرض '+list.length+' من أصل '+data.students.length+' طالب':'';}
+ if(statsEl){var hasF=q||stageF||gradeF||feesF||attF;statsEl.textContent=hasF?'يُعرض '+list.length+' من أصل '+data.students.length+' طالب':'';}
  var el=document.getElementById('students-cards');
- if(!list.length){var msg=q||stageF||feesF||attF?'لا توجد نتائج مطابقة':'لا يوجد طلبة حتى الآن';el.innerHTML=`<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><p>${msg}</p></div>`;return;}
+ if(!list.length){var msg=q||stageF||gradeF||feesF||attF?'لا توجد نتائج مطابقة':'لا يوجد طلبة حتى الآن';el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><p>'+msg+'</p></div>';return;}
  el.innerHTML=list.map(s=>{
  var rate=attRate(s.id),avg=avgGrade(s.id);
  var _fs=feeStats(s.id);var total=_fs.total;var paid=_fs.paid;var remaining=_fs.remaining;
@@ -4661,7 +4819,7 @@ function renderStudents(){
  <div class="avatar avatar-gold" style="cursor:pointer;position:relative" onclick="openStudentProfile(${s.id})">${s.fname[0]}${violCnt>0?`<span style="position:absolute;top:-3px;left:-3px;width:14px;height:14px;border-radius:50%;background:var(--danger);color:white;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)">${violCnt}</span>`:''}</div>
  <div>
  <div class="item-name" style="cursor:pointer" onclick="openStudentProfile(${s.id})">${s.fname} ${s.lname}</div>
- <div class="item-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'ابتدائي'} ${getSubStatus(s)}</div>
+ <div class="item-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'ابتدائي'}${s.grade?' | '+s.grade:''} ${getSubStatus(s)}</div>
  <div class="item-sub">${s.phone||''} ${s.parentPhone?`| <a href="https://wa.me/${s.parentPhone.replace(/\D/g,'')}" style="color:var(--wa);text-decoration:none"> ${s.parentPhone}</a>`:''}</div>
  <div style="margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
  ${beh?`<span style="font-size:10px">${starsHtml(beh.stars)}</span>`:''}
@@ -4688,17 +4846,20 @@ function addStudent(){
  var fname=document.getElementById('s-fname').value.trim(),lname=document.getElementById('s-lname').value.trim();
  if(!fname||!lname){toast('يرجى إدخال الاسم');return;}
  var stage=document.getElementById('s-stage').value;
+ var grade=document.getElementById('s-grade').value;
+ if(!grade){toast('يرجى تحديد الصف الدراسي');return;}
  var subStart=gVal('s-sub-start');
  var subEnd=gVal('s-sub-end');
  var subPrice=parseFloat(gVal('s-sub-price'))||0;
  var subPaid=parseFloat(gVal('s-sub-paid'))||0;
- data.students.push({id:data.nextId.student++,fname:fname,lname:lname,stage:stage,
+ data.students.push({id:data.nextId.student++,fname:fname,lname:lname,stage:stage,grade:grade,
  phone:normalizeLocalPhone(document.getElementById('s-phone').value),
  parentPhone:normalizeLocalPhone(document.getElementById('s-pphone').value),
  parentName:'',subStart:subStart,subEnd:subEnd,subPrice:subPrice,subPaid:subPaid});
  save();closeModal('add-student');renderStudents();
  ['s-fname','s-lname','s-phone','s-pphone','s-sub-start','s-sub-end','s-sub-price','s-sub-paid'].forEach(function(id){document.getElementById(id).value='';});
  document.getElementById('s-stage').value='ابتدائي';
+ updateGradeSelect('s-stage','s-grade');
  toast('تمت إضافة الطالب');
 }
 
@@ -4710,6 +4871,8 @@ function openEditStudent(id){
  document.getElementById('edit-s-phone').value=s.phone||'';
  document.getElementById('edit-s-pphone').value=s.parentPhone||'';
  document.getElementById('edit-s-stage').value=s.stage||'ابتدائي';
+ updateGradeSelect('edit-s-stage','edit-s-grade');
+ document.getElementById('edit-s-grade').value=s.grade||'';
  document.getElementById('edit-s-sub-start').value=s.subStart||'';
  document.getElementById('edit-s-sub-end').value=s.subEnd||'';
  document.getElementById('edit-s-sub-price').value=s.subPrice||'';
@@ -4742,6 +4905,7 @@ async function saveEditStudent(){
  fname:fname,
  lname:lname,
  stage:document.getElementById('edit-s-stage').value,
+ grade:document.getElementById('edit-s-grade').value,
  phone:normalizeLocalPhone(document.getElementById('edit-s-phone').value),
  parentPhone:normalizeLocalPhone(document.getElementById('edit-s-pphone').value),
  subStart:nextSubStart,
@@ -4789,7 +4953,7 @@ function openStudentProfile(id){
  <div class="profile-avatar">${s.fname[0]}</div>
  <div>
  <div class="profile-name">${s.fname} ${s.lname}</div>
- <div class="profile-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'—'} | ${s.phone||'—'} ${s.parentPhone?`| <a href="https://wa.me/${s.parentPhone.replace(/\\D/g,'')}" style="color:var(--wa)">${s.parentPhone}</a>`:''}</div>
+ <div class="profile-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'—'}${s.grade?' | '+s.grade:''} | ${s.phone||'—'} ${s.parentPhone?`| <a href="https://wa.me/${s.parentPhone.replace(/\\D/g,'')}" style="color:var(--wa)">${s.parentPhone}</a>`:''}</div>
  ${beh?`<div style="margin-top:6px;font-size:14px">${starsHtml(beh.stars)} <span style="font-size:10px;color:var(--muted)">${beh.note||''}</span></div>`:''}
  <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
  <span class="beh-indicator ${behStatus.cls}" style="font-size:9px">${behStatus.label}</span>
@@ -5412,9 +5576,19 @@ function resetDiscWarnFilters(){
  renderWarningsList();
 }
 function resetDiscStudFilters(){
- ['disc-s-search','disc-s-status','disc-s-stage','disc-s-viols'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+ ['disc-s-search','disc-s-status','disc-s-stage','disc-s-grade','disc-s-viols'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
  var s=document.getElementById('disc-s-sort');if(s)s.value='viols_desc';
  renderStudentsStatusList();
+}
+
+function discStageFilterChanged(){
+ var stageEl=document.getElementById('disc-s-stage');
+ var gradeEl=document.getElementById('disc-s-grade');
+ if(!stageEl||!gradeEl)return;
+ var stage=stageEl.value;
+ if(!stage){gradeEl.innerHTML='<option value="">الكل</option>';return;}
+ var grades=getGradesList(stage);
+ gradeEl.innerHTML='<option value="">الكل</option>'+grades.map(function(g){return '<option value="'+g+'">'+g+'</option>';}).join('');
 }
 
 // ── gVal helper ──
@@ -5552,6 +5726,7 @@ function renderStudentsStatusList(){
  var q=_dv('disc-s-search').toLowerCase().trim();
  var statusF=_dv('disc-s-status');
  var stageF=_dv('disc-s-stage');
+ var gradeF=_dv('disc-s-grade');
  var violsF=_dv('disc-s-viols');
  var sortF=_dv('disc-s-sort')||'viols_desc';
 
@@ -5560,6 +5735,7 @@ function renderStudentsStatusList(){
  var filtered=data.students.filter(function(s){
  if(q&&!(s.fname+' '+s.lname).toLowerCase().includes(q))return false;
  if(stageF&&(s.stage||'ابتدائي')!==stageF)return false;
+ if(gradeF&&(s.grade||'')!==gradeF)return false;
  var vCnt=getViolations(s.id).length;
  if(violsF==='has'&&vCnt===0)return false;
  if(violsF==='none'&&vCnt>0)return false;
@@ -5577,7 +5753,7 @@ function renderStudentsStatusList(){
 
  var statsEl=document.getElementById('disc-s-filter-stats');
  if(statsEl){
- var hasF=q||statusF||stageF||violsF;
+ var hasF=q||statusF||stageF||gradeF||violsF;
  statsEl.textContent=hasF?'يُعرض '+filtered.length+' من أصل '+data.students.length+' طالب':'';
  }
 
@@ -6128,7 +6304,7 @@ function renderFees(){
  '<div class="avatar avatar-gold">'+s.fname[0]+'</div>'+
  '<div>'+
  '<div class="item-name" style="cursor:pointer" onclick="openStudentProfile('+s.id+')">'+s.fname+' '+s.lname+'</div>'+
- '<div class="item-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> '+(s.stage||'ابتدائي')+'</div>'+
+ '<div class="item-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> '+(s.stage||'ابتدائي')+(s.grade?' | '+s.grade:'')+'</div>'+
  (price>0?'<div class="item-sub" style="color:var(--muted)">'+pct+'% مسدد</div>':'<div class="item-sub" style="color:var(--muted)">لم يحدد سعر الاشتراك</div>')+
  '</div>'+
  '</div>'+
@@ -6232,6 +6408,390 @@ async function addPayment(){
 }
 
 // ══════════════════════════════════════════════
+// COURSES — الدورات
+// ══════════════════════════════════════════════
+var _courseFilter = 'all';
+
+function setCourseFilter(f) {
+ _courseFilter = f;
+ // update button styles
+ var btns = ['cf-all','cf-ongoing','cf-completed','cf-paused','cf-notstarted'];
+ var vals = ['all','جارية','مكتملة','متوقفة','لم تبدأ'];
+ btns.forEach(function(id, i) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (vals[i] === f) {
+   el.style.background = 'var(--gold)';
+   el.style.color = '#000';
+   el.style.border = 'none';
+  } else {
+   el.style.background = 'var(--card2)';
+   el.style.color = 'var(--text)';
+   el.style.border = '1px solid var(--border)';
+  }
+ });
+ renderCourses();
+}
+
+function courseProgress(courseId) {
+ var chapters = (data.courseChapters || []).filter(function(c) { return c.courseId === courseId; });
+ var totalTopics = 0;
+ var doneTopics = 0;
+ chapters.forEach(function(ch) {
+  var topics = (data.courseTopics || []).filter(function(t) { return t.chapterId === ch.id; });
+  totalTopics += topics.length;
+  doneTopics += topics.filter(function(t) { return t.done; }).length;
+ });
+ return { chapters: chapters.length, total: totalTopics, done: doneTopics,
+  pct: totalTopics > 0 ? Math.round(doneTopics / totalTopics * 100) : 0 };
+}
+
+function getCourseStatusColor(status) {
+ if (status === 'جارية') return 'var(--success)';
+ if (status === 'مكتملة') return 'var(--info)';
+ if (status === 'متوقفة') return 'var(--warning)';
+ return 'var(--muted)';
+}
+function getCourseStatusBg(status) {
+ if (status === 'جارية') return 'rgba(52,211,153,0.12)';
+ if (status === 'مكتملة') return 'rgba(99,179,237,0.12)';
+ if (status === 'متوقفة') return 'rgba(246,173,85,0.12)';
+ return 'rgba(160,174,192,0.10)';
+}
+
+function renderCourses() {
+ var el = document.getElementById('courses-list');
+ if (!el) return;
+ var q = (document.getElementById('course-search') ? document.getElementById('course-search').value : '').toLowerCase().trim();
+ var courses = data.courses || [];
+
+ var filtered = courses.filter(function(c) {
+  if (_courseFilter !== 'all' && c.status !== _courseFilter) return false;
+  if (q) {
+   var t = gT(c.teacherId);
+   var tName = t ? t.fname + ' ' + t.lname : '';
+   var hay = (c.name + ' ' + c.subject + ' ' + tName).toLowerCase();
+   if (!hay.includes(q)) return false;
+  }
+  return true;
+ });
+
+ if (!filtered.length) {
+  el.innerHTML = '<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><p>' + (q || _courseFilter !== 'all' ? 'لا توجد نتائج مطابقة' : 'لا توجد دورات حتى الآن') + '</p></div>';
+  return;
+ }
+
+ el.innerHTML = filtered.map(function(c) {
+  var p = courseProgress(c.id);
+  var t = gT(c.teacherId);
+  var tName = t ? t.fname + ' ' + t.lname : 'غير محدد';
+  var sc = getCourseStatusColor(c.status);
+  var sb = getCourseStatusBg(c.status);
+  var pBar = '<div style="background:var(--border2);border-radius:4px;height:5px;margin-top:6px"><div style="background:var(--gold);height:5px;border-radius:4px;width:' + p.pct + '%"></div></div>';
+  return '<div class="item-card" style="cursor:pointer" onclick="openCourseDetail(' + c.id + ')">' +
+   '<div class="item-card-header">' +
+   '<div class="item-card-info">' +
+   '<div class="avatar avatar-gold" style="min-width:36px;height:36px;font-size:13px">' + (c.name[0] || 'د') + '</div>' +
+   '<div style="flex:1">' +
+   '<div class="item-name">' + c.name + '</div>' +
+   '<div class="item-sub" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
+   '<span>' + c.subject + '</span>' +
+   '<span style="color:var(--muted)">|</span>' +
+   '<span>' + tName + '</span>' +
+   '</div>' +
+   '<div style="margin-top:5px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
+   '<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:' + sb + ';color:' + sc + ';font-weight:700">' + c.status + '</span>' +
+   (c.startDate ? '<span style="font-size:9px;color:var(--muted)">بدأ: ' + c.startDate + '</span>' : '') +
+   '</div>' +
+   '</div>' +
+   '</div>' +
+   '<div class="item-card-actions">' +
+   '<button class="btn btn-info btn-sm" onclick="event.stopPropagation();openEditCourseModal(' + c.id + ')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
+   '<button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCourse(' + c.id + ')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>' +
+   '</div>' +
+   '</div>' +
+   '<div class="item-stats">' +
+   '<div class="item-stat"><div class="item-stat-val">' + p.chapters + '</div><div class="item-stat-lbl">فصول</div></div>' +
+   '<div class="item-stat"><div class="item-stat-val">' + p.total + '</div><div class="item-stat-lbl">مواضيع</div></div>' +
+   '<div class="item-stat"><div class="item-stat-val" style="color:var(--success)">' + p.done + '</div><div class="item-stat-lbl">مكتملة</div></div>' +
+   '<div class="item-stat"><div class="item-stat-val" style="color:var(--gold)">' + p.pct + '%</div><div class="item-stat-lbl">الإنجاز</div></div>' +
+   '</div>' +
+   pBar +
+   '</div>';
+ }).join('');
+}
+
+function openAddCourseModal() {
+ document.getElementById('course-modal-title').textContent = 'إضافة دورة جديدة';
+ document.getElementById('course-edit-id').value = '';
+ document.getElementById('course-name').value = '';
+ document.getElementById('course-subject').value = '';
+ document.getElementById('course-desc').value = '';
+ document.getElementById('course-students-count').value = '';
+ document.getElementById('course-start-date').value = today();
+ document.getElementById('course-end-date').value = '';
+ document.getElementById('course-status').value = 'لم تبدأ';
+ var tSel = document.getElementById('course-teacher');
+ tSel.innerHTML = '<option value="">-- اختياري --</option>' +
+  data.teachers.map(function(t) { return '<option value="' + t.id + '">' + t.fname + ' ' + t.lname + '</option>'; }).join('');
+ document.getElementById('modal-add-course').classList.add('open');
+}
+
+function openEditCourseModal(id) {
+ var c = (data.courses || []).find(function(x) { return x.id === id; });
+ if (!c) return;
+ document.getElementById('course-modal-title').textContent = 'تعديل الدورة';
+ document.getElementById('course-edit-id').value = c.id;
+ document.getElementById('course-name').value = c.name || '';
+ document.getElementById('course-subject').value = c.subject || '';
+ document.getElementById('course-desc').value = c.desc || '';
+ document.getElementById('course-students-count').value = c.studentsCount || '';
+ document.getElementById('course-start-date').value = c.startDate || '';
+ document.getElementById('course-end-date').value = c.endDate || '';
+ document.getElementById('course-status').value = c.status || 'لم تبدأ';
+ var tSel = document.getElementById('course-teacher');
+ tSel.innerHTML = '<option value="">-- اختياري --</option>' +
+  data.teachers.map(function(t) { return '<option value="' + t.id + '">' + t.fname + ' ' + t.lname + '</option>'; }).join('');
+ tSel.value = c.teacherId || '';
+ document.getElementById('modal-add-course').classList.add('open');
+}
+
+function saveCourse() {
+ var name = document.getElementById('course-name').value.trim();
+ var subject = document.getElementById('course-subject').value.trim();
+ if (!name || !subject) { toast('يرجى إدخال اسم الدورة والمادة'); return; }
+ var editId = parseInt(document.getElementById('course-edit-id').value) || 0;
+ var obj = {
+  name: name,
+  subject: subject,
+  desc: document.getElementById('course-desc').value.trim(),
+  studentsCount: parseInt(document.getElementById('course-students-count').value) || 0,
+  startDate: document.getElementById('course-start-date').value,
+  endDate: document.getElementById('course-end-date').value,
+  status: document.getElementById('course-status').value,
+  teacherId: parseInt(document.getElementById('course-teacher').value) || 0
+ };
+ if (!data.courses) data.courses = [];
+ if (editId) {
+  var idx = data.courses.findIndex(function(c) { return c.id === editId; });
+  if (idx !== -1) data.courses[idx] = Object.assign({}, data.courses[idx], obj);
+ } else {
+  obj.id = data.nextId.course++;
+  data.courses.push(obj);
+ }
+ save();
+ closeModal('add-course');
+ renderCourses();
+ toast(editId ? 'تم تحديث الدورة' : 'تمت إضافة الدورة');
+}
+
+function deleteCourse(id) {
+ var c = (data.courses || []).find(function(x) { return x.id === id; });
+ var cName = c ? c.name : 'هذه الدورة';
+ showConfirm({ title: 'حذف ' + cName, msg: 'سيتم حذف الدورة وجميع فصولها ومواضيعها.', confirmText: 'نعم، احذف' }, function() {
+  data.courses = (data.courses || []).filter(function(x) { return x.id !== id; });
+  var chapIds = (data.courseChapters || []).filter(function(c) { return c.courseId === id; }).map(function(c) { return c.id; });
+  data.courseChapters = (data.courseChapters || []).filter(function(c) { return c.courseId !== id; });
+  data.courseTopics = (data.courseTopics || []).filter(function(t) { return chapIds.indexOf(t.chapterId) === -1; });
+  save();
+  renderCourses();
+  toast('تم حذف ' + cName);
+ });
+}
+
+var _currentCourseId = 0;
+
+function openCourseDetail(id) {
+ _currentCourseId = id;
+ renderCourseDetail(id);
+ showPage('course-detail');
+}
+
+function openEditCurrentCourse() {
+ openEditCourseModal(_currentCourseId);
+}
+
+function deleteCurrentCourse() {
+ deleteCourse(_currentCourseId);
+ showPage('courses');
+}
+
+function renderCourseDetail(id) {
+ var c = (data.courses || []).find(function(x) { return x.id === id; });
+ if (!c) return;
+ var el = document.getElementById('course-detail-content');
+ if (!el) return;
+ var p = courseProgress(id);
+ var t = gT(c.teacherId);
+ var tName = t ? t.fname + ' ' + t.lname : 'غير محدد';
+ var sc = getCourseStatusColor(c.status);
+ var sb = getCourseStatusBg(c.status);
+ var chapters = (data.courseChapters || []).filter(function(ch) { return ch.courseId === id; });
+
+ var chapHtml = chapters.map(function(ch) {
+  var topics = (data.courseTopics || []).filter(function(tp) { return tp.chapterId === ch.id; });
+  var topicsHtml = topics.map(function(tp) {
+   return '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--card2);border-radius:8px;margin-bottom:6px">' +
+    '<input type="checkbox" ' + (tp.done ? 'checked' : '') + ' onchange="toggleTopicDone(' + tp.id + ',this.checked)" style="width:16px;height:16px;accent-color:var(--gold);cursor:pointer;flex-shrink:0">' +
+    '<span style="flex:1;font-size:12px;' + (tp.done ? 'text-decoration:line-through;color:var(--muted)' : '') + '">' + tp.title + '</span>' +
+    '<button onclick="openEditTopicModal(' + tp.id + ',' + ch.id + ')" style="background:none;border:none;color:var(--text-3);cursor:pointer;padding:2px 6px;font-size:11px" title="تعديل">✏️</button>' +
+    '<button onclick="deleteTopic(' + tp.id + ')" style="background:none;border:none;color:var(--danger);cursor:pointer;padding:2px 6px;font-size:11px" title="حذف">✕</button>' +
+    '</div>';
+  }).join('');
+
+  return '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px">' +
+   '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+   '<div style="font-size:13px;font-weight:700;color:var(--gold)">' + ch.title + '</div>' +
+   '<div style="display:flex;gap:6px">' +
+   '<button class="btn btn-gold btn-sm" onclick="openAddTopicModal(' + ch.id + ')" style="font-size:10px;padding:4px 10px">+ موضوع</button>' +
+   '<button onclick="openEditChapterModal(' + ch.id + ',' + id + ')" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:11px;padding:4px" title="تعديل الفصل">✏️</button>' +
+   '<button onclick="deleteChapter(' + ch.id + ')" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:11px;padding:4px" title="حذف الفصل">✕</button>' +
+   '</div>' +
+   '</div>' +
+   (topicsHtml || '<div style="font-size:11px;color:var(--muted);padding:8px 0">لا توجد مواضيع — أضف موضوعاً</div>') +
+   '</div>';
+ }).join('');
+
+ var pct = p.pct;
+ var pctColor = pct >= 75 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--danger)';
+
+ el.innerHTML =
+  '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px">' +
+  '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">' +
+  '<div class="avatar avatar-gold" style="width:48px;height:48px;font-size:18px;flex-shrink:0">' + (c.name[0] || 'د') + '</div>' +
+  '<div style="flex:1">' +
+  '<div style="font-size:16px;font-weight:800">' + c.name + '</div>' +
+  '<div style="font-size:12px;color:var(--muted);margin-top:3px">' + c.subject + ' | ' + tName + '</div>' +
+  '<div style="margin-top:6px"><span style="font-size:10px;padding:3px 10px;border-radius:8px;background:' + sb + ';color:' + sc + ';font-weight:700">' + c.status + '</span></div>' +
+  '</div>' +
+  '</div>' +
+  (c.desc ? '<div style="font-size:12px;color:var(--text-2);margin-bottom:14px;padding:10px;background:var(--card2);border-radius:8px">' + c.desc + '</div>' : '') +
+  '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px">' +
+  '<div class="item-stat"><div class="item-stat-val" style="color:var(--gold)">' + c.studentsCount + '</div><div class="item-stat-lbl">عدد الطلبة</div></div>' +
+  '<div class="item-stat"><div class="item-stat-val">' + p.chapters + '</div><div class="item-stat-lbl">الفصول</div></div>' +
+  '<div class="item-stat"><div class="item-stat-val">' + p.total + '</div><div class="item-stat-lbl">إجمالي المواضيع</div></div>' +
+  '<div class="item-stat"><div class="item-stat-val" style="color:var(--success)">' + p.done + '</div><div class="item-stat-lbl">مواضيع مكتملة</div></div>' +
+  '<div class="item-stat"><div class="item-stat-val" style="color:var(--warning)">' + (p.total - p.done) + '</div><div class="item-stat-lbl">متبقية</div></div>' +
+  '<div class="item-stat"><div class="item-stat-val" style="color:' + pctColor + '">' + pct + '%</div><div class="item-stat-lbl">نسبة الإنجاز</div></div>' +
+  '</div>' +
+  '<div style="background:var(--card2);border-radius:6px;height:8px;margin-bottom:6px"><div style="background:' + pctColor + ';height:8px;border-radius:6px;width:' + pct + '%;transition:width 0.4s ease"></div></div>' +
+  '<div style="font-size:10px;color:var(--muted);text-align:center">' + p.done + ' من ' + p.total + ' موضوعاً مكتملاً (' + pct + '%)</div>' +
+  (c.startDate ? '<div style="font-size:10px;color:var(--muted);margin-top:8px">تاريخ البدء: ' + c.startDate + (c.endDate ? ' — الانتهاء: ' + c.endDate : '') + '</div>' : '') +
+  '</div>' +
+  '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">' +
+  '<div style="font-size:13px;font-weight:700">الفصول والمواضيع</div>' +
+  '<button class="btn btn-gold btn-sm" onclick="openAddChapterModal(' + id + ')" style="font-size:11px">+ فصل جديد</button>' +
+  '</div>' +
+  (chapHtml || '<div class="empty" style="padding:30px 0"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg></div><p>لا توجد فصول — ابدأ بإضافة فصل جديد</p></div>');
+}
+
+// ── Chapter Functions ──
+function openAddChapterModal(courseId) {
+ document.getElementById('chapter-modal-title').textContent = 'إضافة فصل جديد';
+ document.getElementById('chapter-course-id').value = courseId;
+ document.getElementById('chapter-edit-id').value = '';
+ document.getElementById('chapter-title').value = '';
+ document.getElementById('modal-add-chapter').classList.add('open');
+}
+
+function openEditChapterModal(chapterId, courseId) {
+ var ch = (data.courseChapters || []).find(function(x) { return x.id === chapterId; });
+ if (!ch) return;
+ document.getElementById('chapter-modal-title').textContent = 'تعديل الفصل';
+ document.getElementById('chapter-course-id').value = courseId;
+ document.getElementById('chapter-edit-id').value = chapterId;
+ document.getElementById('chapter-title').value = ch.title || '';
+ document.getElementById('modal-add-chapter').classList.add('open');
+}
+
+function saveChapter() {
+ var title = document.getElementById('chapter-title').value.trim();
+ if (!title) { toast('يرجى إدخال عنوان الفصل'); return; }
+ var courseId = parseInt(document.getElementById('chapter-course-id').value);
+ var editId = parseInt(document.getElementById('chapter-edit-id').value) || 0;
+ if (!data.courseChapters) data.courseChapters = [];
+ if (editId) {
+  var idx = data.courseChapters.findIndex(function(c) { return c.id === editId; });
+  if (idx !== -1) data.courseChapters[idx].title = title;
+ } else {
+  data.courseChapters.push({ id: data.nextId.courseChapter++, courseId: courseId, title: title });
+ }
+ save();
+ closeModal('add-chapter');
+ renderCourseDetail(_currentCourseId);
+ toast(editId ? 'تم تحديث الفصل' : 'تمت إضافة الفصل');
+}
+
+function deleteChapter(id) {
+ showConfirm({ title: 'حذف الفصل', msg: 'سيتم حذف الفصل وجميع مواضيعه.', confirmText: 'نعم، احذف' }, function() {
+  data.courseChapters = (data.courseChapters || []).filter(function(c) { return c.id !== id; });
+  data.courseTopics = (data.courseTopics || []).filter(function(t) { return t.chapterId !== id; });
+  save();
+  renderCourseDetail(_currentCourseId);
+  toast('تم حذف الفصل');
+ });
+}
+
+// ── Topic Functions ──
+function openAddTopicModal(chapterId) {
+ document.getElementById('topic-modal-title').textContent = 'إضافة موضوع جديد';
+ document.getElementById('topic-chapter-id').value = chapterId;
+ document.getElementById('topic-edit-id').value = '';
+ document.getElementById('topic-title').value = '';
+ document.getElementById('modal-add-topic').classList.add('open');
+}
+
+function openEditTopicModal(topicId, chapterId) {
+ var tp = (data.courseTopics || []).find(function(x) { return x.id === topicId; });
+ if (!tp) return;
+ document.getElementById('topic-modal-title').textContent = 'تعديل الموضوع';
+ document.getElementById('topic-chapter-id').value = chapterId;
+ document.getElementById('topic-edit-id').value = topicId;
+ document.getElementById('topic-title').value = tp.title || '';
+ document.getElementById('modal-add-topic').classList.add('open');
+}
+
+function saveTopic() {
+ var title = document.getElementById('topic-title').value.trim();
+ if (!title) { toast('يرجى إدخال عنوان الموضوع'); return; }
+ var chapterId = parseInt(document.getElementById('topic-chapter-id').value);
+ var editId = parseInt(document.getElementById('topic-edit-id').value) || 0;
+ if (!data.courseTopics) data.courseTopics = [];
+ if (editId) {
+  var idx = data.courseTopics.findIndex(function(t) { return t.id === editId; });
+  if (idx !== -1) data.courseTopics[idx].title = title;
+ } else {
+  data.courseTopics.push({ id: data.nextId.courseTopic++, chapterId: chapterId, title: title, done: false });
+ }
+ save();
+ closeModal('add-topic');
+ renderCourseDetail(_currentCourseId);
+ toast(editId ? 'تم تحديث الموضوع' : 'تمت إضافة الموضوع');
+}
+
+function deleteTopic(id) {
+ data.courseTopics = (data.courseTopics || []).filter(function(t) { return t.id !== id; });
+ save();
+ renderCourseDetail(_currentCourseId);
+ toast('تم حذف الموضوع');
+}
+
+function toggleTopicDone(id, done) {
+ var tp = (data.courseTopics || []).find(function(t) { return t.id === id; });
+ if (!tp) return;
+ tp.done = done;
+ save();
+ // Re-render just the progress numbers without full re-render to avoid losing checkbox state
+ var c = (data.courses || []).find(function(x) { return x.id === _currentCourseId; });
+ if (!c) return;
+ var p = courseProgress(_currentCourseId);
+ var pct = p.pct;
+ var pctColor = pct >= 75 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--danger)';
+ // Update progress bar and stats by re-rendering full detail
+ renderCourseDetail(_currentCourseId);
+}
+
+// ══════════════════════════════════════════════
 // WHATSAPP
 // ══════════════════════════════════════════════
 function waLink(phone,msg){return`https://wa.me/${waPhone(phone)}?text=${encodeURIComponent(msg)}`;}
@@ -6331,7 +6891,7 @@ function renderSubsTab(){
  '<div>' +
  '<div style="font-weight:700;font-size:12px">' + s.fname + ' ' + s.lname + '</div>' +
  '<div style="font-size:10px;color:' + color + ';font-weight:600">' + label + ' — ' + (s.subEnd||'') + '</div>' +
- '<div style="font-size:9px;color:var(--muted)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ' + (s.stage||'') + ' | بدأ: ' + (s.subStart||'—') + '</div>' +
+ '<div style="font-size:9px;color:var(--muted)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ' + (s.stage||'') + (s.grade?' | '+s.grade:'') + ' | بدأ: ' + (s.subStart||'—') + '</div>' +
  (!s.parentPhone ? '<div style="font-size:9px;color:var(--danger)"> لا يوجد رقم ولي أمر</div>' : '') +
  '</div>' +
  (s.parentPhone ? '<button class="btn btn-wa btn-sm" onclick="sendSubExpiryWA(' + s.id + ')"> إشعار</button>' : '—') +
@@ -6480,6 +7040,7 @@ function renderReports(){
  <div class="item-card-info">
  <div class="avatar avatar-gold">${s.fname[0]}</div>
  <div><div class="item-name">${s.fname} ${s.lname}</div>
+ <div class="item-sub">${s.stage||''+(s.grade?' | '+s.grade:'')}</div>
  <div class="item-sub">${s.parentName?`ولي: ${s.parentName}`:''}</div>
  ${beh?`<div style="font-size:11px">${starsHtml(beh.stars)}</div>`:''}
  </div>
@@ -7047,7 +7608,17 @@ function resetAttFilters(){
  var e1=document.getElementById('att-student-search');if(e1)e1.value='';
  var e2=document.getElementById('att-filter-status');if(e2)e2.value='';
  var e3=document.getElementById('att-filter-stage');if(e3)e3.value='';
+ var e4=document.getElementById('att-filter-grade');if(e4)e4.value='';
  renderAttGrid();
+}
+function attStageFilterChanged(){
+ var stageEl=document.getElementById('att-filter-stage');
+ var gradeEl=document.getElementById('att-filter-grade');
+ if(!stageEl||!gradeEl)return;
+ var stage=stageEl.value;
+ if(!stage){gradeEl.innerHTML='<option value="">الكل</option>';return;}
+ var grades=getGradesList(stage);
+ gradeEl.innerHTML='<option value="">الكل</option>'+grades.map(function(g){return '<option value="'+g+'">'+g+'</option>';}).join('');
 }
 function renderAttGrid(){
  var dv=(document.getElementById('att-date')?document.getElementById('att-date').value:'')||today();
@@ -7056,17 +7627,19 @@ function renderAttGrid(){
  var attSearch=(document.getElementById('att-student-search')?document.getElementById('att-student-search').value:'').toLowerCase().trim();
  var statusF=document.getElementById('att-filter-status')?document.getElementById('att-filter-status').value:'';
  var stageF=document.getElementById('att-filter-stage')?document.getElementById('att-filter-stage').value:'';
- if(!data.students.length){g.innerHTML=`<div class="empty"><div class="empty-icon"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/></svg></div><p>لا يوجد طلبة</p></div>`;return;}
+ var gradeF=document.getElementById('att-filter-grade')?document.getElementById('att-filter-grade').value:'';
+ if(!data.students.length){g.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><p>لا يوجد طلبة</p></div>';return;}
  data.students.forEach(s=>{if(attState[s.id]===undefined){var ex=data.attendance.find(a=>a.studentId===s.id&&a.date===dv);attState[s.id]=ex?ex.status:'absent';}});
  var filtered=data.students.filter(function(s){
  if(attSearch){var h=(s.fname+' '+s.lname+' '+(s.phone||'')+' '+(s.parentPhone||'')).toLowerCase();if(!h.includes(attSearch))return false;}
  if(stageF&&(s.stage||'ابتدائي')!==stageF)return false;
+ if(gradeF&&(s.grade||'')!==gradeF)return false;
  if(statusF&&(attState[s.id]||'absent')!==statusF)return false;
  return true;
  });
  var statsEl=document.getElementById('att-filter-stats');
- if(statsEl){var hasF=attSearch||statusF||stageF;statsEl.textContent=hasF?'يُعرض '+filtered.length+' من أصل '+data.students.length+' طالب':'';}
- if(!filtered.length){g.innerHTML=`<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p>لا توجد نتائج مطابقة</p></div>`;return;}
+ if(statsEl){var hasF=attSearch||statusF||stageF||gradeF;statsEl.textContent=hasF?'يُعرض '+filtered.length+' من أصل '+data.students.length+' طالب':'';}
+ if(!filtered.length){g.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p>لا توجد نتائج مطابقة</p></div>';return;}
  g.innerHTML=filtered.map(s=>{
  var state=attState[s.id]||'absent';
  var isPresent=state==='present';
@@ -7085,7 +7658,7 @@ function renderAttGrid(){
  '<div class="avatar avatar-gold" style="width:36px;height:36px;font-size:13px;cursor:pointer" onclick="openStudentProfile('+s.id+')">'+s.fname[0]+'</div>'+
  '<div>'+
  '<div style="font-size:11px;font-weight:700;cursor:pointer" onclick="openStudentProfile('+s.id+')">'+s.fname+' '+s.lname+'</div>'+
- '<div style="font-size:9px;color:var(--text-3)">'+(s.stage?s.stage+' | ':'')+
+ '<div style="font-size:9px;color:var(--text-3)">'+(s.stage?s.stage+(s.grade?' | '+s.grade:'')+' | ':'')+
  (arrivalTime?'دخول: '+formatTime12(arrivalTime)+' ':'')+
  (departTime?'خروج: '+formatTime12(departTime):'')+'</div>'+
  '</div>'+
@@ -8411,6 +8984,16 @@ function globalSearch(q) {
     var txt = ((s.fname + ' ' + s.lname) + ' ' + (sl.note || '')).toLowerCase();
     if (txt.includes(q)) {
       results.push({ type: 'قصاصة', label: s.fname + ' ' + s.lname, sub: sl.note ? sl.note.substring(0, 40) : '', action: function() { showPage('slips'); } });
+    }
+  });
+
+  // بحث في الدورات
+  (data.courses || []).forEach(function(c) {
+    var t = gT(c.teacherId);
+    var tName = t ? t.fname + ' ' + t.lname : '';
+    var txt = (c.name + ' ' + c.subject + ' ' + tName).toLowerCase();
+    if (txt.includes(q)) {
+      results.push({ type: 'دورة', label: c.name, sub: c.subject + (tName ? ' | ' + tName : ''), action: (function(cid) { return function() { openCourseDetail(cid); }; })(c.id) });
     }
   });
 
