@@ -3675,10 +3675,24 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div class="modal">
  <h3 id="course-form-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> إضافة دورة جديدة</span></h3>
  <input type="hidden" id="cf-edit-id">
- <div class="form-row">
  <div class="form-group"><label>اسم الدورة <span style="color:var(--danger)">*</span></label><input type="text" id="cf-name" placeholder="دورة الرياضيات التأسيسية"></div>
- <div class="form-group"><label>المادة <span style="color:var(--danger)">*</span></label><input type="text" id="cf-subject" placeholder="الرياضيات"></div>
+ <div class="form-row">
+ <div class="form-group"><label>المرحلة الدراسية <span style="color:var(--danger)">*</span></label>
+ <select id="cf-stage" onchange="cfStageChanged()">
+ <option value="">-- اختر المرحلة --</option>
+ <option value="ابتدائي">ابتدائي</option>
+ <option value="متوسط">متوسط</option>
+ <option value="اعدادي">اعدادي</option>
+ </select></div>
+ <div class="form-group"><label>الصف <span style="color:var(--danger)">*</span></label>
+ <select id="cf-grade" onchange="cfGradeChanged()">
+ <option value="">-- اختر المرحلة أولاً --</option>
+ </select></div>
  </div>
+ <div class="form-group"><label>المادة <span style="color:var(--danger)">*</span></label>
+ <select id="cf-subject">
+ <option value="">-- اختر الصف أولاً --</option>
+ </select></div>
  <div class="form-row">
  <div class="form-group"><label>المدرس المسؤول</label>
  <select id="cf-teacher"><option value="">-- اختياري --</option></select>
@@ -6565,7 +6579,7 @@ function renderCourses(){
   if(q){
    var t=gT(c.teacherId);
    var tName=t?t.fname+' '+t.lname:'';
-   var hay=(c.name+' '+c.subject+' '+tName).toLowerCase();
+   var hay=(c.name+' '+c.subject+' '+(c.stage||'')+' '+(c.grade||'')+' '+tName).toLowerCase();
    if(!hay.includes(q)) return false;
   }
   return true;
@@ -6588,7 +6602,7 @@ function renderCourses(){
    '<div style="flex:1;min-width:0">' +
    '<div class="item-name">'+c.name+'</div>' +
    '<div class="item-sub" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
-   '<span>'+c.subject+'</span><span style="color:var(--border2)">|</span><span>'+tName+'</span>' +
+   '<span>'+(c.grade||c.subject)+'</span><span style="color:var(--border2)">|</span><span>'+c.subject+'</span>'+(tName&&tName!=='غير محدد'?'<span style="color:var(--border2)">|</span><span>'+tName+'</span>':'')+
    '</div>' +
    '<div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap;align-items:center">' +
    '<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:'+sb+';color:'+sc+';font-weight:700">'+c.status+'</span>' +
@@ -6682,7 +6696,7 @@ function renderCourseDetail(){
   '<div class="avatar avatar-gold" style="width:46px;height:46px;font-size:17px;flex-shrink:0">'+(c.name[0]||'د')+'</div>' +
   '<div style="flex:1;min-width:0">' +
   '<div style="font-size:16px;font-weight:800">'+c.name+'</div>' +
-  '<div style="font-size:12px;color:var(--muted);margin-top:3px">'+c.subject+' | '+tName+'</div>' +
+  '<div style="font-size:12px;color:var(--muted);margin-top:3px">'+(c.stage?c.stage+(c.grade?' — '+c.grade:''):'')+' | '+c.subject+(tName&&tName!=='غير محدد'?' | '+tName:'')+'</div>' +
   '<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
   '<span style="font-size:10px;padding:3px 10px;border-radius:8px;background:'+sb+';color:'+sc+';font-weight:700">'+c.status+'</span>' +
   (c.startDate?'<span style="font-size:10px;color:var(--muted)">'+c.startDate+(c.endDate?' → '+c.endDate:'')+'</span>':'') +
@@ -6723,14 +6737,60 @@ function renderCourseDetail(){
 }
 
 // ── course CRUD ──
+// ── Course form: stage → grade → subject cascade ──
+var CF_GRADES = {
+ 'ابتدائي': ['الأول الابتدائي','الثاني الابتدائي','الثالث الابتدائي','الرابع الابتدائي','الخامس الابتدائي','السادس الابتدائي'],
+ 'متوسط':   ['الأول المتوسط','الثاني المتوسط','الثالث المتوسط'],
+ 'اعدادي':  ['الرابع الإعدادي','الخامس الإعدادي','السادس الإعدادي']
+};
+var CF_SUBJECTS = {
+ 'ابتدائي': ['اللغة العربية','الرياضيات','العلوم','اللغة الانكليزية','التربية الاسلامية','الاجتماعيات'],
+ 'متوسط':   ['اللغة العربية','الرياضيات','الفيزياء','الكيمياء','الاحياء','اللغة الانكليزية','التربية الاسلامية','الاجتماعيات'],
+ 'اعدادي':  ['اللغة العربية','الرياضيات','الفيزياء','الكيمياء','علم الاحياء','اللغة الانكليزية','التربية الاسلامية']
+};
+function cfStageChanged(){
+ var stage=document.getElementById('cf-stage').value;
+ var gradeEl=document.getElementById('cf-grade');
+ var subEl=document.getElementById('cf-subject');
+ gradeEl.innerHTML='<option value="">-- اختر الصف --</option>';
+ subEl.innerHTML='<option value="">-- اختر الصف أولاً --</option>';
+ if(!stage) return;
+ var grades=CF_GRADES[stage]||[];
+ grades.forEach(function(g){
+  var o=document.createElement('option');o.value=g;o.textContent=g;gradeEl.appendChild(o);
+ });
+}
+function cfGradeChanged(){
+ var stage=document.getElementById('cf-stage').value;
+ var subEl=document.getElementById('cf-subject');
+ subEl.innerHTML='<option value="">-- اختر المادة --</option>';
+ if(!stage) return;
+ var subjects=CF_SUBJECTS[stage]||[];
+ subjects.forEach(function(s){
+  var o=document.createElement('option');o.value=s;o.textContent=s;subEl.appendChild(o);
+ });
+}
+function _cfSetStageGrade(stage, grade, subject){
+ var stEl=document.getElementById('cf-stage');
+ if(stEl) stEl.value=stage||'';
+ cfStageChanged();
+ var grEl=document.getElementById('cf-grade');
+ if(grEl && grade) grEl.value=grade;
+ cfGradeChanged();
+ var subEl=document.getElementById('cf-subject');
+ if(subEl && subject) subEl.value=subject;
+}
+
 function openAddCourseModal(){
  document.getElementById('course-form-title').innerHTML='<span style="display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> إضافة دورة جديدة</span>';
  document.getElementById('cf-edit-id').value='';
- ['cf-name','cf-subject','cf-desc'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+ document.getElementById('cf-name').value='';
+ document.getElementById('cf-desc').value='';
  document.getElementById('cf-students').value='';
  document.getElementById('cf-start').value=today();
  document.getElementById('cf-end').value='';
  document.getElementById('cf-status').value='لم تبدأ';
+ _cfSetStageGrade('','','');
  _populateCourseTeachers('');
  document.getElementById('modal-course-form').classList.add('open');
 }
@@ -6739,12 +6799,12 @@ function openEditCourseModal(id){
  document.getElementById('course-form-title').innerHTML='<span style="display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> تعديل الدورة</span>';
  document.getElementById('cf-edit-id').value=c.id;
  document.getElementById('cf-name').value=c.name||'';
- document.getElementById('cf-subject').value=c.subject||'';
  document.getElementById('cf-desc').value=c.desc||'';
  document.getElementById('cf-students').value=c.studentsCount||'';
  document.getElementById('cf-start').value=c.startDate||'';
  document.getElementById('cf-end').value=c.endDate||'';
  document.getElementById('cf-status').value=c.status||'لم تبدأ';
+ _cfSetStageGrade(c.stage||'', c.grade||'', c.subject||'');
  _populateCourseTeachers(c.teacherId||'');
  document.getElementById('modal-course-form').classList.add('open');
 }
@@ -6755,10 +6815,15 @@ function _populateCourseTeachers(selectedId){
 }
 function saveCourseForm(){
  var name=document.getElementById('cf-name').value.trim();
- var subject=document.getElementById('cf-subject').value.trim();
- if(!name||!subject){toast('يرجى إدخال اسم الدورة والمادة');return;}
+ var stage=document.getElementById('cf-stage').value;
+ var grade=document.getElementById('cf-grade').value;
+ var subject=document.getElementById('cf-subject').value;
+ if(!name){toast('يرجى إدخال اسم الدورة');return;}
+ if(!stage||!grade){toast('يرجى اختيار المرحلة والصف');return;}
+ if(!subject){toast('يرجى اختيار المادة');return;}
  var editId=parseInt(document.getElementById('cf-edit-id').value)||0;
- var obj={name:name,subject:subject,desc:document.getElementById('cf-desc').value.trim(),
+ var obj={name:name,stage:stage,grade:grade,subject:subject,
+  desc:document.getElementById('cf-desc').value.trim(),
   studentsCount:parseInt(document.getElementById('cf-students').value)||0,
   startDate:document.getElementById('cf-start').value,
   endDate:document.getElementById('cf-end').value,
@@ -6924,7 +6989,7 @@ function _buildTeacherMsg(courseId,note){
  var nl='\n';
  var msg='الأستاذ/ة '+tName+' المحترم/ة'+nl;
  msg+='تحية طيبة،'+nl+nl;
- msg+='نود إعلامكم بأن دورة "'+c.name+'" لمادة '+c.subject+' وصلت إلى:'+nl+nl;
+ msg+='نود إعلامكم بأن دورة "'+c.name+'" لمادة '+c.subject+(c.grade?' — '+c.grade:'')+' وصلت إلى:'+nl+nl;
  if(st.lastChapter) msg+='🔖 الفصل الحالي: '+st.lastChapter.title+nl;
  if(st.lastTopic) msg+='📌 الموضوع الحالي: '+st.lastTopic.title+nl;
  msg+='📊 نسبة تقدم المادة: '+st.pct+'%'+nl;
@@ -6970,7 +7035,7 @@ function _buildParentMsg(courseId,note){
  var nl='\n';
  var msg='أولياء الأمور الكرام،'+nl;
  msg+='تحية طيبة،'+nl+nl;
- msg+='نود إعلامكم بأن مادة '+c.subject+' ضمن دورة "'+c.name+'" وصلت إلى:'+nl+nl;
+ msg+='نود إعلامكم بأن مادة '+c.subject+(c.grade?' — '+c.grade:'')+' ضمن دورة "'+c.name+'" وصلت إلى:'+nl+nl;
  if(st.lastChapter) msg+='🔖 الفصل الحالي: '+st.lastChapter.title+nl;
  if(st.lastTopic) msg+='📌 الموضوع الحالي: '+st.lastTopic.title+nl;
  msg+='📊 نسبة تقدم المادة: '+st.pct+'%'+nl;
