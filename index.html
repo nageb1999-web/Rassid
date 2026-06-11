@@ -2978,6 +2978,29 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
   <span class="sec-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> الجداول الدراسية</span></span>
   <button class="btn btn-gold btn-sm" onclick="openModal('add-schedule')">+ جدول جديد</button>
  </div>
+ <!-- أزرار تبليغات واتساب للجدول -->
+ <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;padding:10px 12px;background:var(--surface);border-radius:12px;border:1px solid var(--border)">
+  <div style="width:100%;font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:5px">
+   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--wa)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+   تبليغات واتساب — جدول الغد
+  </div>
+  <button class="btn btn-sm" onclick="schedNotifyStudent()" style="background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);color:#25d366;font-family:var(--font);border-radius:9px;padding:7px 12px;cursor:pointer;font-size:11px;display:inline-flex;align-items:center;gap:5px">
+   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+   تبليغ طالب
+  </button>
+  <button class="btn btn-sm" onclick="schedNotifyGroup()" style="background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);color:#25d366;font-family:var(--font);border-radius:9px;padding:7px 12px;cursor:pointer;font-size:11px;display:inline-flex;align-items:center;gap:5px">
+   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+   تبليغ مجموعة
+  </button>
+  <button class="btn btn-sm" onclick="schedNotifyAllTomorrow()" style="background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);color:#25d366;font-family:var(--font);border-radius:9px;padding:7px 12px;cursor:pointer;font-size:11px;display:inline-flex;align-items:center;gap:5px">
+   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+   تبليغ جميع طلبة جدول الغد
+  </button>
+  <button class="btn btn-sm" onclick="schedNotifyTeachers()" style="background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);color:var(--purple);font-family:var(--font);border-radius:9px;padding:7px 12px;cursor:pointer;font-size:11px;display:inline-flex;align-items:center;gap:5px">
+   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+   تبليغ الأساتذة بجدول الغد
+  </button>
+ </div>
  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:12px;background:var(--surface);border-radius:12px;border:1px solid var(--border)">
   <select id="sch-filter-day" onchange="renderSchedules()" style="background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:7px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none"><option value="">كل الأيام</option><option>الأحد</option><option>الاثنين</option><option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option><option>الجمعة</option><option>السبت</option></select>
   <select id="sch-filter-teacher" onchange="renderSchedules()" style="background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:7px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none"><option value="">كل المدرسين</option></select>
@@ -3131,6 +3154,114 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  </div>
  </div>
 </div>
+<!-- MODAL: تبليغ طالب واحد -->
+<div class="modal-overlay" id="modal-sched-notify-student">
+ <div class="modal" style="max-width:440px">
+  <h3 style="display:flex;align-items:center;gap:8px">
+   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+   تبليغ طالب بجدول الغد
+  </h3>
+  <div class="form-group">
+   <label>اختر الطالب</label>
+   <select id="sched-notify-student-sel" onchange="schedNotifyStudentPreview()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+    <option value="">-- اختر طالباً --</option>
+   </select>
+  </div>
+  <div class="form-group" style="margin-top:6px">
+   <label>إرسال إلى</label>
+   <div style="display:flex;gap:10px;margin-top:5px">
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px">
+     <input type="radio" name="sched-notify-to" value="parent" checked style="accent-color:#25d366"> ولي الأمر
+    </label>
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px">
+     <input type="radio" name="sched-notify-to" value="student" style="accent-color:#25d366"> الطالب
+    </label>
+   </div>
+  </div>
+  <div id="sched-notify-student-preview" style="display:none;margin-top:10px;background:var(--card2);border-radius:10px;padding:12px;border:1px solid var(--border2)">
+   <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:6px">معاينة الرسالة:</div>
+   <pre id="sched-notify-student-msg" style="white-space:pre-wrap;font-family:var(--font);font-size:11px;color:var(--text);margin:0;direction:rtl"></pre>
+  </div>
+  <div id="sched-notify-student-no-schedule" style="display:none;margin-top:10px;text-align:center;color:var(--muted);font-size:12px;padding:16px;background:var(--card2);border-radius:10px">لا توجد محاضرات مجدولة لهذا الطالب غداً</div>
+  <div class="modal-footer">
+   <button class="btn btn-outline" onclick="closeModal('sched-notify-student')">إلغاء</button>
+   <button class="btn btn-sm" id="sched-notify-student-send-btn" onclick="schedNotifyStudentSend()" style="display:none;background:#25d366;border:none;color:#fff;font-family:var(--font);border-radius:9px;padding:9px 16px;cursor:pointer;font-size:12px;font-weight:700">إرسال عبر واتساب</button>
+  </div>
+ </div>
+</div>
+
+<!-- MODAL: تبليغ مجموعة -->
+<div class="modal-overlay" id="modal-sched-notify-group">
+ <div class="modal" style="max-width:480px">
+  <h3 style="display:flex;align-items:center;gap:8px">
+   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+   تبليغ مجموعة بجدول الغد
+  </h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+   <div class="form-group">
+    <label>الصف</label>
+    <input type="text" id="sg-grade" placeholder="مثال: الأول" style="background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;width:100%">
+   </div>
+   <div class="form-group">
+    <label>المرحلة</label>
+    <select id="sg-stage" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+     <option value="">الكل</option><option>ابتدائي</option><option>متوسط</option><option>اعدادي</option>
+    </select>
+   </div>
+   <div class="form-group">
+    <label>المادة</label>
+    <input type="text" id="sg-subject" placeholder="اختياري" style="background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;width:100%">
+   </div>
+   <div class="form-group">
+    <label>القاعة</label>
+    <input type="text" id="sg-room" placeholder="اختياري" style="background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;width:100%">
+   </div>
+   <div class="form-group">
+    <label>الدورة</label>
+    <select id="sg-course" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+     <option value="">الكل</option>
+    </select>
+   </div>
+   <div class="form-group">
+    <label>اليوم في الجدول</label>
+    <select id="sg-day" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+     <option value="">الكل</option>
+    </select>
+   </div>
+  </div>
+  <div class="form-group" style="margin-top:4px">
+   <label>إرسال إلى</label>
+   <div style="display:flex;gap:10px;margin-top:5px">
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px">
+     <input type="radio" name="sg-notify-to" value="parent" checked style="accent-color:#25d366"> ولي الأمر
+    </label>
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px">
+     <input type="radio" name="sg-notify-to" value="student" style="accent-color:#25d366"> الطالب
+    </label>
+   </div>
+  </div>
+  <div class="modal-footer">
+   <button class="btn btn-outline" onclick="closeModal('sched-notify-group')">إلغاء</button>
+   <button class="btn btn-sm" onclick="schedNotifyGroupPreview()" style="background:#25d366;border:none;color:#fff;font-family:var(--font);border-radius:9px;padding:9px 16px;cursor:pointer;font-size:12px;font-weight:700">معاينة وإرسال</button>
+  </div>
+ </div>
+</div>
+
+<!-- MODAL: شاشة معاينة قائمة الإرسال -->
+<div class="modal-overlay" id="modal-sched-bulk-preview">
+ <div class="modal" style="max-width:560px;max-height:86vh;display:flex;flex-direction:column">
+  <h3 id="sched-bulk-preview-title" style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+   معاينة قائمة الإرسال
+  </h3>
+  <div id="sched-bulk-meta" style="font-size:11px;color:var(--muted);margin-bottom:10px;flex-shrink:0"></div>
+  <div id="sched-bulk-list" style="overflow-y:auto;flex:1;padding-right:2px"></div>
+  <div class="modal-footer" style="flex-shrink:0;margin-top:12px">
+   <button class="btn btn-outline" onclick="closeModal('sched-bulk-preview')">إغلاق</button>
+  </div>
+ </div>
+</div>
+
 <div class="modal-overlay" id="modal-add-student">
  <div class="modal">
  <h3><span style="display:inline-flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة طالب</span></h3>
@@ -9945,6 +10076,331 @@ function formatTime12H(t){
  var suffix = h >= 12 ? 'م' : 'ص';
  h = h % 12 || 12;
  return h + ':' + m + ' ' + suffix;
+}
+
+// ══════════════════════════════════════════════
+// SCHEDULE WHATSAPP NOTIFICATIONS
+// تبليغات واتساب للجداول الدراسية
+// ══════════════════════════════════════════════
+
+// حساب يوم الغد
+function getTomorrowDay(){
+ var tomorrow = new Date();
+ tomorrow.setDate(tomorrow.getDate() + 1);
+ var days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+ return days[tomorrow.getDay()];
+}
+
+function getTomorrowDateStr(){
+ var tomorrow = new Date();
+ tomorrow.setDate(tomorrow.getDate() + 1);
+ var days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+ var months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+ return days[tomorrow.getDay()] + ' ' + tomorrow.getDate() + ' ' + months[tomorrow.getMonth()] + ' ' + tomorrow.getFullYear();
+}
+
+// جلب جداول الغد
+function getTomorrowSchedules(){
+ var day = getTomorrowDay();
+ return (data.schedules || []).filter(function(s){ return s.day === day; })
+  .sort(function(a, b){ return a.startTime.localeCompare(b.startTime); });
+}
+
+// بناء رسالة الطالب
+function buildStudentScheduleMsg(student, schedules){
+ var instName = (data.settings && data.settings.instName) || 'راصد';
+ var dateStr = getTomorrowDateStr();
+ var sName = student.fname + ' ' + student.lname;
+ var msg = 'السلام عليكم\n';
+ msg += 'جدول الطالب: ' + sName + '\n';
+ msg += 'ليوم غد: ' + dateStr + '\n\n';
+ for(var i = 0; i < schedules.length; i++){
+  var s = schedules[i];
+  var t = gT(s.teacherId);
+  msg += (i + 1) + '. المادة: ' + (s.subject || s.name) + '\n';
+  if(s.grade) msg += '   الصف: ' + s.grade + '\n';
+  msg += '   الأستاذ: ' + (t ? t.fname + ' ' + t.lname : 'غير محدد') + '\n';
+  msg += '   الوقت: من ' + formatTime12H(s.startTime) + ' إلى ' + formatTime12H(s.endTime) + '\n';
+  if(s.room) msg += '   القاعة: ' + s.room + '\n';
+  msg += '\n';
+ }
+ msg += 'يرجى الالتزام بالحضور في الوقت المحدد.\n';
+ msg += instName;
+ return msg;
+}
+
+// بناء رسالة الأستاذ
+function buildTeacherScheduleMsg(teacher, schedules){
+ var instName = (data.settings && data.settings.instName) || 'راصد';
+ var dateStr = getTomorrowDateStr();
+ var tName = teacher.fname + ' ' + teacher.lname;
+ var msg = 'الأستاذ/ة ' + tName + ' المحترم/ة\n';
+ msg += 'تحية طيبة،\n\n';
+ msg += 'جدولكم ليوم غد: ' + dateStr + '\n\n';
+ for(var i = 0; i < schedules.length; i++){
+  var s = schedules[i];
+  var c = s.courseId ? gCourse(s.courseId) : null;
+  // حساب عدد الطلبة المرتبطين بهذه الدورة/الصف
+  var studentCount = '';
+  if(s.courseId){
+   var cStudents = (data.students || []).filter(function(st){
+    return (data.fees || []).some(function(f){ return f.studentId === st.id && f.desc && f.desc.indexOf(c ? c.name : '') !== -1; });
+   });
+   if(cStudents.length) studentCount = String(cStudents.length);
+  }
+  if(!studentCount && s.grade){
+   var gradeStudents = (data.students || []).filter(function(st){ return st.grade === s.grade || st.stage === s.stage; });
+   if(gradeStudents.length) studentCount = String(gradeStudents.length);
+  }
+  msg += (i + 1) + '. المادة: ' + (s.subject || s.name) + '\n';
+  if(s.grade) msg += '   الصف: ' + s.grade + '\n';
+  if(s.stage) msg += '   المرحلة: ' + s.stage + '\n';
+  msg += '   الوقت: من ' + formatTime12H(s.startTime) + ' إلى ' + formatTime12H(s.endTime) + '\n';
+  if(s.room) msg += '   القاعة: ' + s.room + '\n';
+  if(c) msg += '   الدورة: ' + c.name + '\n';
+  if(studentCount) msg += '   عدد الطلبة: ' + studentCount + '\n';
+  msg += '\n';
+ }
+ msg += 'مع التقدير،\n';
+ msg += instName;
+ return msg;
+}
+
+// ── تبليغ طالب واحد ──
+function schedNotifyStudent(){
+ var sel = document.getElementById('sched-notify-student-sel');
+ sel.innerHTML = '<option value="">-- اختر طالباً --</option>' +
+  (data.students || []).map(function(s){
+   return '<option value="'+s.id+'">'+s.fname+' '+s.lname+'</option>';
+  }).join('');
+ document.getElementById('sched-notify-student-preview').style.display = 'none';
+ document.getElementById('sched-notify-student-no-schedule').style.display = 'none';
+ document.getElementById('sched-notify-student-send-btn').style.display = 'none';
+ openModal('sched-notify-student');
+}
+
+function schedNotifyStudentPreview(){
+ var sid = parseInt(document.getElementById('sched-notify-student-sel').value) || 0;
+ var preview = document.getElementById('sched-notify-student-preview');
+ var noSch = document.getElementById('sched-notify-student-no-schedule');
+ var sendBtn = document.getElementById('sched-notify-student-send-btn');
+ preview.style.display = 'none'; noSch.style.display = 'none'; sendBtn.style.display = 'none';
+ if(!sid) return;
+ var student = gS(sid);
+ if(!student) return;
+ var tomorrowSchs = getTomorrowSchedules();
+ // الطالب مرتبط بجداول الصف أو المرحلة أو الدورة
+ var studentSchs = tomorrowSchs.filter(function(s){
+  if(s.grade && student.grade && s.grade === student.grade) return true;
+  if(s.stage && student.stage && s.stage === student.stage) return true;
+  if(!s.grade && !s.stage) return true;
+  return false;
+ });
+ // إذا لا يوجد ربط صف/مرحلة، أعد كل جداول الغد
+ if(!studentSchs.length && tomorrowSchs.length) studentSchs = tomorrowSchs;
+ if(!studentSchs.length){
+  noSch.style.display = 'block'; return;
+ }
+ var msg = buildStudentScheduleMsg(student, studentSchs);
+ document.getElementById('sched-notify-student-msg').textContent = msg;
+ preview.style.display = 'block';
+ sendBtn.style.display = 'inline-flex';
+}
+
+function schedNotifyStudentSend(){
+ var sid = parseInt(document.getElementById('sched-notify-student-sel').value) || 0;
+ if(!sid){ toast('اختر طالباً'); return; }
+ var student = gS(sid);
+ if(!student){ toast('الطالب غير موجود'); return; }
+ var sendTo = document.querySelector('input[name="sched-notify-to"]:checked');
+ var useParent = !sendTo || sendTo.value === 'parent';
+ var phone = useParent ? student.parentPhone : student.phone;
+ if(!phone){
+  toast('لا يوجد رقم ' + (useParent ? 'ولي الأمر' : 'الطالب'));
+  return;
+ }
+ var msg = document.getElementById('sched-notify-student-msg').textContent;
+ closeModal('sched-notify-student');
+ window.open(waLink(phone, msg), '_blank');
+}
+
+// ── تبليغ مجموعة ──
+function schedNotifyGroup(){
+ // ملء الدورات
+ var cSel = document.getElementById('sg-course');
+ cSel.innerHTML = '<option value="">الكل</option>' +
+  (data.courses || []).map(function(c){
+   return '<option value="'+c.id+'">'+c.name+'</option>';
+  }).join('');
+ // ملء أيام الجدول
+ var daySel = document.getElementById('sg-day');
+ var days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+ daySel.innerHTML = '<option value="">الكل</option>' +
+  days.map(function(d){ return '<option value="'+d+'">'+d+'</option>'; }).join('');
+ // ضبط اليوم الافتراضي على الغد
+ daySel.value = getTomorrowDay();
+ openModal('sched-notify-group');
+}
+
+function schedNotifyGroupPreview(){
+ var filterGrade = document.getElementById('sg-grade').value.trim();
+ var filterStage = document.getElementById('sg-stage').value;
+ var filterSubject = document.getElementById('sg-subject').value.trim().toLowerCase();
+ var filterRoom = document.getElementById('sg-room').value.trim().toLowerCase();
+ var filterCourse = parseInt(document.getElementById('sg-course').value) || 0;
+ var filterDay = document.getElementById('sg-day').value;
+ var sendTo = document.querySelector('input[name="sg-notify-to"]:checked');
+ var useParent = !sendTo || sendTo.value === 'parent';
+
+ // فلترة الجداول
+ var filtered = (data.schedules || []).filter(function(s){
+  if(filterDay && s.day !== filterDay) return false;
+  if(filterGrade && s.grade && s.grade.indexOf(filterGrade) === -1) return false;
+  if(filterStage && s.stage && s.stage !== filterStage) return false;
+  if(filterSubject && s.subject && s.subject.toLowerCase().indexOf(filterSubject) === -1) return false;
+  if(filterRoom && s.room && s.room.toLowerCase().indexOf(filterRoom) === -1) return false;
+  if(filterCourse && s.courseId !== filterCourse) return false;
+  return true;
+ }).sort(function(a,b){ return a.startTime.localeCompare(b.startTime); });
+
+ if(!filtered.length){
+  toast('لا توجد جداول تطابق المعايير المحددة');
+  return;
+ }
+
+ // جمع الطلبة من هذه الجداول
+ var studentMap = {};
+ (data.students || []).forEach(function(st){
+  var stSchs = filtered.filter(function(s){
+   if(s.grade && st.grade && s.grade === st.grade) return true;
+   if(s.stage && st.stage && s.stage === st.stage) return true;
+   if(!s.grade && !s.stage) return true;
+   return false;
+  });
+  if(stSchs.length) studentMap[st.id] = {student: st, schedules: stSchs};
+ });
+ // إذا لا يوجد ربط بطلبة، اعرض الجداول فقط
+ var recipients = [];
+ var keys = Object.keys(studentMap);
+ if(keys.length){
+  for(var i = 0; i < keys.length; i++){
+   var entry = studentMap[keys[i]];
+   var phone = useParent ? entry.student.parentPhone : entry.student.phone;
+   var msg = buildStudentScheduleMsg(entry.student, entry.schedules);
+   recipients.push({name: entry.student.fname + ' ' + entry.student.lname, phone: phone, msg: msg, status: phone ? 'ready' : 'no-phone'});
+  }
+ } else {
+  toast('لا يوجد طلبة مرتبطون بهذه الجداول');
+  return;
+ }
+
+ closeModal('sched-notify-group');
+ showBulkPreview('تبليغ مجموعة — جدول الغد', recipients);
+}
+
+// ── تبليغ جميع طلبة الغد ──
+function schedNotifyAllTomorrow(){
+ var tomorrowSchs = getTomorrowSchedules();
+ if(!tomorrowSchs.length){
+  toast('لا توجد محاضرات مجدولة ليوم غد');
+  return;
+ }
+ var recipients = [];
+ (data.students || []).forEach(function(st){
+  var stSchs = tomorrowSchs.filter(function(s){
+   if(s.grade && st.grade && s.grade === st.grade) return true;
+   if(s.stage && st.stage && s.stage === st.stage) return true;
+   if(!s.grade && !s.stage) return true;
+   return false;
+  });
+  if(!stSchs.length) stSchs = tomorrowSchs;
+  var phone = st.parentPhone || st.phone;
+  var msg = buildStudentScheduleMsg(st, stSchs);
+  recipients.push({name: st.fname + ' ' + st.lname, phone: phone, msg: msg, status: phone ? 'ready' : 'no-phone'});
+ });
+ if(!recipients.length){
+  toast('لا يوجد طلبة مسجلون');
+  return;
+ }
+ showBulkPreview('تبليغ جميع طلبة جدول الغد', recipients);
+}
+
+// ── تبليغ الأساتذة ──
+function schedNotifyTeachers(){
+ var tomorrowSchs = getTomorrowSchedules();
+ if(!tomorrowSchs.length){
+  toast('لا توجد محاضرات مجدولة ليوم غد');
+  return;
+ }
+ // تجميع الجداول لكل أستاذ
+ var teacherMap = {};
+ tomorrowSchs.forEach(function(s){
+  if(!s.teacherId) return;
+  if(!teacherMap[s.teacherId]) teacherMap[s.teacherId] = [];
+  teacherMap[s.teacherId].push(s);
+ });
+ var tids = Object.keys(teacherMap);
+ if(!tids.length){
+  toast('لا يوجد مدرسون مرتبطون بجداول الغد');
+  return;
+ }
+ var recipients = [];
+ for(var i = 0; i < tids.length; i++){
+  var teacher = gT(parseInt(tids[i]));
+  if(!teacher) continue;
+  var schs = teacherMap[tids[i]].sort(function(a,b){ return a.startTime.localeCompare(b.startTime); });
+  var msg = buildTeacherScheduleMsg(teacher, schs);
+  recipients.push({name: teacher.fname + ' ' + teacher.lname, phone: teacher.phone, msg: msg, status: teacher.phone ? 'ready' : 'no-phone', isTeacher: true});
+ }
+ if(!recipients.length){
+  toast('لا يوجد أساتذة مسجلون لجدول الغد');
+  return;
+ }
+ showBulkPreview('تبليغ الأساتذة — جدول الغد', recipients);
+}
+
+// ── عرض شاشة المعاينة الجماعية ──
+function showBulkPreview(title, recipients){
+ document.getElementById('sched-bulk-preview-title').childNodes[document.getElementById('sched-bulk-preview-title').childNodes.length - 1].textContent = ' ' + title;
+ var readyCount = recipients.filter(function(r){ return r.status === 'ready'; }).length;
+ var noPhoneCount = recipients.filter(function(r){ return r.status === 'no-phone'; }).length;
+ document.getElementById('sched-bulk-meta').textContent =
+  'المجموع: ' + recipients.length + ' | جاهز للإرسال: ' + readyCount + (noPhoneCount ? ' | لا يوجد رقم: ' + noPhoneCount : '');
+
+ var html = '';
+ for(var i = 0; i < recipients.length; i++){
+  var r = recipients[i];
+  var isReady = r.status === 'ready';
+  var statusColor = isReady ? '#25d366' : 'var(--danger)';
+  var statusLabel = isReady ? 'جاهز' : 'لا يوجد رقم';
+  html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">';
+  html += '<div style="flex:1">';
+  html += '<div style="font-size:12px;font-weight:700;margin-bottom:2px">' + r.name + '</div>';
+  html += '<div style="font-size:10px;color:var(--muted)">' + (r.phone || 'لا يوجد رقم') + '</div>';
+  html += '<details style="margin-top:6px"><summary style="font-size:10px;color:var(--muted);cursor:pointer">معاينة الرسالة</summary>';
+  html += '<pre style="white-space:pre-wrap;font-family:var(--font);font-size:10px;color:var(--text);direction:rtl;background:var(--card2);border-radius:7px;padding:8px;margin-top:5px">' + r.msg + '</pre>';
+  html += '</details>';
+  html += '</div>';
+  html += '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">';
+  html += '<span style="font-size:9px;padding:3px 8px;border-radius:8px;background:rgba(37,211,102,' + (isReady ? '.15' : '.0') + ');background:' + (isReady ? 'rgba(37,211,102,.12)' : 'rgba(248,113,113,.1)') + ';color:' + statusColor + '">' + statusLabel + '</span>';
+  if(isReady){
+   var msgEncoded = encodeURIComponent(r.msg);
+   var phoneClean = waPhone(r.phone);
+   html += '<button onclick="schedBulkSendOne(this,\'https://wa.me/'+phoneClean+'?text='+msgEncoded+'\')" style="padding:5px 10px;border-radius:7px;border:1px solid rgba(37,211,102,.3);background:rgba(37,211,102,.1);color:#25d366;cursor:pointer;font-size:10px;font-family:var(--font);white-space:nowrap">إرسال</button>';
+  }
+  html += '</div></div></div>';
+ }
+ document.getElementById('sched-bulk-list').innerHTML = html;
+ openModal('sched-bulk-preview');
+}
+
+function schedBulkSendOne(btn, url){
+ window.open(url, '_blank');
+ btn.textContent = 'تم الفتح';
+ btn.style.background = 'rgba(37,211,102,.25)';
+ btn.style.cursor = 'default';
+ btn.disabled = true;
 }
 
 // ══════════════════════════════════════════════
