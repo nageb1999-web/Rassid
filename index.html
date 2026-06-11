@@ -581,6 +581,26 @@ tr:hover td{background:var(--surface-hover);}
 .badge-purple{background:var(--purple-bg);color:var(--purple);border:1px solid rgba(139,92,246,0.2);}
 .badge-excused{background:rgba(212,160,23,.12);color:#d4a017;border:1px solid rgba(212,160,23,.25);}
 .badge-gold{background:var(--brand-tint);color:var(--brand-light);border:1px solid var(--brand-border);}
+/* ── Course Filter Buttons ── */
+.cf-btn{padding:5px 13px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--card2);color:var(--text-3);font-family:var(--font);transition:all .18s;}
+.cf-btn:hover{border-color:var(--brand-border);color:var(--brand-light);}
+.cf-btn-active{background:var(--gold)!important;color:#1a1200!important;border-color:var(--gold)!important;}
+/* ── Course Progress Bar ── */
+.course-progress-wrap{background:var(--border2);border-radius:6px;height:6px;overflow:hidden;margin-top:8px;}
+.course-progress-bar{height:6px;border-radius:6px;transition:width .5s ease;}
+/* ── Chapter / Topic ── */
+.chapter-block{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
+.topic-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;margin-bottom:5px;background:var(--card2);border:1px solid var(--border2);transition:background .15s;}
+.topic-row:hover{background:var(--surface-2);}
+.topic-status-pill{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;cursor:pointer;border:none;font-family:var(--font);}
+.topic-status-notstarted{background:rgba(160,174,192,.15);color:var(--muted);}
+.topic-status-inprogress{background:rgba(246,173,85,.18);color:#f6ad55;}
+.topic-status-done{background:rgba(52,211,153,.15);color:var(--success);}
+html[data-theme=light] .cf-btn{background:#ede7dd;color:#8c7d6b;border-color:rgba(90,70,40,.18);}
+html[data-theme=light] .cf-btn-active{background:#b8892c!important;color:#fff!important;}
+html[data-theme=light] .chapter-block{background:#ede7dd;border-color:rgba(90,70,40,.18);}
+html[data-theme=light] .topic-row{background:#e4ddd3;border-color:rgba(90,70,40,.12);}
+html[data-theme=light] .topic-row:hover{background:#ddd6ca;}
 
 /* ═══ BUTTONS ═══ */
 .btn{
@@ -2223,7 +2243,7 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div class="nav-item" onclick="showPage('discipline')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> السلوك والانضباط</div>
  <div class="nav-item" onclick="showPage('results')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></span> النتائج</div>
  <div class="nav-item" onclick="showPage('slips')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></span> القصاصات</div>
- <div class="nav-item" onclick="showPage('courses')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/><circle cx="12" cy="10" r="1" fill="currentColor" stroke="none"/></svg></span> الدورات</div>
+ <div class="nav-item" onclick="showPage('courses')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span> الدورات</div>
  <div class="nav-section">الحضور</div>
  <div class="nav-item" onclick="showPage('attendance')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> الحضور</div>
  <div class="nav-item" onclick="showPage('teachers')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></span> المدرسون</div>
@@ -2434,6 +2454,15 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div class="bar-chart" id="monthly-chart"></div>
  <div style="display:flex;gap:6px;margin-top:8px" id="monthly-labels"></div>
  </div>
+
+ <!-- إحصاءات الدورات -->
+ <div class="chart-wrap">
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+ <div style="font-size:12px;font-weight:700"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> الدورات</span></div>
+ <button class="btn btn-outline btn-sm" onclick="showPage('courses')" style="font-size:10px">إدارة الدورات</button>
+ </div>
+ <div id="dash-courses-section"></div>
+ </div>
  </div>
 
  <!-- STUDENTS -->
@@ -2464,14 +2493,8 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
  <div>
  <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">المرحلة</div>
- <select id="filter-stage" onchange="filterStageChanged();renderStudents();" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <select id="filter-stage" onchange="renderStudents()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
  <option value="">الكل</option><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option>
- </select>
- </div>
- <div>
- <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">الصف</div>
- <select id="filter-grade" onchange="renderStudents()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
- <option value="">الكل</option>
  </select>
  </div>
  <div>
@@ -2689,17 +2712,11 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  </div>
  <div>
  <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">المرحلة الدراسية</div>
- <select id="disc-s-stage" onchange="discStageFilterChanged();renderStudentsStatusList();" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+ <select id="disc-s-stage" onchange="renderStudentsStatusList()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
  <option value="">الكل</option>
  <option value="ابتدائي">ابتدائي</option>
  <option value="متوسط">متوسط</option>
  <option value="اعدادي">اعدادي</option>
- </select>
- </div>
- <div>
- <div style="font-size:10px;color:var(--text-3);font-weight:700;margin-bottom:5px">الصف</div>
- <select id="disc-s-grade" onchange="renderStudentsStatusList()" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
- <option value="">الكل</option>
  </select>
  </div>
  <div>
@@ -2781,14 +2798,8 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  </div>
  <div>
  <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">المرحلة</div>
- <select id="att-filter-stage" onchange="attStageFilterChanged();renderAttGrid();" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
+ <select id="att-filter-stage" onchange="renderAttGrid()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
  <option value="">الكل</option><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option>
- </select>
- </div>
- <div>
- <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">الصف</div>
- <select id="att-filter-grade" onchange="renderAttGrid()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
- <option value="">الكل</option>
  </select>
  </div>
  </div>
@@ -2906,26 +2917,21 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  </div>
 
  <!-- REPORTS -->
- <!-- COURSES PAGE -->
+ <!-- COURSES LIST PAGE -->
  <div class="page" id="page-courses">
  <div class="sec-header">
  <span class="sec-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> الدورات</span></span>
  <button class="btn btn-gold btn-sm" style="display:inline-flex;align-items:center;gap:6px" onclick="openAddCourseModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة دورة</button>
  </div>
-
- <!-- Course filters -->
- <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px">
- <input type="text" id="course-search" placeholder="بحث بالدورة أو المدرس أو المادة..." oninput="renderCourses()"
- style="width:100%;box-sizing:border-box;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:9px 13px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;margin-bottom:10px;">
- <div style="display:flex;gap:8px;flex-wrap:wrap">
- <button class="btn btn-sm" id="cf-all" onclick="setCourseFilter('all')" style="font-size:11px;padding:5px 12px;background:var(--gold);color:#000;border:none;border-radius:8px">الكل</button>
- <button class="btn btn-sm" id="cf-ongoing" onclick="setCourseFilter('جارية')" style="font-size:11px;padding:5px 12px;background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:8px">جارية</button>
- <button class="btn btn-sm" id="cf-completed" onclick="setCourseFilter('مكتملة')" style="font-size:11px;padding:5px 12px;background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:8px">مكتملة</button>
- <button class="btn btn-sm" id="cf-paused" onclick="setCourseFilter('متوقفة')" style="font-size:11px;padding:5px 12px;background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:8px">متوقفة</button>
- <button class="btn btn-sm" id="cf-notstarted" onclick="setCourseFilter('لم تبدأ')" style="font-size:11px;padding:5px 12px;background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:8px">لم تبدأ</button>
+ <!-- quick filter bar -->
+ <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+ <button id="cf-btn-all" class="cf-btn cf-btn-active" onclick="setCourseFilter('all')">الكل</button>
+ <button id="cf-btn-جارية" class="cf-btn" onclick="setCourseFilter('جارية')">جارية</button>
+ <button id="cf-btn-مكتملة" class="cf-btn" onclick="setCourseFilter('مكتملة')">مكتملة</button>
+ <button id="cf-btn-متوقفة" class="cf-btn" onclick="setCourseFilter('متوقفة')">متوقفة</button>
+ <button id="cf-btn-لم تبدأ" class="cf-btn" onclick="setCourseFilter('لم تبدأ')">لم تبدأ</button>
  </div>
- </div>
-
+ <div class="search-bar"><input class="search-input" type="text" placeholder="بحث باسم الدورة أو المادة أو المدرس..." id="course-search" oninput="renderCourses()"></div>
  <div id="courses-list"></div>
  </div>
 
@@ -2933,13 +2939,15 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div class="page" id="page-course-detail">
  <div class="sec-header">
  <button class="btn btn-outline btn-sm" onclick="showPage('courses')">← رجوع</button>
- <div style="display:flex;gap:8px">
- <button class="btn btn-info btn-sm" id="course-edit-btn" onclick="openEditCurrentCourse()">تعديل</button>
- <button class="btn btn-danger btn-sm" id="course-delete-btn" onclick="deleteCurrentCourse()">حذف</button>
+ <div style="display:flex;gap:7px">
+ <button class="btn btn-info btn-sm" onclick="openEditCurrentCourse()">تعديل</button>
+ <button class="btn btn-danger btn-sm" onclick="deleteCurrentCourse()">حذف</button>
  </div>
  </div>
  <div id="course-detail-content"></div>
  </div>
+
+ <!-- SLIPS PAGE -->
  <div class="page" id="page-slips">
  <div class="sec-header">
  <span class="sec-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> القصاصات</span></span>
@@ -3064,8 +3072,7 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div class="form-group"><label>هاتف الطالب</label><input type="text" id="s-phone" placeholder="07xxxxxxxxxx" inputmode="numeric" autocomplete="tel-national"></div>
  <div class="form-group"><label>هاتف ولي الأمر</label><input type="text" id="s-pphone" placeholder="07xxxxxxxxxx" inputmode="numeric" autocomplete="tel-national"></div>
  </div>
- <div class="form-group"><label>المرحلة الدراسية</label><select id="s-stage" onchange="updateGradeSelect('s-stage','s-grade')"><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option></select></div>
- <div class="form-group"><label>الصف الدراسي <span style="color:var(--danger)">*</span></label><select id="s-grade"><option value="">-- اختر المرحلة أولاً --</option></select></div>
+ <div class="form-group"><label>المرحلة الدراسية</label><select id="s-stage"><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> اعدادي</option></select></div>
  <div class="form-row">
  <div class="form-group"><label><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> تاريخ بدء الاشتراك</label><input type="date" id="s-sub-start"></div>
  <div class="form-group"><label><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> تاريخ انتهاء الاشتراك</label><input type="date" id="s-sub-end"></div>
@@ -3093,8 +3100,7 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div class="form-group"><label>هاتف الطالب</label><input type="text" id="edit-s-phone"></div>
  <div class="form-group"><label>هاتف ولي الأمر</label><input type="text" id="edit-s-pphone"></div>
  </div>
- <div class="form-group"><label>المرحلة الدراسية</label><select id="edit-s-stage" onchange="updateGradeSelect('edit-s-stage','edit-s-grade')"><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option></select></div>
- <div class="form-group"><label>الصف الدراسي <span style="color:var(--danger)">*</span></label><select id="edit-s-grade"><option value="">-- اختر الصف --</option></select></div>
+ <div class="form-group"><label>المرحلة الدراسية</label><select id="edit-s-stage"><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> اعدادي</option></select></div>
  <div class="form-row">
  <div class="form-group"><label><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> تاريخ بدء الاشتراك</label><input type="date" id="edit-s-sub-start"></div>
  <div class="form-group"><label><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> تاريخ انتهاء الاشتراك</label><input type="date" id="edit-s-sub-end"></div>
@@ -3663,63 +3669,100 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  </div>
 </div>
 
-<!-- Modal: إضافة/تعديل دورة -->
-<div class="modal-overlay" id="modal-add-course">
+<!-- ══ COURSE MODALS ══ -->
+<!-- Modal: إضافة / تعديل دورة -->
+<div class="modal-overlay" id="modal-course-form">
  <div class="modal">
- <h3><span style="display:inline-flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> <span id="course-modal-title">إضافة دورة جديدة</span></span></h3>
- <input type="hidden" id="course-edit-id" value="">
+ <h3 id="course-form-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> إضافة دورة جديدة</span></h3>
+ <input type="hidden" id="cf-edit-id">
  <div class="form-row">
- <div class="form-group"><label>اسم الدورة <span style="color:var(--danger)">*</span></label><input type="text" id="course-name" placeholder="دورة تأسيس رياضيات"></div>
- <div class="form-group"><label>المادة <span style="color:var(--danger)">*</span></label><input type="text" id="course-subject" placeholder="الرياضيات"></div>
+ <div class="form-group"><label>اسم الدورة <span style="color:var(--danger)">*</span></label><input type="text" id="cf-name" placeholder="دورة الرياضيات التأسيسية"></div>
+ <div class="form-group"><label>المادة <span style="color:var(--danger)">*</span></label><input type="text" id="cf-subject" placeholder="الرياضيات"></div>
  </div>
  <div class="form-row">
  <div class="form-group"><label>المدرس المسؤول</label>
- <select id="course-teacher"><option value="">-- اختياري --</option></select></div>
- <div class="form-group"><label>عدد الطلبة</label><input type="number" id="course-students-count" min="0" placeholder="0"></div>
+ <select id="cf-teacher"><option value="">-- اختياري --</option></select>
+ </div>
+ <div class="form-group"><label>عدد الطلبة</label><input type="number" id="cf-students" min="0" placeholder="0"></div>
  </div>
  <div class="form-row">
- <div class="form-group"><label>تاريخ البدء</label><input type="date" id="course-start-date"></div>
- <div class="form-group"><label>تاريخ الانتهاء (اختياري)</label><input type="date" id="course-end-date"></div>
+ <div class="form-group"><label>تاريخ البدء</label><input type="date" id="cf-start"></div>
+ <div class="form-group"><label>تاريخ الانتهاء (اختياري)</label><input type="date" id="cf-end"></div>
  </div>
- <div class="form-group"><label>وصف الدورة</label><textarea id="course-desc" rows="2" placeholder="وصف مختصر عن محتوى الدورة..."></textarea></div>
- <div class="form-group"><label>حالة الدورة</label>
- <select id="course-status">
+ <div class="form-group"><label>وصف الدورة</label><textarea id="cf-desc" rows="2" placeholder="وصف مختصر عن محتوى الدورة..."></textarea></div>
+ <div class="form-group"><label>الحالة</label>
+ <select id="cf-status">
  <option value="لم تبدأ">لم تبدأ</option>
  <option value="جارية">جارية</option>
  <option value="مكتملة">مكتملة</option>
  <option value="متوقفة">متوقفة</option>
  </select></div>
  <div class="modal-footer">
- <button class="btn btn-outline" onclick="closeModal('add-course')">إلغاء</button>
- <button class="btn btn-gold" onclick="saveCourse()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> حفظ</button>
+ <button class="btn btn-outline" onclick="closeModal('course-form')">إلغاء</button>
+ <button class="btn btn-gold" onclick="saveCourseForm()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> حفظ</button>
  </div>
  </div>
 </div>
 
-<!-- Modal: إضافة/تعديل فصل -->
-<div class="modal-overlay" id="modal-add-chapter">
+<!-- Modal: إضافة / تعديل فصل -->
+<div class="modal-overlay" id="modal-chapter-form">
  <div class="modal">
- <h3 id="chapter-modal-title">إضافة فصل جديد</h3>
- <input type="hidden" id="chapter-course-id">
- <input type="hidden" id="chapter-edit-id">
- <div class="form-group"><label>عنوان الفصل <span style="color:var(--danger)">*</span></label><input type="text" id="chapter-title" placeholder="الفصل الأول: مقدمة"></div>
+ <h3 id="chapter-form-title">إضافة فصل جديد</h3>
+ <input type="hidden" id="chf-course-id">
+ <input type="hidden" id="chf-edit-id">
+ <div class="form-group"><label>عنوان الفصل <span style="color:var(--danger)">*</span></label><input type="text" id="chf-title" placeholder="الفصل الأول: الأساسيات"></div>
  <div class="modal-footer">
- <button class="btn btn-outline" onclick="closeModal('add-chapter')">إلغاء</button>
- <button class="btn btn-gold" onclick="saveChapter()">حفظ</button>
+ <button class="btn btn-outline" onclick="closeModal('chapter-form')">إلغاء</button>
+ <button class="btn btn-gold" onclick="saveChapterForm()">حفظ</button>
  </div>
  </div>
 </div>
 
-<!-- Modal: إضافة/تعديل موضوع -->
-<div class="modal-overlay" id="modal-add-topic">
+<!-- Modal: إضافة / تعديل موضوع -->
+<div class="modal-overlay" id="modal-topic-form">
  <div class="modal">
- <h3 id="topic-modal-title">إضافة موضوع جديد</h3>
- <input type="hidden" id="topic-chapter-id">
- <input type="hidden" id="topic-edit-id">
- <div class="form-group"><label>عنوان الموضوع <span style="color:var(--danger)">*</span></label><input type="text" id="topic-title" placeholder="الموضوع 1: التعريفات الأساسية"></div>
+ <h3 id="topic-form-title">إضافة موضوع جديد</h3>
+ <input type="hidden" id="tpf-chapter-id">
+ <input type="hidden" id="tpf-edit-id">
+ <div class="form-group"><label>عنوان الموضوع <span style="color:var(--danger)">*</span></label><input type="text" id="tpf-title" placeholder="الموضوع 1: التعريفات الأساسية"></div>
+ <div class="form-group"><label>الحالة</label>
+ <select id="tpf-status">
+ <option value="لم يبدأ">لم يبدأ</option>
+ <option value="قيد الشرح">قيد الشرح</option>
+ <option value="مكتمل">مكتمل</option>
+ </select></div>
  <div class="modal-footer">
- <button class="btn btn-outline" onclick="closeModal('add-topic')">إلغاء</button>
- <button class="btn btn-gold" onclick="saveTopic()">حفظ</button>
+ <button class="btn btn-outline" onclick="closeModal('topic-form')">إلغاء</button>
+ <button class="btn btn-gold" onclick="saveTopicForm()">حفظ</button>
+ </div>
+ </div>
+</div>
+
+<!-- Modal: إبلاغ الأستاذ -->
+<div class="modal-overlay" id="modal-notify-teacher">
+ <div class="modal">
+ <h3><span style="display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.82h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.5a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 21.5 18z"/></svg> إبلاغ الأستاذ</span></h3>
+ <input type="hidden" id="nt-course-id">
+ <div id="nt-preview" style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:11px;line-height:1.8;white-space:pre-wrap;direction:rtl;max-height:200px;overflow-y:auto;margin-bottom:10px"></div>
+ <div class="form-group"><label>ملاحظة إدارية (اختيارية)</label><textarea id="nt-note" rows="2" placeholder="يرجى الالتزام بالجدول الزمني..."></textarea></div>
+ <div class="modal-footer">
+ <button class="btn btn-outline" onclick="closeModal('notify-teacher')">إلغاء</button>
+ <button class="btn btn-wa" onclick="sendNotifyTeacher()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> إرسال واتساب</button>
+ </div>
+ </div>
+</div>
+
+<!-- Modal: إبلاغ أولياء الأمور -->
+<div class="modal-overlay" id="modal-notify-parents">
+ <div class="modal">
+ <h3><span style="display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> إبلاغ أولياء الأمور</span></h3>
+ <input type="hidden" id="np-course-id">
+ <div id="np-preview" style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:11px;line-height:1.8;white-space:pre-wrap;direction:rtl;max-height:200px;overflow-y:auto;margin-bottom:10px"></div>
+ <div class="form-group"><label>ملاحظة / تنبيه (اختيارية)</label><textarea id="np-note" rows="2" placeholder="سيتم الاختبار الأسبوع القادم..."></textarea></div>
+ <div id="np-parents-list" style="margin-bottom:10px;max-height:160px;overflow-y:auto;font-size:11px"></div>
+ <div class="modal-footer">
+ <button class="btn btn-outline" onclick="closeModal('notify-parents')">إلغاء</button>
+ <button class="btn btn-wa" onclick="sendNotifyParents()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> إرسال لأولياء الأمور</button>
  </div>
  </div>
 </div>
@@ -3806,7 +3849,8 @@ courses:[],courseChapters:[],courseTopics:[],
  warningThresholds:{1:'تنبيه شفهي',2:'إنذار أول',3:'إنذار ثانٍ',4:'إنذار نهائي',5:'تحويل للإدارة'}
  },
  nextId:{student:1,teacher:1,attendance:1,teacherAtt:1,result:1,fee:1,
-payment:1,behavior:1,waLog:1,expense:1,salary:1,salaryPayment:1,financialAuditLog:1,violationRecord:1,warningRecord:1,parentNotification:1,course:1,courseChapter:1,courseTopic:1}
+payment:1,behavior:1,waLog:1,expense:1,salary:1,salaryPayment:1,financialAuditLog:1,violationRecord:1,warningRecord:1,parentNotification:1,
+course:1,courseChapter:1,courseTopic:1}
  };
 }
 
@@ -3837,23 +3881,32 @@ d.nextId.expense = d.nextId.expense || 1;
 d.nextId.salary = d.nextId.salary || 1;
 d.nextId.salaryPayment = d.nextId.salaryPayment || 1;
 d.nextId.financialAuditLog = d.nextId.financialAuditLog || 1;
- d.students = d.students.map(function(s){
- return {
- id:s.id,fname:s.fname||'',lname:s.lname||'',
- stage:s.stage||'ابتدائي',grade:s.grade||'',phone:s.phone||'',
- parentPhone:s.parentPhone||'',parentName:s.parentName||'',
- subStart:s.subStart||'',subEnd:s.subEnd||'',
- subPrice:s.subPrice||0,subPaid:s.subPaid||0,
- school:s.school||''
- };
- });
- // add courses array if missing
+ // Courses migration
  d.courses = d.courses || [];
  d.courseChapters = d.courseChapters || [];
  d.courseTopics = d.courseTopics || [];
  d.nextId.course = d.nextId.course || 1;
  d.nextId.courseChapter = d.nextId.courseChapter || 1;
  d.nextId.courseTopic = d.nextId.courseTopic || 1;
+ // Migrate topics: add topicStatus if missing
+ d.courseTopics = d.courseTopics.map(function(t){
+  return {id:t.id,chapterId:t.chapterId,title:t.title||'',
+   status:t.status||'لم يبدأ',order:t.order||0};
+ });
+ // Migrate chapters: add order if missing
+ d.courseChapters = d.courseChapters.map(function(c){
+  return {id:c.id,courseId:c.courseId,title:c.title||'',order:c.order||0};
+ });
+ d.students = d.students.map(function(s){
+ return {
+ id:s.id,fname:s.fname||'',lname:s.lname||'',
+ stage:s.stage||'ابتدائي',phone:s.phone||'',
+ parentPhone:s.parentPhone||'',parentName:s.parentName||'',
+ subStart:s.subStart||'',subEnd:s.subEnd||'',
+ subPrice:s.subPrice||0,subPaid:s.subPaid||0,
+ school:s.school||''
+ };
+ });
  d.results = d.results.map(function(r){
  return {
  id:r.id,studentId:r.studentId,type:r.type||'امتحان',
@@ -4157,9 +4210,6 @@ function initTheme(){
 // ══════════════════════════════════════════════
 function openModal(name){
  if(name==='add-slip'){openAddSlipModal();return;}
- if(name==='add-student'){
-  updateGradeSelect('s-stage','s-grade');
- }
  if(name==='add-sub-payment'){
  document.getElementById('sub-pay-student').innerHTML=data.students.map(function(s){return '<option value="'+s.id+'">'+s.fname+' '+s.lname+'</option>';}).join('');
  document.getElementById('sub-pay-date').value=today();
@@ -4242,26 +4292,6 @@ function sendAllExpiryWA(){
 
 // ══ SUBJECTS BY STAGE ══
 var SUBJECTS={'ابتدائي':['اللغة العربية','الرياضيات','العلوم','اللغة الانكليزية','التربية الاسلامية','الاجتماعيات'],'متوسط':['التربية الاسلامية_م','اللغة العربية_م','اللغة الانكليزية_م','الرياضيات_م','الفيزياء','الكيمياء','الاحياء','الاجتماعيات_م'],'اعدادي':['اللغة العربية_ع','التربية الاسلامية_ع','اللغة الانكليزية_ع','علم الاحياء','الفيزياء_ع','الكيمياء_ع','الرياضيات_ع']};
-
-// ══ GRADES BY STAGE ══
-var GRADES = {
- 'ابتدائي': ['الأول الابتدائي','الثاني الابتدائي','الثالث الابتدائي','الرابع الابتدائي','الخامس الابتدائي','السادس الابتدائي'],
- 'متوسط':  ['الأول المتوسط','الثاني المتوسط','الثالث المتوسط'],
- 'اعدادي': ['الرابع العلمي','الرابع الأدبي','الخامس العلمي','الخامس الأدبي','السادس العلمي','السادس الأدبي']
-};
-
-function getGradesList(stage) {
- return GRADES[stage] || GRADES['ابتدائي'];
-}
-
-function updateGradeSelect(stageId, gradeId) {
- var stage = document.getElementById(stageId) ? document.getElementById(stageId).value : 'ابتدائي';
- var gradeEl = document.getElementById(gradeId);
- if (!gradeEl) return;
- var grades = getGradesList(stage);
- gradeEl.innerHTML = '<option value="">-- اختر الصف --</option>' +
-  grades.map(function(g){ return '<option value="'+g+'">'+g+'</option>'; }).join('');
-}
 function getSubjects(sid){var s=gS(sid);var stage=s&&s.stage?s.stage:'ابتدائي';return SUBJECTS[stage]||SUBJECTS['ابتدائي'];}
 function cleanSubjectName(subj){return subj?subj.replace(/_[معا]$/,''):subj;}
 function onResultStudentChange(){
@@ -4273,7 +4303,7 @@ function onResultStudentChange(){
 }
 
 function populateResultModal(){
- document.getElementById('r-student').innerHTML=data.students.map(s=>`<option value="${s.id}">${sName(s.id)} (${s.stage||'ابتدائي'}${s.grade?' - '+s.grade:''})</option>`).join('');
+ document.getElementById('r-student').innerHTML=data.students.map(s=>`<option value="${s.id}">${sName(s.id)} (${s.stage||'ابتدائي'})</option>`).join('');
  var types=data.settings.taskTypes||['واجب','امتحان','مراجعة','إعادة'];
  document.getElementById('r-type').innerHTML=types.map(t=>`<option value="${t}">${t}</option>`).join('');
  // تعبئة قائمة المدرسين
@@ -4315,7 +4345,7 @@ function loadSlipSubjects(){
  var subjects = (SUBJECTS[s.stage||'ابتدائي'] || SUBJECTS['ابتدائي']).map(function(x){return cleanSubjectName(x);});
  var infoEl = document.getElementById('slip-stage-info');
  infoEl.style.display = 'block';
- infoEl.querySelector('div').textContent = s.fname + ' ' + s.lname + ' — ' + (s.stage||'ابتدائي') + (s.grade?' | '+s.grade:'');
+ infoEl.querySelector('div').textContent = s.fname + ' ' + s.lname + ' — المرحلة ' + (s.stage||'ابتدائي');
  document.getElementById('slip-subjects-list').innerHTML = subjects.map(function(subj){
  // البحث عن المدرس المسؤول عن هذه المادة
  var teacher = data.teachers.find(function(t){
@@ -4423,7 +4453,7 @@ function sendSlipWA(slipId){
  setTimeout(function(){
  var msg = 'السلام عليكم استاذ ' + t.fname + ' ' + t.lname + nl;
  msg += 'قصاصة الطالب: ' + s.fname + ' ' + s.lname + nl;
- msg += 'المرحلة: ' + (s.stage||'ابتدائي') + (s.grade?' - '+s.grade:'') + nl;
+ msg += 'المرحلة: ' + (s.stage||'ابتدائي') + nl;
  msg += 'التاريخ: ' + slip.date + nl + nl;
  msg += 'التحضيرات المطلوبة لمادتكم:' + nl;
  items.forEach(function(item){
@@ -4632,7 +4662,24 @@ function renderDashboard(){
  '<div class="stat-icon" style="background:rgba(168,134,90,.10);border:1px solid rgba(168,134,90,.20)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><circle cx="16" cy="15" r="1.5" fill="#c8a878" stroke="none"/></svg></div><div class="stat-label">الاشتراكات</div>'+
  '<div class="stat-value" style="color:var(--gold);font-size:16px">'+fmt(allSubPaid)+'</div>'+
  '<div class="stat-sub" style="color:var(--danger)">متبقي: '+fmt(allSubPrice-allSubPaid)+'</div>'+
- '</div>';
+ '</div>'+
+ // ── بطاقة الدورات ──
+ (function(){
+  var courses=data.courses||[];
+  var totalCourses=courses.length;
+  var ongoing=courses.filter(function(c){return c.status==='جارية';}).length;
+  var allTopics=0,allDone=0;
+  courses.forEach(function(c){var st=courseStats(c.id);allTopics+=st.totalTopics;allDone+=st.done;});
+  var overallPct=allTopics>0?Math.round(allDone/allTopics*100):0;
+  var pc=overallPct>=75?'var(--success)':overallPct>=40?'var(--warning)':overallPct>0?'var(--danger)':'var(--muted)';
+  return '<div class="stat-card" onclick="showPage(\'courses\')" style="cursor:pointer">'+
+   '<div class="stat-icon" style="background:rgba(168,134,90,.10);border:1px solid rgba(168,134,90,.20)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>'+
+   '<div class="stat-label">الدورات</div>'+
+   '<div class="stat-value" style="color:var(--gold)">'+totalCourses+'</div>'+
+   '<div class="stat-sub">'+(ongoing?'<span style="color:var(--success)">'+ongoing+' جارية</span>  ':'')+
+   '<span style="color:'+pc+'">'+overallPct+'% إنجاز</span></div>'+
+   '</div>';
+ })();
 
  // ── حضور اليوم بار ──
  document.getElementById('dash-present').textContent=present;
@@ -4732,25 +4779,69 @@ function renderDashboard(){
  document.getElementById('monthly-labels').innerHTML=chartData.map(function(d){
  return '<div style="flex:1;font-size:8px;color:var(--muted);text-align:center">'+d.label+'</div>';
  }).join('');
+
+ // ── إحصاءات الدورات في الرئيسية ──
+ var dashCoursesEl=document.getElementById('dash-courses-section');
+ if(dashCoursesEl){
+  var courses=data.courses||[];
+  if(!courses.length){
+   dashCoursesEl.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:11px">لا توجد دورات مضافة بعد</div>';
+  } else {
+   var ongoing=courses.filter(function(c){return c.status==='جارية';});
+   var completed=courses.filter(function(c){return c.status==='مكتملة';});
+   var notStarted=courses.filter(function(c){return c.status==='لم تبدأ';});
+   var paused=courses.filter(function(c){return c.status==='متوقفة';});
+   // overall progress
+   var allT=0,allD=0,allIP=0;
+   courses.forEach(function(c){var st=courseStats(c.id);allT+=st.totalTopics;allD+=st.done;allIP+=st.inProgress;});
+   var oPct=allT>0?Math.round(allD/allT*100):0;
+   var oPc=oPct>=75?'var(--success)':oPct>=40?'var(--warning)':oPct>0?'var(--danger)':'var(--muted)';
+   // summary bar
+   var summaryHtml='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px">'+
+    '<div class="item-stat"><div class="item-stat-val" style="color:var(--success)">'+ongoing.length+'</div><div class="item-stat-lbl">جارية</div></div>'+
+    '<div class="item-stat"><div class="item-stat-val" style="color:var(--info)">'+completed.length+'</div><div class="item-stat-lbl">مكتملة</div></div>'+
+    '<div class="item-stat"><div class="item-stat-val" style="color:var(--muted)">'+notStarted.length+'</div><div class="item-stat-lbl">لم تبدأ</div></div>'+
+    '<div class="item-stat"><div class="item-stat-val" style="color:'+oPc+'">'+oPct+'%</div><div class="item-stat-lbl">الإنجاز</div></div>'+
+    '</div>'+
+    '<div style="margin-bottom:12px">'+
+    '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px"><span>التقدم الإجمالي</span><span style="color:'+oPc+';font-weight:700">'+allD+' / '+allT+' موضوعاً</span></div>'+
+    '<div class="course-progress-wrap" style="height:8px"><div class="course-progress-bar" style="width:'+oPct+'%;background:'+oPc+';height:8px"></div></div>'+
+    '</div>';
+   // top 3 ongoing courses
+   var topCourses=ongoing.slice(0,3);
+   if(!topCourses.length) topCourses=courses.slice(0,3);
+   var coursesHtml=topCourses.map(function(c){
+    var st=courseStats(c.id);
+    var t=gT(c.teacherId);
+    var tName=t?t.fname+' '+t.lname:'';
+    var pc=progressBarColor(st.pct);
+    var sc=courseStatusColor(c.status);
+    var sb=courseStatusBg(c.status);
+    return '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--card);border-radius:9px;margin-bottom:6px;cursor:pointer" onclick="openCourseDetail('+c.id+')">'+
+     '<div class="avatar avatar-gold" style="width:32px;height:32px;font-size:12px;flex-shrink:0">'+(c.name[0]||'د')+'</div>'+
+     '<div style="flex:1;min-width:0">'+
+     '<div style="font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c.name+'</div>'+
+     '<div style="display:flex;align-items:center;gap:6px;margin-top:3px">'+
+     '<span style="font-size:9px;padding:1px 7px;border-radius:8px;background:'+sb+';color:'+sc+';font-weight:700">'+c.status+'</span>'+
+     (tName?'<span style="font-size:9px;color:var(--muted)">'+tName+'</span>':'')+'</div>'+
+     '<div class="course-progress-wrap" style="margin-top:5px"><div class="course-progress-bar" style="width:'+st.pct+'%;background:'+pc+'"></div></div>'+
+     '</div>'+
+     '<div style="font-size:12px;font-weight:800;color:'+pc+';flex-shrink:0">'+st.pct+'%</div>'+
+     '</div>';
+   }).join('');
+   dashCoursesEl.innerHTML=summaryHtml+coursesHtml+
+    (courses.length>3?'<div style="text-align:center;padding-top:6px"><button class="btn btn-outline btn-sm" onclick="showPage(\'courses\')" style="font-size:10px">عرض جميع الدورات ('+courses.length+')</button></div>':'');
+  }
+ }
 }
 
 // ══════════════════════════════════════════════
 // STUDENTS
 // ══════════════════════════════════════════════
 function resetStudentFilters(){
- ['student-search','filter-stage','filter-grade','filter-fees','filter-att'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+ ['student-search','filter-stage','filter-fees','filter-att'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
  var fs=document.getElementById('filter-sort');if(fs)fs.value='name';
  renderStudents();
-}
-
-function filterStageChanged(){
- var stageEl=document.getElementById('filter-stage');
- var gradeEl=document.getElementById('filter-grade');
- if(!stageEl||!gradeEl)return;
- var stage=stageEl.value;
- if(!stage){gradeEl.innerHTML='<option value="">الكل</option>';return;}
- var grades=getGradesList(stage);
- gradeEl.innerHTML='<option value="">الكل</option>'+grades.map(function(g){return '<option value="'+g+'">'+g+'</option>';}).join('');
 }
 function toggleStudentFilter(){
  var panel=document.getElementById('students-adv-panel');
@@ -4782,14 +4873,12 @@ function renderStudents(){
  var el0=document.getElementById('students-cards');if(el0&&!el0.dataset.loaded){showCardsLoading('students-cards',3);}
  var q=(document.getElementById('student-search')?document.getElementById('student-search').value:'').toLowerCase().trim();
  var stageF=document.getElementById('filter-stage')?document.getElementById('filter-stage').value:'';
- var gradeF=document.getElementById('filter-grade')?document.getElementById('filter-grade').value:'';
  var feesF=document.getElementById('filter-fees')?document.getElementById('filter-fees').value:'';
  var attF=document.getElementById('filter-att')?document.getElementById('filter-att').value:'';
  var sortF=(document.getElementById('filter-sort')?document.getElementById('filter-sort').value:'')||'name';
  var list=data.students.filter(function(s){
  if(q){var h=(s.fname+' '+s.lname+' '+(s.phone||'')+' '+(s.parentName||'')+' '+(s.parentPhone||'')).toLowerCase();if(!h.includes(q))return false;}
  if(stageF&&(s.stage||'ابتدائي')!==stageF)return false;
- if(gradeF&&(s.grade||'')!==gradeF)return false;
  if(feesF){var _fs=feeStats(s.id);if(feesF==='none'&&_fs.total>0)return false;if(feesF==='paid'&&(_fs.total===0||_fs.remaining>0))return false;if(feesF==='partial'&&(_fs.total===0||_fs.remaining<=0))return false;}
  if(attF){var rate=attRate(s.id);if(attF==='none'&&rate!==null)return false;if(attF==='excellent'&&(rate===null||rate<75))return false;if(attF==='average'&&(rate===null||rate<50||rate>=75))return false;if(attF==='poor'&&(rate===null||rate>=50))return false;}
  return true;
@@ -4802,9 +4891,9 @@ function renderStudents(){
  return(a.fname+a.lname).localeCompare(b.fname+b.lname,'ar');
  });
  var statsEl=document.getElementById('student-filter-stats');
- if(statsEl){var hasF=q||stageF||gradeF||feesF||attF;statsEl.textContent=hasF?'يُعرض '+list.length+' من أصل '+data.students.length+' طالب':'';}
+ if(statsEl){var hasF=q||stageF||feesF||attF;statsEl.textContent=hasF?'يُعرض '+list.length+' من أصل '+data.students.length+' طالب':'';}
  var el=document.getElementById('students-cards');
- if(!list.length){var msg=q||stageF||gradeF||feesF||attF?'لا توجد نتائج مطابقة':'لا يوجد طلبة حتى الآن';el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><p>'+msg+'</p></div>';return;}
+ if(!list.length){var msg=q||stageF||feesF||attF?'لا توجد نتائج مطابقة':'لا يوجد طلبة حتى الآن';el.innerHTML=`<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><p>${msg}</p></div>`;return;}
  el.innerHTML=list.map(s=>{
  var rate=attRate(s.id),avg=avgGrade(s.id);
  var _fs=feeStats(s.id);var total=_fs.total;var paid=_fs.paid;var remaining=_fs.remaining;
@@ -4819,7 +4908,7 @@ function renderStudents(){
  <div class="avatar avatar-gold" style="cursor:pointer;position:relative" onclick="openStudentProfile(${s.id})">${s.fname[0]}${violCnt>0?`<span style="position:absolute;top:-3px;left:-3px;width:14px;height:14px;border-radius:50%;background:var(--danger);color:white;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)">${violCnt}</span>`:''}</div>
  <div>
  <div class="item-name" style="cursor:pointer" onclick="openStudentProfile(${s.id})">${s.fname} ${s.lname}</div>
- <div class="item-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'ابتدائي'}${s.grade?' | '+s.grade:''} ${getSubStatus(s)}</div>
+ <div class="item-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'ابتدائي'} ${getSubStatus(s)}</div>
  <div class="item-sub">${s.phone||''} ${s.parentPhone?`| <a href="https://wa.me/${s.parentPhone.replace(/\D/g,'')}" style="color:var(--wa);text-decoration:none"> ${s.parentPhone}</a>`:''}</div>
  <div style="margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
  ${beh?`<span style="font-size:10px">${starsHtml(beh.stars)}</span>`:''}
@@ -4846,20 +4935,17 @@ function addStudent(){
  var fname=document.getElementById('s-fname').value.trim(),lname=document.getElementById('s-lname').value.trim();
  if(!fname||!lname){toast('يرجى إدخال الاسم');return;}
  var stage=document.getElementById('s-stage').value;
- var grade=document.getElementById('s-grade').value;
- if(!grade){toast('يرجى تحديد الصف الدراسي');return;}
  var subStart=gVal('s-sub-start');
  var subEnd=gVal('s-sub-end');
  var subPrice=parseFloat(gVal('s-sub-price'))||0;
  var subPaid=parseFloat(gVal('s-sub-paid'))||0;
- data.students.push({id:data.nextId.student++,fname:fname,lname:lname,stage:stage,grade:grade,
+ data.students.push({id:data.nextId.student++,fname:fname,lname:lname,stage:stage,
  phone:normalizeLocalPhone(document.getElementById('s-phone').value),
  parentPhone:normalizeLocalPhone(document.getElementById('s-pphone').value),
  parentName:'',subStart:subStart,subEnd:subEnd,subPrice:subPrice,subPaid:subPaid});
  save();closeModal('add-student');renderStudents();
  ['s-fname','s-lname','s-phone','s-pphone','s-sub-start','s-sub-end','s-sub-price','s-sub-paid'].forEach(function(id){document.getElementById(id).value='';});
  document.getElementById('s-stage').value='ابتدائي';
- updateGradeSelect('s-stage','s-grade');
  toast('تمت إضافة الطالب');
 }
 
@@ -4871,8 +4957,6 @@ function openEditStudent(id){
  document.getElementById('edit-s-phone').value=s.phone||'';
  document.getElementById('edit-s-pphone').value=s.parentPhone||'';
  document.getElementById('edit-s-stage').value=s.stage||'ابتدائي';
- updateGradeSelect('edit-s-stage','edit-s-grade');
- document.getElementById('edit-s-grade').value=s.grade||'';
  document.getElementById('edit-s-sub-start').value=s.subStart||'';
  document.getElementById('edit-s-sub-end').value=s.subEnd||'';
  document.getElementById('edit-s-sub-price').value=s.subPrice||'';
@@ -4905,7 +4989,6 @@ async function saveEditStudent(){
  fname:fname,
  lname:lname,
  stage:document.getElementById('edit-s-stage').value,
- grade:document.getElementById('edit-s-grade').value,
  phone:normalizeLocalPhone(document.getElementById('edit-s-phone').value),
  parentPhone:normalizeLocalPhone(document.getElementById('edit-s-pphone').value),
  subStart:nextSubStart,
@@ -4953,7 +5036,7 @@ function openStudentProfile(id){
  <div class="profile-avatar">${s.fname[0]}</div>
  <div>
  <div class="profile-name">${s.fname} ${s.lname}</div>
- <div class="profile-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'—'}${s.grade?' | '+s.grade:''} | ${s.phone||'—'} ${s.parentPhone?`| <a href="https://wa.me/${s.parentPhone.replace(/\\D/g,'')}" style="color:var(--wa)">${s.parentPhone}</a>`:''}</div>
+ <div class="profile-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'—'} | ${s.phone||'—'} ${s.parentPhone?`| <a href="https://wa.me/${s.parentPhone.replace(/\\D/g,'')}" style="color:var(--wa)">${s.parentPhone}</a>`:''}</div>
  ${beh?`<div style="margin-top:6px;font-size:14px">${starsHtml(beh.stars)} <span style="font-size:10px;color:var(--muted)">${beh.note||''}</span></div>`:''}
  <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
  <span class="beh-indicator ${behStatus.cls}" style="font-size:9px">${behStatus.label}</span>
@@ -5576,19 +5659,9 @@ function resetDiscWarnFilters(){
  renderWarningsList();
 }
 function resetDiscStudFilters(){
- ['disc-s-search','disc-s-status','disc-s-stage','disc-s-grade','disc-s-viols'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+ ['disc-s-search','disc-s-status','disc-s-stage','disc-s-viols'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
  var s=document.getElementById('disc-s-sort');if(s)s.value='viols_desc';
  renderStudentsStatusList();
-}
-
-function discStageFilterChanged(){
- var stageEl=document.getElementById('disc-s-stage');
- var gradeEl=document.getElementById('disc-s-grade');
- if(!stageEl||!gradeEl)return;
- var stage=stageEl.value;
- if(!stage){gradeEl.innerHTML='<option value="">الكل</option>';return;}
- var grades=getGradesList(stage);
- gradeEl.innerHTML='<option value="">الكل</option>'+grades.map(function(g){return '<option value="'+g+'">'+g+'</option>';}).join('');
 }
 
 // ── gVal helper ──
@@ -5726,7 +5799,6 @@ function renderStudentsStatusList(){
  var q=_dv('disc-s-search').toLowerCase().trim();
  var statusF=_dv('disc-s-status');
  var stageF=_dv('disc-s-stage');
- var gradeF=_dv('disc-s-grade');
  var violsF=_dv('disc-s-viols');
  var sortF=_dv('disc-s-sort')||'viols_desc';
 
@@ -5735,7 +5807,6 @@ function renderStudentsStatusList(){
  var filtered=data.students.filter(function(s){
  if(q&&!(s.fname+' '+s.lname).toLowerCase().includes(q))return false;
  if(stageF&&(s.stage||'ابتدائي')!==stageF)return false;
- if(gradeF&&(s.grade||'')!==gradeF)return false;
  var vCnt=getViolations(s.id).length;
  if(violsF==='has'&&vCnt===0)return false;
  if(violsF==='none'&&vCnt>0)return false;
@@ -5753,7 +5824,7 @@ function renderStudentsStatusList(){
 
  var statsEl=document.getElementById('disc-s-filter-stats');
  if(statsEl){
- var hasF=q||statusF||stageF||gradeF||violsF;
+ var hasF=q||statusF||stageF||violsF;
  statsEl.textContent=hasF?'يُعرض '+filtered.length+' من أصل '+data.students.length+' طالب':'';
  }
 
@@ -6304,7 +6375,7 @@ function renderFees(){
  '<div class="avatar avatar-gold">'+s.fname[0]+'</div>'+
  '<div>'+
  '<div class="item-name" style="cursor:pointer" onclick="openStudentProfile('+s.id+')">'+s.fname+' '+s.lname+'</div>'+
- '<div class="item-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> '+(s.stage||'ابتدائي')+(s.grade?' | '+s.grade:'')+'</div>'+
+ '<div class="item-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> '+(s.stage||'ابتدائي')+'</div>'+
  (price>0?'<div class="item-sub" style="color:var(--muted)">'+pct+'% مسدد</div>':'<div class="item-sub" style="color:var(--muted)">لم يحدد سعر الاشتراك</div>')+
  '</div>'+
  '</div>'+
@@ -6408,387 +6479,533 @@ async function addPayment(){
 }
 
 // ══════════════════════════════════════════════
-// COURSES — الدورات
+// COURSES — نظام الدورات
 // ══════════════════════════════════════════════
 var _courseFilter = 'all';
+var _currentCourseId = 0;
 
-function setCourseFilter(f) {
- _courseFilter = f;
- // update button styles
- var btns = ['cf-all','cf-ongoing','cf-completed','cf-paused','cf-notstarted'];
- var vals = ['all','جارية','مكتملة','متوقفة','لم تبدأ'];
- btns.forEach(function(id, i) {
-  var el = document.getElementById(id);
-  if (!el) return;
-  if (vals[i] === f) {
-   el.style.background = 'var(--gold)';
-   el.style.color = '#000';
-   el.style.border = 'none';
-  } else {
-   el.style.background = 'var(--card2)';
-   el.style.color = 'var(--text)';
-   el.style.border = '1px solid var(--border)';
+// ── helpers ──
+function gCourse(id){ return (data.courses||[]).find(function(c){return c.id===id;}); }
+function gChapter(id){ return (data.courseChapters||[]).find(function(c){return c.id===id;}); }
+function gTopic(id){ return (data.courseTopics||[]).find(function(t){return t.id===id;}); }
+
+function courseStats(courseId){
+ var chapters=(data.courseChapters||[]).filter(function(c){return c.courseId===courseId;});
+ chapters.sort(function(a,b){return (a.order||0)-(b.order||0);});
+ var totalTopics=0,done=0,inProgress=0,notStarted=0;
+ chapters.forEach(function(ch){
+  var topics=(data.courseTopics||[]).filter(function(t){return t.chapterId===ch.id;});
+  topics.sort(function(a,b){return (a.order||0)-(b.order||0);});
+  topics.forEach(function(t){
+   totalTopics++;
+   if(t.status==='مكتمل') done++;
+   else if(t.status==='قيد الشرح') inProgress++;
+   else notStarted++;
+  });
+ });
+ var pct = totalTopics>0 ? Math.round(done/totalTopics*100) : 0;
+ // last chapter/topic touched
+ var lastChapter=null, lastTopic=null;
+ for(var i=chapters.length-1;i>=0;i--){
+  var topics=(data.courseTopics||[]).filter(function(t){return t.chapterId===chapters[i].id;});
+  topics.sort(function(a,b){return (a.order||0)-(b.order||0);});
+  for(var j=topics.length-1;j>=0;j--){
+   if(topics[j].status==='مكتمل'||topics[j].status==='قيد الشرح'){
+    lastChapter=chapters[i]; lastTopic=topics[j]; break;
+   }
   }
+  if(lastTopic) break;
+ }
+ return {chapters:chapters,totalTopics:totalTopics,done:done,inProgress:inProgress,notStarted:notStarted,pct:pct,lastChapter:lastChapter,lastTopic:lastTopic};
+}
+
+function courseStatusColor(status){
+ if(status==='جارية') return 'var(--success)';
+ if(status==='مكتملة') return 'var(--info)';
+ if(status==='متوقفة') return 'var(--warning)';
+ return 'var(--muted)';
+}
+function courseStatusBg(status){
+ if(status==='جارية') return 'rgba(52,211,153,.12)';
+ if(status==='مكتملة') return 'rgba(99,179,237,.12)';
+ if(status==='متوقفة') return 'rgba(246,173,85,.12)';
+ return 'rgba(160,174,192,.08)';
+}
+function topicStatusClass(status){
+ if(status==='مكتمل') return 'topic-status-done';
+ if(status==='قيد الشرح') return 'topic-status-inprogress';
+ return 'topic-status-notstarted';
+}
+function progressBarColor(pct){
+ if(pct>=75) return 'var(--success)';
+ if(pct>=40) return 'var(--warning)';
+ if(pct>0) return 'var(--danger)';
+ return 'var(--muted)';
+}
+
+// ── filter ──
+function setCourseFilter(f){
+ _courseFilter=f;
+ var all=['all','جارية','مكتملة','متوقفة','لم تبدأ'];
+ all.forEach(function(v){
+  var el=document.getElementById('cf-btn-'+v);
+  if(!el) return;
+  el.className = v===f ? 'cf-btn cf-btn-active' : 'cf-btn';
  });
  renderCourses();
 }
 
-function courseProgress(courseId) {
- var chapters = (data.courseChapters || []).filter(function(c) { return c.courseId === courseId; });
- var totalTopics = 0;
- var doneTopics = 0;
- chapters.forEach(function(ch) {
-  var topics = (data.courseTopics || []).filter(function(t) { return t.chapterId === ch.id; });
-  totalTopics += topics.length;
-  doneTopics += topics.filter(function(t) { return t.done; }).length;
- });
- return { chapters: chapters.length, total: totalTopics, done: doneTopics,
-  pct: totalTopics > 0 ? Math.round(doneTopics / totalTopics * 100) : 0 };
-}
-
-function getCourseStatusColor(status) {
- if (status === 'جارية') return 'var(--success)';
- if (status === 'مكتملة') return 'var(--info)';
- if (status === 'متوقفة') return 'var(--warning)';
- return 'var(--muted)';
-}
-function getCourseStatusBg(status) {
- if (status === 'جارية') return 'rgba(52,211,153,0.12)';
- if (status === 'مكتملة') return 'rgba(99,179,237,0.12)';
- if (status === 'متوقفة') return 'rgba(246,173,85,0.12)';
- return 'rgba(160,174,192,0.10)';
-}
-
-function renderCourses() {
- var el = document.getElementById('courses-list');
- if (!el) return;
- var q = (document.getElementById('course-search') ? document.getElementById('course-search').value : '').toLowerCase().trim();
- var courses = data.courses || [];
-
- var filtered = courses.filter(function(c) {
-  if (_courseFilter !== 'all' && c.status !== _courseFilter) return false;
-  if (q) {
-   var t = gT(c.teacherId);
-   var tName = t ? t.fname + ' ' + t.lname : '';
-   var hay = (c.name + ' ' + c.subject + ' ' + tName).toLowerCase();
-   if (!hay.includes(q)) return false;
+// ── render list ──
+function renderCourses(){
+ var el=document.getElementById('courses-list');
+ if(!el) return;
+ var q=(gVal('course-search')||'').toLowerCase().trim();
+ var list=(data.courses||[]).filter(function(c){
+  if(_courseFilter!=='all'&&c.status!==_courseFilter) return false;
+  if(q){
+   var t=gT(c.teacherId);
+   var tName=t?t.fname+' '+t.lname:'';
+   var hay=(c.name+' '+c.subject+' '+tName).toLowerCase();
+   if(!hay.includes(q)) return false;
   }
   return true;
  });
-
- if (!filtered.length) {
-  el.innerHTML = '<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><p>' + (q || _courseFilter !== 'all' ? 'لا توجد نتائج مطابقة' : 'لا توجد دورات حتى الآن') + '</p></div>';
+ if(!list.length){
+  el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><p>'+(q||_courseFilter!=='all'?'لا توجد نتائج مطابقة':'لا توجد دورات — أضف أول دورة')+'</p></div>';
   return;
  }
-
- el.innerHTML = filtered.map(function(c) {
-  var p = courseProgress(c.id);
-  var t = gT(c.teacherId);
-  var tName = t ? t.fname + ' ' + t.lname : 'غير محدد';
-  var sc = getCourseStatusColor(c.status);
-  var sb = getCourseStatusBg(c.status);
-  var pBar = '<div style="background:var(--border2);border-radius:4px;height:5px;margin-top:6px"><div style="background:var(--gold);height:5px;border-radius:4px;width:' + p.pct + '%"></div></div>';
-  return '<div class="item-card" style="cursor:pointer" onclick="openCourseDetail(' + c.id + ')">' +
+ el.innerHTML=list.map(function(c){
+  var st=courseStats(c.id);
+  var t=gT(c.teacherId);
+  var tName=t?t.fname+' '+t.lname:'غير محدد';
+  var sc=courseStatusColor(c.status);
+  var sb=courseStatusBg(c.status);
+  var pc=progressBarColor(st.pct);
+  return '<div class="item-card" style="cursor:pointer" onclick="openCourseDetail('+c.id+')">' +
    '<div class="item-card-header">' +
    '<div class="item-card-info">' +
-   '<div class="avatar avatar-gold" style="min-width:36px;height:36px;font-size:13px">' + (c.name[0] || 'د') + '</div>' +
-   '<div style="flex:1">' +
-   '<div class="item-name">' + c.name + '</div>' +
+   '<div class="avatar avatar-gold" style="width:38px;height:38px;font-size:14px;flex-shrink:0">'+(c.name[0]||'د')+'</div>' +
+   '<div style="flex:1;min-width:0">' +
+   '<div class="item-name">'+c.name+'</div>' +
    '<div class="item-sub" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
-   '<span>' + c.subject + '</span>' +
-   '<span style="color:var(--muted)">|</span>' +
-   '<span>' + tName + '</span>' +
+   '<span>'+c.subject+'</span><span style="color:var(--border2)">|</span><span>'+tName+'</span>' +
    '</div>' +
-   '<div style="margin-top:5px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
-   '<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:' + sb + ';color:' + sc + ';font-weight:700">' + c.status + '</span>' +
-   (c.startDate ? '<span style="font-size:9px;color:var(--muted)">بدأ: ' + c.startDate + '</span>' : '') +
+   '<div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap;align-items:center">' +
+   '<span style="font-size:9px;padding:2px 8px;border-radius:8px;background:'+sb+';color:'+sc+';font-weight:700">'+c.status+'</span>' +
+   (c.startDate?'<span style="font-size:9px;color:var(--muted)">'+c.startDate+'</span>':'') +
    '</div>' +
    '</div>' +
    '</div>' +
    '<div class="item-card-actions">' +
-   '<button class="btn btn-info btn-sm" onclick="event.stopPropagation();openEditCourseModal(' + c.id + ')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
-   '<button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCourse(' + c.id + ')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>' +
+   '<button class="btn btn-info btn-sm" onclick="event.stopPropagation();openEditCourseModal('+c.id+')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
+   '<button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCourse('+c.id+')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>' +
    '</div>' +
    '</div>' +
    '<div class="item-stats">' +
-   '<div class="item-stat"><div class="item-stat-val">' + p.chapters + '</div><div class="item-stat-lbl">فصول</div></div>' +
-   '<div class="item-stat"><div class="item-stat-val">' + p.total + '</div><div class="item-stat-lbl">مواضيع</div></div>' +
-   '<div class="item-stat"><div class="item-stat-val" style="color:var(--success)">' + p.done + '</div><div class="item-stat-lbl">مكتملة</div></div>' +
-   '<div class="item-stat"><div class="item-stat-val" style="color:var(--gold)">' + p.pct + '%</div><div class="item-stat-lbl">الإنجاز</div></div>' +
+   '<div class="item-stat"><div class="item-stat-val">'+st.chapters.length+'</div><div class="item-stat-lbl">فصول</div></div>' +
+   '<div class="item-stat"><div class="item-stat-val">'+st.totalTopics+'</div><div class="item-stat-lbl">مواضيع</div></div>' +
+   '<div class="item-stat"><div class="item-stat-val" style="color:var(--success)">'+st.done+'</div><div class="item-stat-lbl">مكتمل</div></div>' +
+   '<div class="item-stat"><div class="item-stat-val" style="color:'+pc+'">'+st.pct+'%</div><div class="item-stat-lbl">الإنجاز</div></div>' +
    '</div>' +
-   pBar +
+   '<div class="course-progress-wrap"><div class="course-progress-bar" style="width:'+st.pct+'%;background:'+pc+'"></div></div>' +
    '</div>';
  }).join('');
 }
 
-function openAddCourseModal() {
- document.getElementById('course-modal-title').textContent = 'إضافة دورة جديدة';
- document.getElementById('course-edit-id').value = '';
- document.getElementById('course-name').value = '';
- document.getElementById('course-subject').value = '';
- document.getElementById('course-desc').value = '';
- document.getElementById('course-students-count').value = '';
- document.getElementById('course-start-date').value = today();
- document.getElementById('course-end-date').value = '';
- document.getElementById('course-status').value = 'لم تبدأ';
- var tSel = document.getElementById('course-teacher');
- tSel.innerHTML = '<option value="">-- اختياري --</option>' +
-  data.teachers.map(function(t) { return '<option value="' + t.id + '">' + t.fname + ' ' + t.lname + '</option>'; }).join('');
- document.getElementById('modal-add-course').classList.add('open');
-}
-
-function openEditCourseModal(id) {
- var c = (data.courses || []).find(function(x) { return x.id === id; });
- if (!c) return;
- document.getElementById('course-modal-title').textContent = 'تعديل الدورة';
- document.getElementById('course-edit-id').value = c.id;
- document.getElementById('course-name').value = c.name || '';
- document.getElementById('course-subject').value = c.subject || '';
- document.getElementById('course-desc').value = c.desc || '';
- document.getElementById('course-students-count').value = c.studentsCount || '';
- document.getElementById('course-start-date').value = c.startDate || '';
- document.getElementById('course-end-date').value = c.endDate || '';
- document.getElementById('course-status').value = c.status || 'لم تبدأ';
- var tSel = document.getElementById('course-teacher');
- tSel.innerHTML = '<option value="">-- اختياري --</option>' +
-  data.teachers.map(function(t) { return '<option value="' + t.id + '">' + t.fname + ' ' + t.lname + '</option>'; }).join('');
- tSel.value = c.teacherId || '';
- document.getElementById('modal-add-course').classList.add('open');
-}
-
-function saveCourse() {
- var name = document.getElementById('course-name').value.trim();
- var subject = document.getElementById('course-subject').value.trim();
- if (!name || !subject) { toast('يرجى إدخال اسم الدورة والمادة'); return; }
- var editId = parseInt(document.getElementById('course-edit-id').value) || 0;
- var obj = {
-  name: name,
-  subject: subject,
-  desc: document.getElementById('course-desc').value.trim(),
-  studentsCount: parseInt(document.getElementById('course-students-count').value) || 0,
-  startDate: document.getElementById('course-start-date').value,
-  endDate: document.getElementById('course-end-date').value,
-  status: document.getElementById('course-status').value,
-  teacherId: parseInt(document.getElementById('course-teacher').value) || 0
- };
- if (!data.courses) data.courses = [];
- if (editId) {
-  var idx = data.courses.findIndex(function(c) { return c.id === editId; });
-  if (idx !== -1) data.courses[idx] = Object.assign({}, data.courses[idx], obj);
- } else {
-  obj.id = data.nextId.course++;
-  data.courses.push(obj);
- }
- save();
- closeModal('add-course');
- renderCourses();
- toast(editId ? 'تم تحديث الدورة' : 'تمت إضافة الدورة');
-}
-
-function deleteCourse(id) {
- var c = (data.courses || []).find(function(x) { return x.id === id; });
- var cName = c ? c.name : 'هذه الدورة';
- showConfirm({ title: 'حذف ' + cName, msg: 'سيتم حذف الدورة وجميع فصولها ومواضيعها.', confirmText: 'نعم، احذف' }, function() {
-  data.courses = (data.courses || []).filter(function(x) { return x.id !== id; });
-  var chapIds = (data.courseChapters || []).filter(function(c) { return c.courseId === id; }).map(function(c) { return c.id; });
-  data.courseChapters = (data.courseChapters || []).filter(function(c) { return c.courseId !== id; });
-  data.courseTopics = (data.courseTopics || []).filter(function(t) { return chapIds.indexOf(t.chapterId) === -1; });
-  save();
-  renderCourses();
-  toast('تم حذف ' + cName);
- });
-}
-
-var _currentCourseId = 0;
-
-function openCourseDetail(id) {
- _currentCourseId = id;
- renderCourseDetail(id);
+// ── course detail ──
+function openCourseDetail(id){
+ _currentCourseId=id;
  showPage('course-detail');
+ renderCourseDetail();
 }
+function openEditCurrentCourse(){ openEditCourseModal(_currentCourseId); }
+function deleteCurrentCourse(){ deleteCourse(_currentCourseId); showPage('courses'); }
 
-function openEditCurrentCourse() {
- openEditCourseModal(_currentCourseId);
-}
+function renderCourseDetail(){
+ var el=document.getElementById('course-detail-content');
+ if(!el) return;
+ var c=gCourse(_currentCourseId);
+ if(!c){ el.innerHTML='<div class="empty"><p>الدورة غير موجودة</p></div>'; return; }
+ var st=courseStats(_currentCourseId);
+ var t=gT(c.teacherId);
+ var tName=t?t.fname+' '+t.lname:'غير محدد';
+ var tPhone=t?(t.phone||''):'';
+ var sc=courseStatusColor(c.status);
+ var sb=courseStatusBg(c.status);
+ var pc=progressBarColor(st.pct);
 
-function deleteCurrentCourse() {
- deleteCourse(_currentCourseId);
- showPage('courses');
-}
+ // build chapters HTML
+ var chapHtml=st.chapters.map(function(ch,ci){
+  var topics=(data.courseTopics||[]).filter(function(t){return t.chapterId===ch.id;});
+  topics.sort(function(a,b){return (a.order||0)-(b.order||0);});
+  var chDone=topics.filter(function(t){return t.status==='مكتمل';}).length;
+  var chPct=topics.length>0?Math.round(chDone/topics.length*100):0;
+  var chPc=progressBarColor(chPct);
 
-function renderCourseDetail(id) {
- var c = (data.courses || []).find(function(x) { return x.id === id; });
- if (!c) return;
- var el = document.getElementById('course-detail-content');
- if (!el) return;
- var p = courseProgress(id);
- var t = gT(c.teacherId);
- var tName = t ? t.fname + ' ' + t.lname : 'غير محدد';
- var sc = getCourseStatusColor(c.status);
- var sb = getCourseStatusBg(c.status);
- var chapters = (data.courseChapters || []).filter(function(ch) { return ch.courseId === id; });
-
- var chapHtml = chapters.map(function(ch) {
-  var topics = (data.courseTopics || []).filter(function(tp) { return tp.chapterId === ch.id; });
-  var topicsHtml = topics.map(function(tp) {
-   return '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--card2);border-radius:8px;margin-bottom:6px">' +
-    '<input type="checkbox" ' + (tp.done ? 'checked' : '') + ' onchange="toggleTopicDone(' + tp.id + ',this.checked)" style="width:16px;height:16px;accent-color:var(--gold);cursor:pointer;flex-shrink:0">' +
-    '<span style="flex:1;font-size:12px;' + (tp.done ? 'text-decoration:line-through;color:var(--muted)' : '') + '">' + tp.title + '</span>' +
-    '<button onclick="openEditTopicModal(' + tp.id + ',' + ch.id + ')" style="background:none;border:none;color:var(--text-3);cursor:pointer;padding:2px 6px;font-size:11px" title="تعديل">✏️</button>' +
-    '<button onclick="deleteTopic(' + tp.id + ')" style="background:none;border:none;color:var(--danger);cursor:pointer;padding:2px 6px;font-size:11px" title="حذف">✕</button>' +
+  var topicsHtml=topics.map(function(tp,ti){
+   var sCls=topicStatusClass(tp.status);
+   return '<div class="topic-row">' +
+    '<span style="font-size:10px;color:var(--muted);min-width:18px;text-align:center">'+(ti+1)+'</span>' +
+    '<span style="flex:1;font-size:12px;'+(tp.status==='مكتمل'?'text-decoration:line-through;color:var(--muted)':'')+'">'+tp.title+'</span>' +
+    '<button class="topic-status-pill '+sCls+'" onclick="cycleTopicStatus('+tp.id+')">'+tp.status+'</button>' +
+    '<button onclick="openEditTopicModal('+tp.id+','+ch.id+')" style="background:none;border:none;color:var(--text-3);cursor:pointer;padding:3px 5px;font-size:11px">✏️</button>' +
+    '<button onclick="moveTopicUp('+tp.id+','+ch.id+')" style="background:none;border:none;color:var(--text-3);cursor:pointer;padding:3px 4px;font-size:10px">▲</button>' +
+    '<button onclick="moveTopicDown('+tp.id+','+ch.id+')" style="background:none;border:none;color:var(--text-3);cursor:pointer;padding:3px 4px;font-size:10px">▼</button>' +
+    '<button onclick="deleteTopic('+tp.id+')" style="background:none;border:none;color:var(--danger);cursor:pointer;padding:3px 5px;font-size:11px">✕</button>' +
     '</div>';
   }).join('');
 
-  return '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px">' +
-   '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
-   '<div style="font-size:13px;font-weight:700;color:var(--gold)">' + ch.title + '</div>' +
-   '<div style="display:flex;gap:6px">' +
-   '<button class="btn btn-gold btn-sm" onclick="openAddTopicModal(' + ch.id + ')" style="font-size:10px;padding:4px 10px">+ موضوع</button>' +
-   '<button onclick="openEditChapterModal(' + ch.id + ',' + id + ')" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:11px;padding:4px" title="تعديل الفصل">✏️</button>' +
-   '<button onclick="deleteChapter(' + ch.id + ')" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:11px;padding:4px" title="حذف الفصل">✕</button>' +
+  return '<div class="chapter-block">' +
+   '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
+   '<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">' +
+   '<span style="font-size:12px;color:var(--muted);font-weight:600">'+(ci+1)+'</span>' +
+   '<span style="font-size:13px;font-weight:700;color:var(--gold)">'+ch.title+'</span>' +
+   '<span style="font-size:10px;color:'+chPc+';font-weight:600">'+chPct+'%</span>' +
+   '</div>' +
+   '<div style="display:flex;gap:5px;flex-shrink:0">' +
+   '<button class="btn btn-gold btn-sm" onclick="openAddTopicModal('+ch.id+')" style="font-size:10px;padding:4px 9px">+ موضوع</button>' +
+   '<button onclick="openEditChapterModal('+ch.id+')" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:11px;padding:3px 5px">✏️</button>' +
+   '<button onclick="moveChapterUp('+ch.id+')" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:10px;padding:3px 4px">▲</button>' +
+   '<button onclick="moveChapterDown('+ch.id+')" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:10px;padding:3px 4px">▼</button>' +
+   '<button onclick="deleteChapter('+ch.id+')" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:11px;padding:3px 5px">✕</button>' +
    '</div>' +
    '</div>' +
-   (topicsHtml || '<div style="font-size:11px;color:var(--muted);padding:8px 0">لا توجد مواضيع — أضف موضوعاً</div>') +
+   '<div class="course-progress-wrap" style="margin-bottom:10px"><div class="course-progress-bar" style="width:'+chPct+'%;background:'+chPc+'"></div></div>' +
+   (topicsHtml||'<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px 0">لا توجد مواضيع — اضغط "+ موضوع"</div>') +
    '</div>';
  }).join('');
 
- var pct = p.pct;
- var pctColor = pct >= 75 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--danger)';
-
  el.innerHTML =
+  // ── header card ──
   '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px">' +
-  '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">' +
-  '<div class="avatar avatar-gold" style="width:48px;height:48px;font-size:18px;flex-shrink:0">' + (c.name[0] || 'د') + '</div>' +
-  '<div style="flex:1">' +
-  '<div style="font-size:16px;font-weight:800">' + c.name + '</div>' +
-  '<div style="font-size:12px;color:var(--muted);margin-top:3px">' + c.subject + ' | ' + tName + '</div>' +
-  '<div style="margin-top:6px"><span style="font-size:10px;padding:3px 10px;border-radius:8px;background:' + sb + ';color:' + sc + ';font-weight:700">' + c.status + '</span></div>' +
+  '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px">' +
+  '<div class="avatar avatar-gold" style="width:46px;height:46px;font-size:17px;flex-shrink:0">'+(c.name[0]||'د')+'</div>' +
+  '<div style="flex:1;min-width:0">' +
+  '<div style="font-size:16px;font-weight:800">'+c.name+'</div>' +
+  '<div style="font-size:12px;color:var(--muted);margin-top:3px">'+c.subject+' | '+tName+'</div>' +
+  '<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
+  '<span style="font-size:10px;padding:3px 10px;border-radius:8px;background:'+sb+';color:'+sc+';font-weight:700">'+c.status+'</span>' +
+  (c.startDate?'<span style="font-size:10px;color:var(--muted)">'+c.startDate+(c.endDate?' → '+c.endDate:'')+'</span>':'') +
+  '</div>' +
+  (c.desc?'<div style="font-size:11px;color:var(--text-2);margin-top:8px">'+c.desc+'</div>':'') +
   '</div>' +
   '</div>' +
-  (c.desc ? '<div style="font-size:12px;color:var(--text-2);margin-bottom:14px;padding:10px;background:var(--card2);border-radius:8px">' + c.desc + '</div>' : '') +
-  '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px">' +
-  '<div class="item-stat"><div class="item-stat-val" style="color:var(--gold)">' + c.studentsCount + '</div><div class="item-stat-lbl">عدد الطلبة</div></div>' +
-  '<div class="item-stat"><div class="item-stat-val">' + p.chapters + '</div><div class="item-stat-lbl">الفصول</div></div>' +
-  '<div class="item-stat"><div class="item-stat-val">' + p.total + '</div><div class="item-stat-lbl">إجمالي المواضيع</div></div>' +
-  '<div class="item-stat"><div class="item-stat-val" style="color:var(--success)">' + p.done + '</div><div class="item-stat-lbl">مواضيع مكتملة</div></div>' +
-  '<div class="item-stat"><div class="item-stat-val" style="color:var(--warning)">' + (p.total - p.done) + '</div><div class="item-stat-lbl">متبقية</div></div>' +
-  '<div class="item-stat"><div class="item-stat-val" style="color:' + pctColor + '">' + pct + '%</div><div class="item-stat-lbl">نسبة الإنجاز</div></div>' +
+  // ── stats ──
+  '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">' +
+  '<div class="item-stat"><div class="item-stat-val">'+st.chapters.length+'</div><div class="item-stat-lbl">الفصول</div></div>' +
+  '<div class="item-stat"><div class="item-stat-val">'+st.totalTopics+'</div><div class="item-stat-lbl">إجمالي المواضيع</div></div>' +
+  '<div class="item-stat"><div class="item-stat-val" style="color:var(--success)">'+st.done+'</div><div class="item-stat-lbl">مكتملة</div></div>' +
+  '<div class="item-stat"><div class="item-stat-val" style="color:var(--warning)">'+st.inProgress+'</div><div class="item-stat-lbl">قيد الشرح</div></div>' +
+  '<div class="item-stat"><div class="item-stat-val" style="color:var(--muted)">'+st.notStarted+'</div><div class="item-stat-lbl">لم تبدأ</div></div>' +
+  '<div class="item-stat"><div class="item-stat-val" style="color:'+pc+'">'+st.pct+'%</div><div class="item-stat-lbl">الإنجاز</div></div>' +
   '</div>' +
-  '<div style="background:var(--card2);border-radius:6px;height:8px;margin-bottom:6px"><div style="background:' + pctColor + ';height:8px;border-radius:6px;width:' + pct + '%;transition:width 0.4s ease"></div></div>' +
-  '<div style="font-size:10px;color:var(--muted);text-align:center">' + p.done + ' من ' + p.total + ' موضوعاً مكتملاً (' + pct + '%)</div>' +
-  (c.startDate ? '<div style="font-size:10px;color:var(--muted);margin-top:8px">تاريخ البدء: ' + c.startDate + (c.endDate ? ' — الانتهاء: ' + c.endDate : '') + '</div>' : '') +
+  // ── progress bar ──
+  '<div class="course-progress-wrap" style="height:10px;margin-bottom:6px"><div class="course-progress-bar" style="width:'+st.pct+'%;background:'+pc+';height:10px"></div></div>' +
+  '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted)">' +
+  '<span>'+st.done+' / '+st.totalTopics+' موضوعاً مكتملاً</span><span style="font-weight:700;color:'+pc+'">'+st.pct+'%</span>' +
   '</div>' +
+  (st.lastChapter?'<div style="margin-top:8px;padding:8px 10px;background:var(--card2);border-radius:8px;font-size:10px">' +
+  '<span style="color:var(--muted)">آخر فصل: </span><strong>'+st.lastChapter.title+'</strong>' +
+  (st.lastTopic?'  |  <span style="color:var(--muted)">آخر موضوع: </span><strong>'+st.lastTopic.title+'</strong>':'') +
+  '</div>':'') +
+  // ── action buttons ──
+  '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">' +
+  (tPhone?'<button class="btn btn-wa btn-sm" onclick="openNotifyTeacher('+c.id+')" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.82h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.5a16 16 0 0 0 6 6l.86-.86a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 21.5 18z"/></svg> إبلاغ الأستاذ</button>':'') +
+  '<button class="btn btn-info btn-sm" onclick="openNotifyParents('+c.id+')" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> إبلاغ أولياء الأمور</button>' +
+  '</div>' +
+  '</div>' +
+  // ── chapters section ──
   '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">' +
   '<div style="font-size:13px;font-weight:700">الفصول والمواضيع</div>' +
-  '<button class="btn btn-gold btn-sm" onclick="openAddChapterModal(' + id + ')" style="font-size:11px">+ فصل جديد</button>' +
+  '<button class="btn btn-gold btn-sm" onclick="openAddChapterModal('+c.id+')" style="font-size:11px;display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> فصل جديد</button>' +
   '</div>' +
-  (chapHtml || '<div class="empty" style="padding:30px 0"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg></div><p>لا توجد فصول — ابدأ بإضافة فصل جديد</p></div>');
+  (chapHtml||'<div class="empty" style="padding:30px 0"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><p>لا توجد فصول — اضغط "فصل جديد"</p></div>');
 }
 
-// ── Chapter Functions ──
-function openAddChapterModal(courseId) {
- document.getElementById('chapter-modal-title').textContent = 'إضافة فصل جديد';
- document.getElementById('chapter-course-id').value = courseId;
- document.getElementById('chapter-edit-id').value = '';
- document.getElementById('chapter-title').value = '';
- document.getElementById('modal-add-chapter').classList.add('open');
+// ── course CRUD ──
+function openAddCourseModal(){
+ document.getElementById('course-form-title').innerHTML='<span style="display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> إضافة دورة جديدة</span>';
+ document.getElementById('cf-edit-id').value='';
+ ['cf-name','cf-subject','cf-desc'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+ document.getElementById('cf-students').value='';
+ document.getElementById('cf-start').value=today();
+ document.getElementById('cf-end').value='';
+ document.getElementById('cf-status').value='لم تبدأ';
+ _populateCourseTeachers('');
+ document.getElementById('modal-course-form').classList.add('open');
 }
-
-function openEditChapterModal(chapterId, courseId) {
- var ch = (data.courseChapters || []).find(function(x) { return x.id === chapterId; });
- if (!ch) return;
- document.getElementById('chapter-modal-title').textContent = 'تعديل الفصل';
- document.getElementById('chapter-course-id').value = courseId;
- document.getElementById('chapter-edit-id').value = chapterId;
- document.getElementById('chapter-title').value = ch.title || '';
- document.getElementById('modal-add-chapter').classList.add('open');
+function openEditCourseModal(id){
+ var c=gCourse(id);if(!c)return;
+ document.getElementById('course-form-title').innerHTML='<span style="display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> تعديل الدورة</span>';
+ document.getElementById('cf-edit-id').value=c.id;
+ document.getElementById('cf-name').value=c.name||'';
+ document.getElementById('cf-subject').value=c.subject||'';
+ document.getElementById('cf-desc').value=c.desc||'';
+ document.getElementById('cf-students').value=c.studentsCount||'';
+ document.getElementById('cf-start').value=c.startDate||'';
+ document.getElementById('cf-end').value=c.endDate||'';
+ document.getElementById('cf-status').value=c.status||'لم تبدأ';
+ _populateCourseTeachers(c.teacherId||'');
+ document.getElementById('modal-course-form').classList.add('open');
 }
-
-function saveChapter() {
- var title = document.getElementById('chapter-title').value.trim();
- if (!title) { toast('يرجى إدخال عنوان الفصل'); return; }
- var courseId = parseInt(document.getElementById('chapter-course-id').value);
- var editId = parseInt(document.getElementById('chapter-edit-id').value) || 0;
- if (!data.courseChapters) data.courseChapters = [];
- if (editId) {
-  var idx = data.courseChapters.findIndex(function(c) { return c.id === editId; });
-  if (idx !== -1) data.courseChapters[idx].title = title;
+function _populateCourseTeachers(selectedId){
+ var sel=document.getElementById('cf-teacher');
+ sel.innerHTML='<option value="">-- اختياري --</option>'+
+  data.teachers.map(function(t){return '<option value="'+t.id+'"'+(t.id==selectedId?' selected':'')+'>'+t.fname+' '+t.lname+'</option>';}).join('');
+}
+function saveCourseForm(){
+ var name=document.getElementById('cf-name').value.trim();
+ var subject=document.getElementById('cf-subject').value.trim();
+ if(!name||!subject){toast('يرجى إدخال اسم الدورة والمادة');return;}
+ var editId=parseInt(document.getElementById('cf-edit-id').value)||0;
+ var obj={name:name,subject:subject,desc:document.getElementById('cf-desc').value.trim(),
+  studentsCount:parseInt(document.getElementById('cf-students').value)||0,
+  startDate:document.getElementById('cf-start').value,
+  endDate:document.getElementById('cf-end').value,
+  status:document.getElementById('cf-status').value,
+  teacherId:parseInt(document.getElementById('cf-teacher').value)||0};
+ if(!data.courses) data.courses=[];
+ if(editId){
+  var idx=data.courses.findIndex(function(c){return c.id===editId;});
+  if(idx!==-1) data.courses[idx]=Object.assign({},data.courses[idx],obj);
  } else {
-  data.courseChapters.push({ id: data.nextId.courseChapter++, courseId: courseId, title: title });
+  obj.id=data.nextId.course++;
+  data.courses.push(obj);
  }
- save();
- closeModal('add-chapter');
- renderCourseDetail(_currentCourseId);
- toast(editId ? 'تم تحديث الفصل' : 'تمت إضافة الفصل');
+ save(); closeModal('course-form');
+ if(editId&&currentPage==='course-detail') renderCourseDetail();
+ else renderCourses();
+ toast(editId?'تم تحديث الدورة':'تمت إضافة الدورة');
 }
-
-function deleteChapter(id) {
- showConfirm({ title: 'حذف الفصل', msg: 'سيتم حذف الفصل وجميع مواضيعه.', confirmText: 'نعم، احذف' }, function() {
-  data.courseChapters = (data.courseChapters || []).filter(function(c) { return c.id !== id; });
-  data.courseTopics = (data.courseTopics || []).filter(function(t) { return t.chapterId !== id; });
-  save();
-  renderCourseDetail(_currentCourseId);
-  toast('تم حذف الفصل');
+function deleteCourse(id){
+ var c=gCourse(id);
+ showConfirm({title:'حذف '+(c?c.name:'الدورة'),msg:'سيتم حذف الدورة وجميع فصولها ومواضيعها بشكل نهائي.',confirmText:'نعم، احذف'},function(){
+  var chapIds=(data.courseChapters||[]).filter(function(ch){return ch.courseId===id;}).map(function(ch){return ch.id;});
+  data.courses=(data.courses||[]).filter(function(c){return c.id!==id;});
+  data.courseChapters=(data.courseChapters||[]).filter(function(c){return c.courseId!==id;});
+  data.courseTopics=(data.courseTopics||[]).filter(function(t){return chapIds.indexOf(t.chapterId)===-1;});
+  save(); renderCourses(); toast('تم الحذف');
  });
 }
 
-// ── Topic Functions ──
-function openAddTopicModal(chapterId) {
- document.getElementById('topic-modal-title').textContent = 'إضافة موضوع جديد';
- document.getElementById('topic-chapter-id').value = chapterId;
- document.getElementById('topic-edit-id').value = '';
- document.getElementById('topic-title').value = '';
- document.getElementById('modal-add-topic').classList.add('open');
+// ── chapter CRUD ──
+function openAddChapterModal(courseId){
+ document.getElementById('chapter-form-title').textContent='إضافة فصل جديد';
+ document.getElementById('chf-course-id').value=courseId;
+ document.getElementById('chf-edit-id').value='';
+ document.getElementById('chf-title').value='';
+ document.getElementById('modal-chapter-form').classList.add('open');
 }
-
-function openEditTopicModal(topicId, chapterId) {
- var tp = (data.courseTopics || []).find(function(x) { return x.id === topicId; });
- if (!tp) return;
- document.getElementById('topic-modal-title').textContent = 'تعديل الموضوع';
- document.getElementById('topic-chapter-id').value = chapterId;
- document.getElementById('topic-edit-id').value = topicId;
- document.getElementById('topic-title').value = tp.title || '';
- document.getElementById('modal-add-topic').classList.add('open');
+function openEditChapterModal(chapterId){
+ var ch=gChapter(chapterId);if(!ch)return;
+ document.getElementById('chapter-form-title').textContent='تعديل الفصل';
+ document.getElementById('chf-course-id').value=ch.courseId;
+ document.getElementById('chf-edit-id').value=ch.id;
+ document.getElementById('chf-title').value=ch.title||'';
+ document.getElementById('modal-chapter-form').classList.add('open');
 }
-
-function saveTopic() {
- var title = document.getElementById('topic-title').value.trim();
- if (!title) { toast('يرجى إدخال عنوان الموضوع'); return; }
- var chapterId = parseInt(document.getElementById('topic-chapter-id').value);
- var editId = parseInt(document.getElementById('topic-edit-id').value) || 0;
- if (!data.courseTopics) data.courseTopics = [];
- if (editId) {
-  var idx = data.courseTopics.findIndex(function(t) { return t.id === editId; });
-  if (idx !== -1) data.courseTopics[idx].title = title;
+function saveChapterForm(){
+ var title=document.getElementById('chf-title').value.trim();
+ if(!title){toast('يرجى إدخال عنوان الفصل');return;}
+ var courseId=parseInt(document.getElementById('chf-course-id').value);
+ var editId=parseInt(document.getElementById('chf-edit-id').value)||0;
+ if(!data.courseChapters) data.courseChapters=[];
+ if(editId){
+  var idx=data.courseChapters.findIndex(function(c){return c.id===editId;});
+  if(idx!==-1) data.courseChapters[idx].title=title;
  } else {
-  data.courseTopics.push({ id: data.nextId.courseTopic++, chapterId: chapterId, title: title, done: false });
+  var maxOrder=0;
+  data.courseChapters.filter(function(c){return c.courseId===courseId;}).forEach(function(c){if((c.order||0)>=maxOrder)maxOrder=(c.order||0)+1;});
+  data.courseChapters.push({id:data.nextId.courseChapter++,courseId:courseId,title:title,order:maxOrder});
  }
- save();
- closeModal('add-topic');
- renderCourseDetail(_currentCourseId);
- toast(editId ? 'تم تحديث الموضوع' : 'تمت إضافة الموضوع');
+ save(); closeModal('chapter-form'); renderCourseDetail();
+ toast(editId?'تم تحديث الفصل':'تمت إضافة الفصل');
+}
+function deleteChapter(id){
+ showConfirm({title:'حذف الفصل',msg:'سيتم حذف الفصل وجميع مواضيعه.',confirmText:'نعم، احذف'},function(){
+  data.courseChapters=(data.courseChapters||[]).filter(function(c){return c.id!==id;});
+  data.courseTopics=(data.courseTopics||[]).filter(function(t){return t.chapterId!==id;});
+  save(); renderCourseDetail(); toast('تم حذف الفصل');
+ });
+}
+function moveChapterUp(id){
+ var chapters=(data.courseChapters||[]).filter(function(c){return c.courseId===gChapter(id).courseId;});
+ chapters.sort(function(a,b){return (a.order||0)-(b.order||0);});
+ var idx=chapters.findIndex(function(c){return c.id===id;});
+ if(idx>0){var tmp=chapters[idx].order;chapters[idx].order=chapters[idx-1].order;chapters[idx-1].order=tmp;}
+ save(); renderCourseDetail();
+}
+function moveChapterDown(id){
+ var chapters=(data.courseChapters||[]).filter(function(c){return c.courseId===gChapter(id).courseId;});
+ chapters.sort(function(a,b){return (a.order||0)-(b.order||0);});
+ var idx=chapters.findIndex(function(c){return c.id===id;});
+ if(idx<chapters.length-1){var tmp=chapters[idx].order;chapters[idx].order=chapters[idx+1].order;chapters[idx+1].order=tmp;}
+ save(); renderCourseDetail();
 }
 
-function deleteTopic(id) {
- data.courseTopics = (data.courseTopics || []).filter(function(t) { return t.id !== id; });
- save();
- renderCourseDetail(_currentCourseId);
- toast('تم حذف الموضوع');
+// ── topic CRUD ──
+function openAddTopicModal(chapterId){
+ document.getElementById('topic-form-title').textContent='إضافة موضوع جديد';
+ document.getElementById('tpf-chapter-id').value=chapterId;
+ document.getElementById('tpf-edit-id').value='';
+ document.getElementById('tpf-title').value='';
+ document.getElementById('tpf-status').value='لم يبدأ';
+ document.getElementById('modal-topic-form').classList.add('open');
+}
+function openEditTopicModal(topicId,chapterId){
+ var tp=gTopic(topicId);if(!tp)return;
+ document.getElementById('topic-form-title').textContent='تعديل الموضوع';
+ document.getElementById('tpf-chapter-id').value=chapterId;
+ document.getElementById('tpf-edit-id').value=topicId;
+ document.getElementById('tpf-title').value=tp.title||'';
+ document.getElementById('tpf-status').value=tp.status||'لم يبدأ';
+ document.getElementById('modal-topic-form').classList.add('open');
+}
+function saveTopicForm(){
+ var title=document.getElementById('tpf-title').value.trim();
+ if(!title){toast('يرجى إدخال عنوان الموضوع');return;}
+ var chapterId=parseInt(document.getElementById('tpf-chapter-id').value);
+ var editId=parseInt(document.getElementById('tpf-edit-id').value)||0;
+ var status=document.getElementById('tpf-status').value;
+ if(!data.courseTopics) data.courseTopics=[];
+ if(editId){
+  var idx=data.courseTopics.findIndex(function(t){return t.id===editId;});
+  if(idx!==-1){data.courseTopics[idx].title=title;data.courseTopics[idx].status=status;}
+ } else {
+  var maxO=0;
+  data.courseTopics.filter(function(t){return t.chapterId===chapterId;}).forEach(function(t){if((t.order||0)>=maxO)maxO=(t.order||0)+1;});
+  data.courseTopics.push({id:data.nextId.courseTopic++,chapterId:chapterId,title:title,status:status,order:maxO});
+ }
+ save(); closeModal('topic-form'); renderCourseDetail();
+ toast(editId?'تم تحديث الموضوع':'تمت إضافة الموضوع');
+}
+function deleteTopic(id){
+ data.courseTopics=(data.courseTopics||[]).filter(function(t){return t.id!==id;});
+ save(); renderCourseDetail(); toast('تم حذف الموضوع');
+}
+function cycleTopicStatus(id){
+ var tp=gTopic(id);if(!tp)return;
+ var cycle=['لم يبدأ','قيد الشرح','مكتمل'];
+ var idx=cycle.indexOf(tp.status||'لم يبدأ');
+ tp.status=cycle[(idx+1)%cycle.length];
+ save(); renderCourseDetail();
+}
+function moveTopicUp(id,chapterId){
+ var topics=(data.courseTopics||[]).filter(function(t){return t.chapterId===chapterId;});
+ topics.sort(function(a,b){return (a.order||0)-(b.order||0);});
+ var idx=topics.findIndex(function(t){return t.id===id;});
+ if(idx>0){var tmp=topics[idx].order;topics[idx].order=topics[idx-1].order;topics[idx-1].order=tmp;}
+ save(); renderCourseDetail();
+}
+function moveTopicDown(id,chapterId){
+ var topics=(data.courseTopics||[]).filter(function(t){return t.chapterId===chapterId;});
+ topics.sort(function(a,b){return (a.order||0)-(b.order||0);});
+ var idx=topics.findIndex(function(t){return t.id===id;});
+ if(idx<topics.length-1){var tmp=topics[idx].order;topics[idx].order=topics[idx+1].order;topics[idx+1].order=tmp;}
+ save(); renderCourseDetail();
 }
 
-function toggleTopicDone(id, done) {
- var tp = (data.courseTopics || []).find(function(t) { return t.id === id; });
- if (!tp) return;
- tp.done = done;
- save();
- // Re-render just the progress numbers without full re-render to avoid losing checkbox state
- var c = (data.courses || []).find(function(x) { return x.id === _currentCourseId; });
- if (!c) return;
- var p = courseProgress(_currentCourseId);
- var pct = p.pct;
- var pctColor = pct >= 75 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--danger)';
- // Update progress bar and stats by re-rendering full detail
- renderCourseDetail(_currentCourseId);
+// ── notify teacher ──
+function openNotifyTeacher(courseId){
+ var c=gCourse(courseId);if(!c)return;
+ var t=gT(c.teacherId);
+ if(!t||!t.phone){toast('لا يوجد رقم هاتف للأستاذ');return;}
+ document.getElementById('nt-course-id').value=courseId;
+ document.getElementById('nt-note').value='';
+ document.getElementById('nt-preview').textContent=_buildTeacherMsg(courseId,'');
+ document.getElementById('modal-notify-teacher').classList.add('open');
+}
+function _buildTeacherMsg(courseId,note){
+ var c=gCourse(courseId);if(!c) return '';
+ var t=gT(c.teacherId);
+ var tName=t?t.fname+' '+t.lname:'الأستاذ/ة';
+ var st=courseStats(courseId);
+ var inst=data.settings.instName||'إدارة المعهد';
+ var nl='\n';
+ var msg='الأستاذ/ة '+tName+' المحترم/ة'+nl;
+ msg+='تحية طيبة،'+nl+nl;
+ msg+='نود إعلامكم بأن دورة "'+c.name+'" لمادة '+c.subject+' وصلت إلى:'+nl+nl;
+ if(st.lastChapter) msg+='🔖 الفصل الحالي: '+st.lastChapter.title+nl;
+ if(st.lastTopic) msg+='📌 الموضوع الحالي: '+st.lastTopic.title+nl;
+ msg+='📊 نسبة تقدم المادة: '+st.pct+'%'+nl;
+ msg+='📝 المواضيع المتبقية: '+(st.totalTopics-st.done)+' موضوعاً'+nl;
+ if(note) msg+=nl+'📋 ملاحظة: '+note+nl;
+ msg+=nl+'يرجى متابعة الخطة الدراسية حسب الجدول المحدد.'+nl;
+ msg+='مع التقدير،'+nl+inst;
+ return msg;
+}
+function sendNotifyTeacher(){
+ var courseId=parseInt(document.getElementById('nt-course-id').value);
+ var note=document.getElementById('nt-note').value.trim();
+ var c=gCourse(courseId);if(!c)return;
+ var t=gT(c.teacherId);if(!t||!t.phone){toast('لا يوجد رقم هاتف للأستاذ');return;}
+ var msg=_buildTeacherMsg(courseId,note);
+ window.open('https://wa.me/'+waPhone(t.phone)+'?text='+encodeURIComponent(msg),'_blank');
+ closeModal('notify-teacher'); toast('فتح واتساب للأستاذ...');
+}
+
+// ── notify parents ──
+function openNotifyParents(courseId){
+ var c=gCourse(courseId);if(!c)return;
+ document.getElementById('np-course-id').value=courseId;
+ document.getElementById('np-note').value='';
+ document.getElementById('np-preview').textContent=_buildParentMsg(courseId,'');
+ // list students with parents
+ var students=data.students.filter(function(s){return s.parentPhone;});
+ var listEl=document.getElementById('np-parents-list');
+ if(!students.length){
+  listEl.innerHTML='<div style="color:var(--muted);text-align:center;padding:10px">لا يوجد طلبة مسجلون بأرقام أولياء أمور</div>';
+ } else {
+  listEl.innerHTML='<div style="font-size:10px;color:var(--muted);margin-bottom:6px;font-weight:600">الطلبة المسجلون في النظام ('+students.length+'):</div>'+
+  students.map(function(s){return '<div style="padding:5px 8px;background:var(--card2);border-radius:7px;margin-bottom:4px;display:flex;justify-content:space-between"><span>'+s.fname+' '+s.lname+'</span><span style="color:var(--muted)">'+s.parentPhone+'</span></div>';}).join('');
+ }
+ document.getElementById('modal-notify-parents').classList.add('open');
+}
+function _buildParentMsg(courseId,note){
+ var c=gCourse(courseId);if(!c) return '';
+ var t=gT(c.teacherId);
+ var tName=t?t.fname+' '+t.lname:'الأستاذ/ة';
+ var st=courseStats(courseId);
+ var inst=data.settings.instName||'إدارة المعهد';
+ var nl='\n';
+ var msg='أولياء الأمور الكرام،'+nl;
+ msg+='تحية طيبة،'+nl+nl;
+ msg+='نود إعلامكم بأن مادة '+c.subject+' ضمن دورة "'+c.name+'" وصلت إلى:'+nl+nl;
+ if(st.lastChapter) msg+='🔖 الفصل الحالي: '+st.lastChapter.title+nl;
+ if(st.lastTopic) msg+='📌 الموضوع الحالي: '+st.lastTopic.title+nl;
+ msg+='📊 نسبة تقدم المادة: '+st.pct+'%'+nl;
+ msg+='👨‍🏫 المدرس/ة: '+tName+nl;
+ if(note) msg+=nl+'📋 ملاحظة: '+note+nl;
+ msg+=nl+'وسيتم الاستمرار حسب الخطة الدراسية المعتمدة لضمان إكمال المنهج بصورة منتظمة.'+nl+nl;
+ msg+='مع التقدير،'+nl+inst;
+ return msg;
+}
+function sendNotifyParents(){
+ var courseId=parseInt(document.getElementById('np-course-id').value);
+ var note=document.getElementById('np-note').value.trim();
+ var students=data.students.filter(function(s){return s.parentPhone;});
+ if(!students.length){toast('لا يوجد أرقام أولياء أمور مسجلة');return;}
+ var msg=_buildParentMsg(courseId,note);
+ var i=0;
+ function sendNext(){
+  if(i>=students.length){closeModal('notify-parents');toast('تم إرسال '+students.length+' رسالة!');return;}
+  window.open('https://wa.me/'+waPhone(students[i].parentPhone)+'?text='+encodeURIComponent(msg),'_blank');
+  i++;
+  setTimeout(sendNext,1200);
+ }
+ sendNext();
+}
+
+// ── global search hook for courses ──
+function _searchCourses(q,results){
+ (data.courses||[]).forEach(function(c){
+  var t=gT(c.teacherId);
+  var tName=t?t.fname+' '+t.lname:'';
+  if((c.name+' '+c.subject+' '+tName).toLowerCase().includes(q)){
+   results.push({type:'دورة',label:c.name,sub:c.subject+(tName?' | '+tName:''),
+    action:(function(id){return function(){openCourseDetail(id);};})(c.id)});
+  }
+ });
 }
 
 // ══════════════════════════════════════════════
@@ -6891,7 +7108,7 @@ function renderSubsTab(){
  '<div>' +
  '<div style="font-weight:700;font-size:12px">' + s.fname + ' ' + s.lname + '</div>' +
  '<div style="font-size:10px;color:' + color + ';font-weight:600">' + label + ' — ' + (s.subEnd||'') + '</div>' +
- '<div style="font-size:9px;color:var(--muted)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ' + (s.stage||'') + (s.grade?' | '+s.grade:'') + ' | بدأ: ' + (s.subStart||'—') + '</div>' +
+ '<div style="font-size:9px;color:var(--muted)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ' + (s.stage||'') + ' | بدأ: ' + (s.subStart||'—') + '</div>' +
  (!s.parentPhone ? '<div style="font-size:9px;color:var(--danger)"> لا يوجد رقم ولي أمر</div>' : '') +
  '</div>' +
  (s.parentPhone ? '<button class="btn btn-wa btn-sm" onclick="sendSubExpiryWA(' + s.id + ')"> إشعار</button>' : '—') +
@@ -7040,7 +7257,6 @@ function renderReports(){
  <div class="item-card-info">
  <div class="avatar avatar-gold">${s.fname[0]}</div>
  <div><div class="item-name">${s.fname} ${s.lname}</div>
- <div class="item-sub">${s.stage||''+(s.grade?' | '+s.grade:'')}</div>
  <div class="item-sub">${s.parentName?`ولي: ${s.parentName}`:''}</div>
  ${beh?`<div style="font-size:11px">${starsHtml(beh.stars)}</div>`:''}
  </div>
@@ -7608,17 +7824,7 @@ function resetAttFilters(){
  var e1=document.getElementById('att-student-search');if(e1)e1.value='';
  var e2=document.getElementById('att-filter-status');if(e2)e2.value='';
  var e3=document.getElementById('att-filter-stage');if(e3)e3.value='';
- var e4=document.getElementById('att-filter-grade');if(e4)e4.value='';
  renderAttGrid();
-}
-function attStageFilterChanged(){
- var stageEl=document.getElementById('att-filter-stage');
- var gradeEl=document.getElementById('att-filter-grade');
- if(!stageEl||!gradeEl)return;
- var stage=stageEl.value;
- if(!stage){gradeEl.innerHTML='<option value="">الكل</option>';return;}
- var grades=getGradesList(stage);
- gradeEl.innerHTML='<option value="">الكل</option>'+grades.map(function(g){return '<option value="'+g+'">'+g+'</option>';}).join('');
 }
 function renderAttGrid(){
  var dv=(document.getElementById('att-date')?document.getElementById('att-date').value:'')||today();
@@ -7627,19 +7833,17 @@ function renderAttGrid(){
  var attSearch=(document.getElementById('att-student-search')?document.getElementById('att-student-search').value:'').toLowerCase().trim();
  var statusF=document.getElementById('att-filter-status')?document.getElementById('att-filter-status').value:'';
  var stageF=document.getElementById('att-filter-stage')?document.getElementById('att-filter-stage').value:'';
- var gradeF=document.getElementById('att-filter-grade')?document.getElementById('att-filter-grade').value:'';
- if(!data.students.length){g.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><p>لا يوجد طلبة</p></div>';return;}
+ if(!data.students.length){g.innerHTML=`<div class="empty"><div class="empty-icon"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/></svg></div><p>لا يوجد طلبة</p></div>`;return;}
  data.students.forEach(s=>{if(attState[s.id]===undefined){var ex=data.attendance.find(a=>a.studentId===s.id&&a.date===dv);attState[s.id]=ex?ex.status:'absent';}});
  var filtered=data.students.filter(function(s){
  if(attSearch){var h=(s.fname+' '+s.lname+' '+(s.phone||'')+' '+(s.parentPhone||'')).toLowerCase();if(!h.includes(attSearch))return false;}
  if(stageF&&(s.stage||'ابتدائي')!==stageF)return false;
- if(gradeF&&(s.grade||'')!==gradeF)return false;
  if(statusF&&(attState[s.id]||'absent')!==statusF)return false;
  return true;
  });
  var statsEl=document.getElementById('att-filter-stats');
- if(statsEl){var hasF=attSearch||statusF||stageF||gradeF;statsEl.textContent=hasF?'يُعرض '+filtered.length+' من أصل '+data.students.length+' طالب':'';}
- if(!filtered.length){g.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p>لا توجد نتائج مطابقة</p></div>';return;}
+ if(statsEl){var hasF=attSearch||statusF||stageF;statsEl.textContent=hasF?'يُعرض '+filtered.length+' من أصل '+data.students.length+' طالب':'';}
+ if(!filtered.length){g.innerHTML=`<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p>لا توجد نتائج مطابقة</p></div>`;return;}
  g.innerHTML=filtered.map(s=>{
  var state=attState[s.id]||'absent';
  var isPresent=state==='present';
@@ -7658,7 +7862,7 @@ function renderAttGrid(){
  '<div class="avatar avatar-gold" style="width:36px;height:36px;font-size:13px;cursor:pointer" onclick="openStudentProfile('+s.id+')">'+s.fname[0]+'</div>'+
  '<div>'+
  '<div style="font-size:11px;font-weight:700;cursor:pointer" onclick="openStudentProfile('+s.id+')">'+s.fname+' '+s.lname+'</div>'+
- '<div style="font-size:9px;color:var(--text-3)">'+(s.stage?s.stage+(s.grade?' | '+s.grade:'')+' | ':'')+
+ '<div style="font-size:9px;color:var(--text-3)">'+(s.stage?s.stage+' | ':'')+
  (arrivalTime?'دخول: '+formatTime12(arrivalTime)+' ':'')+
  (departTime?'خروج: '+formatTime12(departTime):'')+'</div>'+
  '</div>'+
@@ -8988,14 +9192,7 @@ function globalSearch(q) {
   });
 
   // بحث في الدورات
-  (data.courses || []).forEach(function(c) {
-    var t = gT(c.teacherId);
-    var tName = t ? t.fname + ' ' + t.lname : '';
-    var txt = (c.name + ' ' + c.subject + ' ' + tName).toLowerCase();
-    if (txt.includes(q)) {
-      results.push({ type: 'دورة', label: c.name, sub: c.subject + (tName ? ' | ' + tName : ''), action: (function(cid) { return function() { openCourseDetail(cid); }; })(c.id) });
-    }
-  });
+  _searchCourses(q, results);
 
   if (!results.length) {
     resultsEl.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:12px">لا توجد نتائج</div>';
@@ -10158,6 +10355,14 @@ body {
             '<span class="mobile-more-btn-label">القصاصات</span>' +
             '<span class="mobile-more-btn-sub">طباعة</span>' +
           '</button>' +
+          // الدورات
+          '<button class="mobile-more-btn" onclick="mbnMoreNav(\'courses\')">' +
+            '<div class="mobile-more-btn-icon">' +
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>' +
+            '</div>' +
+            '<span class="mobile-more-btn-label">الدورات</span>' +
+            '<span class="mobile-more-btn-sub">تقدم المنهج</span>' +
+          '</button>' +
           // واتساب
           '<button class="mobile-more-btn" onclick="mbnMoreNav(\'whatsapp\')">' +
             '<div class="mobile-more-btn-icon">' +
@@ -10262,6 +10467,8 @@ var _mbnMap = {
   'teachers':   'mbn-more',
   'expenses':   'mbn-more',
   'slips':      'mbn-more',
+  'courses':    'mbn-more',
+  'course-detail': 'mbn-more',
   'whatsapp':   'mbn-more',
   'reports':    'mbn-more',
   'settings':   'mbn-more'
