@@ -3111,27 +3111,45 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
 </div>
 <div class="modal-overlay" id="modal-add-schedule">
  <div class="modal">
- <h3 id="schedule-modal-title">إضافة جدول دراسي</h3>
+ <h3 id="schedule-modal-title">إضافة محاضرة جديدة</h3>
  <input type="hidden" id="sch-edit-id">
+ <!-- ١. الدورة أولاً -->
+ <div class="form-group">
+  <label>الدورة <span style="color:var(--danger)">*</span></label>
+  <select id="sch-course" onchange="onScheduleCourseChange()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+   <option value="">-- اختر الدورة --</option>
+  </select>
+ </div>
+ <!-- ٢. المادة كـ select -->
  <div class="form-row">
-  <div class="form-group"><label>اسم الجدول / المجموعة</label><input type="text" id="sch-name" placeholder="مثال: مجموعة الرياضيات الصباحية"></div>
-  <div class="form-group"><label>المادة</label><input type="text" id="sch-subject" placeholder="الرياضيات"></div>
+  <div class="form-group">
+   <label>المادة</label>
+   <select id="sch-subject" onchange="onScheduleSubjectChange()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+    <option value="">-- اختر المادة --</option>
+   </select>
+  </div>
+  <!-- ٣. المدرس يتحدد تلقائياً -->
+  <div class="form-group">
+   <label>المدرس <span id="sch-teacher-auto-badge" style="display:none;font-size:9px;padding:2px 7px;border-radius:6px;background:rgba(37,211,102,.15);color:#25d366;font-weight:700;margin-right:4px">تلقائي</span></label>
+   <select id="sch-teacher" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+    <option value="">-- اختر المدرس --</option>
+   </select>
+  </div>
  </div>
  <div class="form-row">
-  <div class="form-group"><label>المدرس</label><select id="sch-teacher"><option value="">-- اختر المدرس --</option></select></div>
-  <div class="form-group"><label>المرحلة</label><select id="sch-stage"><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option></select></div>
- </div>
- <div class="form-row">
-  <div class="form-group"><label>الصف</label><input type="text" id="sch-grade" placeholder="مثال: الأول الابتدائي"></div>
+  <div class="form-group"><label>اسم المجموعة / المحاضرة</label><input type="text" id="sch-name" placeholder="مثال: مجموعة الصباح"></div>
   <div class="form-group"><label>القاعة</label><input type="text" id="sch-room" placeholder="قاعة 1"></div>
  </div>
  <div class="form-row">
-  <div class="form-group"><label>اليوم</label><select id="sch-day"><option>الأحد</option><option>الاثنين</option><option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option><option>الجمعة</option><option>السبت</option></select></div>
-  <div class="form-group"><label>الدورة <span style="color:var(--danger)">*</span></label><select id="sch-course" onchange="onScheduleCourseChange()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none"><option value="">-- اختر الدورة --</option></select></div>
+  <div class="form-group"><label>المرحلة</label><select id="sch-stage"><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option></select></div>
+  <div class="form-group"><label>الصف</label><input type="text" id="sch-grade" placeholder="مثال: الأول الابتدائي"></div>
  </div>
  <div class="form-row">
-  <div class="form-group"><label>وقت البداية</label><input type="time" id="sch-start-time"></div>
-  <div class="form-group"><label>وقت النهاية</label><input type="time" id="sch-end-time"></div>
+  <div class="form-group"><label>اليوم</label><select id="sch-day"><option>الأحد</option><option>الاثنين</option><option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option><option>الجمعة</option><option>السبت</option></select></div>
+  <div class="form-group" style="display:flex;gap:6px">
+   <div style="flex:1"><label>وقت البداية</label><input type="time" id="sch-start-time" style="width:100%"></div>
+   <div style="flex:1"><label>وقت النهاية</label><input type="time" id="sch-end-time" style="width:100%"></div>
+  </div>
  </div>
  <div class="form-group"><label>ملاحظات (اختياري)</label><textarea id="sch-notes" rows="2" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:9px;color:var(--text);font-family:var(--font);font-size:12px;resize:vertical;outline:none" placeholder="أي ملاحظات إضافية..."></textarea></div>
  <div class="modal-footer">
@@ -9709,7 +9727,6 @@ function openScheduleModal(editId){
  document.getElementById('schedule-modal-title').textContent = editId ? 'تعديل المحاضرة' : 'إضافة محاضرة جديدة';
  document.getElementById('sch-edit-id').value = editId || '';
  document.getElementById('sch-name').value = sch ? sch.name : '';
- document.getElementById('sch-subject').value = sch ? sch.subject : '';
  document.getElementById('sch-stage').value = sch ? (sch.stage||'ابتدائي') : 'ابتدائي';
  document.getElementById('sch-grade').value = sch ? (sch.grade||'') : '';
  document.getElementById('sch-room').value = sch ? (sch.room||'') : '';
@@ -9717,43 +9734,138 @@ function openScheduleModal(editId){
  document.getElementById('sch-end-time').value = sch ? (sch.endTime||'') : '';
  document.getElementById('sch-notes').value = sch ? (sch.notes||'') : '';
 
- // populate teachers
- var tSel = document.getElementById('sch-teacher');
- tSel.innerHTML = '<option value="">-- اختر المدرس --</option>' +
-  (data.teachers||[]).map(function(t){
-   return '<option value="'+t.id+'"'+(sch&&sch.teacherId===t.id?' selected':'')+'>'+t.fname+' '+t.lname+'</option>';
-  }).join('');
-
- // populate courses
+ // ملء قائمة الدورات
  var cSel = document.getElementById('sch-course');
  cSel.innerHTML = '<option value="">-- اختر الدورة --</option>' +
   (data.courses||[]).map(function(c){
    return '<option value="'+c.id+'"'+(sch&&sch.courseId===c.id?' selected':'')+'>'+c.name+(c.subject?' — '+c.subject:'')+'</option>';
   }).join('');
 
+ // إعادة تعيين المادة والمدرس
+ document.getElementById('sch-subject').innerHTML = '<option value="">-- اختر المادة --</option>';
+ document.getElementById('sch-teacher').innerHTML = '<option value="">-- اختر المدرس --</option>';
+ document.getElementById('sch-teacher-auto-badge').style.display = 'none';
+
  // set day
  var daySel = document.getElementById('sch-day');
  if(sch && sch.day) daySel.value = sch.day;
 
+ // إذا يوجد دورة محددة — شغّل onchange لملء المواد والمدرسين
+ if(sch && sch.courseId){
+  onScheduleCourseChange();
+  // بعد ملء المواد، اختر المادة الصحيحة
+  if(sch.subject){
+   var subSel = document.getElementById('sch-subject');
+   subSel.value = sch.subject;
+   // إذا المادة غير موجودة في القائمة، أضفها
+   if(!subSel.value){
+    var opt = document.createElement('option');
+    opt.value = sch.subject; opt.textContent = sch.subject; opt.selected = true;
+    subSel.appendChild(opt);
+   }
+   _populateScheduleTeachers(sch.subject);
+  }
+  // اختر المدرس الصحيح
+  if(sch.teacherId){
+   document.getElementById('sch-teacher').value = sch.teacherId;
+   document.getElementById('sch-teacher-auto-badge').style.display = 'none';
+  }
+ }
+
  openModal('add-schedule');
 }
 
-// عند اختيار دورة — يملأ المادة والمدرس والصف والمرحلة تلقائياً
+// عند اختيار الدورة — يملأ المادة والحقول تلقائياً
 function onScheduleCourseChange(){
- var cSel = document.getElementById('sch-course');
- var cid = parseInt(cSel.value) || 0;
- if(!cid) return;
+ var cid = parseInt(document.getElementById('sch-course').value) || 0;
+ var subSel = document.getElementById('sch-subject');
+ var tSel = document.getElementById('sch-teacher');
+ var badge = document.getElementById('sch-teacher-auto-badge');
+
+ // إعادة تعيين
+ subSel.innerHTML = '<option value="">-- اختر المادة --</option>';
+ tSel.innerHTML = '<option value="">-- اختر المدرس --</option>';
+ badge.style.display = 'none';
+
+ if(!cid){ return; }
  var c = gCourse(cid);
  if(!c) return;
- if(c.subject) document.getElementById('sch-subject').value = c.subject;
+
+ // ملء حقول الدورة
  if(c.stage) document.getElementById('sch-stage').value = c.stage;
  if(c.grade) document.getElementById('sch-grade').value = c.grade;
- if(c.teacherId){
-  var tSel = document.getElementById('sch-teacher');
-  tSel.value = c.teacherId;
- }
  if(!document.getElementById('sch-name').value && c.name){
   document.getElementById('sch-name').value = c.name;
+ }
+
+ // بناء قائمة المواد من مدرسي النظام
+ var allSubjects = [];
+ // أولاً: المادة من الدورة نفسها
+ if(c.subject && allSubjects.indexOf(c.subject) === -1) allSubjects.push(c.subject);
+ // ثانياً: مواد من المرحلة (CF_SUBJECTS)
+ var stageSubjects = (typeof CF_SUBJECTS !== 'undefined' && c.stage) ? (CF_SUBJECTS[c.stage]||[]) : [];
+ stageSubjects.forEach(function(s){
+  if(allSubjects.indexOf(s) === -1) allSubjects.push(s);
+ });
+ // ثالثاً: مواد المدرسين المسجلين
+ (data.teachers||[]).forEach(function(t){
+  if(!t.subject) return;
+  t.subject.split('، ').forEach(function(s){
+   var clean = s.trim();
+   if(clean && allSubjects.indexOf(clean) === -1) allSubjects.push(clean);
+  });
+ });
+
+ allSubjects.forEach(function(s){
+  var opt = document.createElement('option');
+  opt.value = s; opt.textContent = s;
+  if(c.subject && s === c.subject) opt.selected = true;
+  subSel.appendChild(opt);
+ });
+
+ // ملء المدرسين ثم تشغيل onchange للمادة المختارة
+ _populateScheduleTeachers(subSel.value);
+ if(subSel.value) onScheduleSubjectChange();
+}
+
+// عند اختيار المادة — يفلتر المدرسين ويختار تلقائياً إن كان واحداً
+function onScheduleSubjectChange(){
+ var subject = document.getElementById('sch-subject').value;
+ _populateScheduleTeachers(subject);
+}
+
+function _populateScheduleTeachers(subject){
+ var tSel = document.getElementById('sch-teacher');
+ var badge = document.getElementById('sch-teacher-auto-badge');
+ var currentVal = tSel.value;
+
+ // فلترة المدرسين حسب المادة
+ var teachers = data.teachers || [];
+ var matched = [];
+ if(subject){
+  matched = teachers.filter(function(t){
+   if(!t.subject) return false;
+   var tSubjects = t.subject.split('، ').map(function(s){ return s.trim(); });
+   return tSubjects.indexOf(subject) !== -1;
+  });
+ }
+ // إذا لم يوجد مدرسون مخصصون للمادة — اعرض الكل
+ var listToShow = matched.length ? matched : teachers;
+
+ tSel.innerHTML = '<option value="">-- اختر المدرس --</option>' +
+  listToShow.map(function(t){
+   return '<option value="'+t.id+'">'+ t.fname+' '+t.lname+(matched.length ? '' : ' — '+(t.subject||''))+' </option>';
+  }).join('');
+
+ // حاول الإبقاء على الاختيار السابق
+ if(currentVal) tSel.value = currentVal;
+
+ badge.style.display = 'none';
+
+ // إذا يوجد مدرس واحد فقط يطابق المادة → اختره تلقائياً
+ if(matched.length === 1){
+  tSel.value = matched[0].id;
+  badge.style.display = 'inline';
  }
 }
 
