@@ -2148,6 +2148,83 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
 .rp:hover .rp-tip,.rp:focus .rp-tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
 /* أحجام مساعدة */
 @media(max-width:560px){.rp-label{font-size:10px}}
+/* ===== RBAC UI (themed, responsive) ===== */
+.rbac-overlay{position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.5);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:24px 14px;overflow:auto}
+.rbac-overlay.open{display:flex}
+.rbac-panel{width:100%;max-width:920px;background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden;animation:rbacIn .25s var(--ease,ease)}
+@keyframes rbacIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rbac-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+.rbac-h-title{display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:800;color:var(--brand-light)}
+.rbac-x{background:transparent;border:none;color:var(--text-3);font-size:24px;line-height:1;cursor:pointer;padding:2px 8px;border-radius:8px}
+.rbac-x:hover{background:var(--surface-3);color:var(--text)}
+.rbac-tabs{display:flex;gap:6px;padding:10px 18px 0}
+.rbac-tab{font-family:inherit;font-size:12px;font-weight:700;padding:8px 16px;border:none;background:transparent;color:var(--text-3);cursor:pointer;border-radius:9px 9px 0 0;border-bottom:2px solid transparent}
+.rbac-tab.on{color:var(--brand-light);border-bottom-color:var(--gold);background:var(--surface-2)}
+.rbac-body{padding:16px 18px 20px;max-height:70vh;overflow:auto}
+.rbac-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.rbac-input{font-family:inherit;font-size:12px;background:var(--card);border:1px solid var(--border2);border-radius:9px;padding:9px 11px;color:var(--text);outline:none;flex:1;min-width:120px}
+.rbac-input:focus{border-color:var(--gold)}
+select.rbac-input{flex:0 0 auto;min-width:140px}
+.rbac-btn{font-family:inherit;font-size:12px;font-weight:700;padding:9px 15px;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;transition:all .15s}
+.rbac-btn:hover{background:var(--surface-3)}
+.rbac-btn-gold{background:var(--brand);border-color:var(--brand);color:#fff}
+.rbac-btn-gold:hover{filter:brightness(1.07)}
+.rbac-empty{text-align:center;color:var(--text-3);font-size:12px;padding:34px 12px}
+.rbac-users{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.rbac-ucard{background:var(--surface-2);border:1px solid var(--border);border-radius:13px;padding:13px}
+.rbac-ucard.susp{opacity:.62}
+.rbac-uc-top{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.rbac-uc-av{width:38px;height:38px;border-radius:11px;background:var(--brand-gradient,var(--brand));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+.rbac-uc-meta{flex:1;min-width:0}
+.rbac-uc-name{font-size:13px;font-weight:800;color:var(--text)}
+.rbac-uc-sub{font-size:10px;color:var(--text-3);margin-top:2px;word-break:break-all}
+.rbac-uc-status{font-size:11px;color:var(--text-2);margin-bottom:9px}
+.rbac-uc-actions{display:flex;flex-wrap:wrap;gap:6px}
+.rbac-mini{font-family:inherit;font-size:10px;font-weight:700;padding:5px 9px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text-2);cursor:pointer}
+.rbac-mini:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+.rbac-mini.danger{color:var(--danger);border-color:rgba(192,85,85,.4)}
+.rbac-mini.danger:hover{background:var(--danger);color:#fff}
+.rbac-role-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--surface-3);color:var(--text-2);flex-shrink:0}
+.rbac-role-badge.r-manager{background:rgba(100,181,246,.16);color:var(--info)}
+.rbac-role-badge.r-accountant{background:rgba(212,166,90,.18);color:var(--gold)}
+.rbac-role-badge.r-registrar{background:rgba(76,175,80,.16);color:var(--success)}
+.rbac-role-badge.r-teacher{background:rgba(159,122,234,.16);color:var(--purple)}
+.rbac-chip{font-size:9px;font-weight:700;padding:2px 7px;border-radius:12px;background:rgba(76,175,80,.18);color:var(--success);margin-right:4px}
+.rbac-table-wrap{overflow-x:auto}
+.rbac-table{width:100%;border-collapse:collapse;font-size:11px;min-width:520px}
+.rbac-table th{text-align:right;font-size:10px;color:var(--text-3);padding:8px 10px;border-bottom:1px solid var(--border);font-weight:700}
+.rbac-table td{padding:9px 10px;border-bottom:1px solid var(--border2);color:var(--text-2)}
+.rbac-role-sm{font-size:9px;color:var(--text-3)}
+/* dialog */
+.rbac-dialog{position:fixed;inset:0;z-index:4100;background:rgba(0,0,0,.55);display:none;align-items:flex-start;justify-content:center;padding:24px 14px;overflow:auto}
+.rbac-dialog.open{display:flex}
+.rbac-dlg-card{width:100%;max-width:600px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:rbacIn .22s var(--ease,ease)}
+.rbac-dlg-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);font-weight:800;color:var(--brand-light);font-size:14px;background:var(--surface-2)}
+.rbac-dlg-body{padding:15px 16px;max-height:66vh;overflow:auto}
+.rbac-dlg-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface-2)}
+.rbac-fg{margin-bottom:11px}
+.rbac-fg label{display:block;font-size:11px;font-weight:700;color:var(--text-2);margin-bottom:5px}
+.rbac-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rbac-assign{margin-top:6px;padding:12px;border:1px solid var(--border2);border-radius:12px;background:var(--surface-2)}
+.rbac-assign-title{font-size:12px;font-weight:800;color:var(--text);margin-bottom:10px}
+.rbac-hint{font-size:9px;font-weight:600;color:var(--text-3)}
+.rbac-chips{display:flex;flex-wrap:wrap;gap:6px}
+.rbac-chip-btn{font-family:inherit;font-size:10px;font-weight:700;padding:5px 11px;border-radius:20px;border:1px solid var(--border2);background:var(--card);color:var(--text-2);cursor:pointer}
+.rbac-chip-btn.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.rbac-perm-sec{margin-bottom:12px}
+.rbac-perm-sec-t{font-size:11px;font-weight:800;color:var(--brand-light);margin-bottom:6px}
+.rbac-perm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px}
+.rbac-check{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text-2);background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:7px 9px;cursor:pointer}
+.rbac-check input{accent-color:var(--gold);width:15px;height:15px}
+/* active-profile badge */
+.rbac-badge{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:3500;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--gold);border-radius:30px;padding:7px 8px 7px 14px;font-size:11px;font-weight:700;color:var(--text);box-shadow:0 6px 22px rgba(0,0,0,.28)}
+.rbac-badge-dot{width:8px;height:8px;border-radius:50%;background:var(--purple);box-shadow:0 0 0 0 rgba(159,122,234,.5);animation:ccPulse 2.4s infinite}
+.rbac-badge-exit{font-family:inherit;font-size:10px;font-weight:700;border:none;background:var(--brand);color:#fff;border-radius:20px;padding:5px 11px;cursor:pointer;margin-right:2px}
+/* toast */
+.rbac-toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);z-index:5000;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:12px;font-weight:700;padding:11px 18px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.3);opacity:0;transition:all .3s;pointer-events:none}
+.rbac-toast.show{opacity:1;transform:translate(-50%,0)}
+.rbac-toast.err{border-color:var(--danger);color:var(--danger)}
+@media(max-width:560px){.rbac-row2{grid-template-columns:1fr}.rbac-users{grid-template-columns:1fr}.rbac-badge{font-size:10px;left:10px;right:10px;transform:none;justify-content:center}}
 </style>
 </head>
 <body>
@@ -3085,6 +3162,11 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div class="page" id="page-settings">
  <div class="sec-header"><span class="sec-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> الإعدادات</span></span></div>
  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
+ <div class="profile-section" id="rbac-settings-card">
+ <div class="profile-sec-title"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> المستخدمون والصلاحيات</span></div>
+ <div style="font-size:11px;color:var(--text-3);line-height:1.6;margin-bottom:10px">إنشاء حسابات للموظفين والمدرسين، تحديد الأدوار والصلاحيات التفصيلية، تخصيص المدرسين، مع سجل كامل للنشاطات.</div>
+ <button class="btn btn-gold" onclick="openRbac()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> فتح إدارة المستخدمين</button>
+ </div>
  <div class="profile-section">
  <div class="profile-sec-title"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> معلومات المعهد</span></div>
  <div class="form-group"><label>اسم المعهد</label><input type="text" id="set-inst-name" placeholder="راصد"></div>
@@ -4031,6 +4113,7 @@ results:[],fees:[],payments:[],behaviors:[],waLog:[],
  violationRecords:[],warningRecords:[],parentNotifications:[],
 expenses:[],salaries:[],salaryPayments:[],subPayments:[],slips:[],financialAuditLog:[],
 courses:[],courseChapters:[],courseTopics:[],schedules:[],
+ appUsers:[],activityLog:[],activeProfileId:null,
  settings:{
  instName:'راصد',instAddr:'',instPhone:'',
  taskTypes:['واجب','امتحان','مراجعة','إعادة'],
@@ -4040,7 +4123,7 @@ courses:[],courseChapters:[],courseTopics:[],schedules:[],
  },
  nextId:{student:1,teacher:1,attendance:1,teacherAtt:1,result:1,fee:1,
 payment:1,behavior:1,waLog:1,expense:1,salary:1,salaryPayment:1,financialAuditLog:1,violationRecord:1,warningRecord:1,parentNotification:1,
-course:1,courseChapter:1,courseTopic:1,schedule:1}
+course:1,courseChapter:1,courseTopic:1,schedule:1,appUser:1,activity:1}
  };
 }
 
@@ -4054,6 +4137,10 @@ function migrateData(d){
 d.expenses = d.expenses || [];
 d.subPayments = d.subPayments || [];
 d.financialAuditLog = d.financialAuditLog || [];
+d.appUsers = d.appUsers || [];
+d.activityLog = d.activityLog || [];
+if(typeof d.activeProfileId==='undefined') d.activeProfileId=null;
+if(d.nextId){ d.nextId.appUser=d.nextId.appUser||1; d.nextId.activity=d.nextId.activity||1; }
 d.slips = d.slips || [];
 d.nextId.slip = d.nextId.slip || 1;
 d.nextId.subPayment = d.nextId.subPayment||1;
@@ -4257,6 +4344,7 @@ var currentPage='dashboard';
 
 function showPage(name){
  currentPage=name||'dashboard';
+ try{ if(typeof rbacEnsure==='function') rbacEnsure(); if(typeof Perms!=='undefined' && !Perms.canPage(currentPage)){ if(typeof rbacToast==='function') rbacToast('ليس لديك صلاحية للوصول لهذا القسم','err'); currentPage='dashboard'; } }catch(_pgGuard){}
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
  var el=document.getElementById('page-'+currentPage);
@@ -4265,6 +4353,7 @@ function showPage(name){
  document.getElementById('page-title').textContent=pageTitles[currentPage]||currentPage;
  var renders={dashboard:renderDashboard,students:renderStudents,results:renderResults,attendance:renderAttendance,teachers:renderTeachers,fees:renderFees,expenses:renderExpenses,slips:renderSlips,courses:renderCourses,whatsapp:renderWhatsapp,reports:renderReports,settings:renderSettings,discipline:renderDisciplinePage,schedules:renderSchedules};
  if(renders[currentPage])renders[currentPage]();
+ try{ if(typeof rbacApply==='function') rbacApply(); }catch(_ra){}
  closeSidebar();
 }
 
@@ -5060,6 +5149,534 @@ function miniRing(pct, label, tip){
  return radialProgress(pct, {size:58, stroke:10, label:label||'', tip:tip||''});
 }
 
+/* ============================================================
+   نظام المستخدمين والصلاحيات RBAC — طبقة إضافية غير مُخرِّبة
+   - لا تغيّر أي منطق حالي ولا أسماء جداول Supabase.
+   - appUsers / activityLog تُحفظ ضمن كائن data نفسه (نفس آلية بقية البيانات).
+   ============================================================ */
+
+/* قائمة الصلاحيات التفصيلية: [القسم, المفتاح, الوصف] */
+var RBAC_PERMS = [
+ ['الطلبة','students.view','مشاهدة الطلبة'],
+ ['الطلبة','students.add','إضافة طالب'],
+ ['الطلبة','students.edit','تعديل طالب'],
+ ['الطلبة','students.delete','حذف طالب'],
+ ['الأقساط','fees.view','عرض الأقساط'],
+ ['الأقساط','payments.add','إضافة دفعة'],
+ ['الأقساط','payments.edit','تعديل دفعة'],
+ ['الأقساط','payments.delete','حذف دفعة'],
+ ['الحضور','attendance.manage','إدارة الحضور'],
+ ['النتائج','results.view','عرض النتائج'],
+ ['النتائج','results.manage','إدخال/تعديل النتائج'],
+ ['السلوك','behavior.view','عرض السلوك'],
+ ['السلوك','behavior.manage','إدارة السلوك'],
+ ['الدورات','courses.view','عرض الدورات'],
+ ['الدورات','courses.manage','إدارة الدورات'],
+ ['الدورات','courses.progress','تحديث تقدّم المادة'],
+ ['الدورات','courses.enroll','تسجيل الطلبة بالدورات'],
+ ['المدرسون','teachers.view','عرض المدرسين'],
+ ['المدرسون','teachers.manage','إدارة المدرسين'],
+ ['التقارير','reports.view','عرض التقارير'],
+ ['التقارير','reports.finance','التقارير المالية'],
+ ['النظام','users.manage','إدارة المستخدمين'],
+ ['النظام','settings.edit','تعديل الإعدادات'],
+ ['النظام','subscription.manage','إدارة الاشتراك'],
+ ['النظام','data.delete','حذف البيانات']
+];
+
+/* الأدوار وصلاحياتها الافتراضية */
+var RBAC_ROLES = {
+ owner:      {label:'مالك المعهد', all:true},
+ manager:    {label:'مدير', perms:['students.view','students.add','students.edit','students.delete','attendance.manage','results.view','results.manage','behavior.view','behavior.manage','courses.view','courses.manage','courses.progress','courses.enroll','teachers.view','teachers.manage','reports.view']},
+ accountant: {label:'محاسب', perms:['fees.view','payments.add','reports.finance','reports.view']},
+ registrar:  {label:'موظف تسجيل', perms:['students.view','students.add','students.edit','courses.view','courses.enroll']},
+ teacher:    {label:'مدرّس', scoped:true, perms:['students.view','attendance.manage','results.view','results.manage','courses.view','courses.progress','teachers.view']}
+};
+
+/* أي صلاحية يتطلبها كل قسم (للحجب المركزي عبر showPage) */
+var RBAC_PAGE_PERM = {
+ dashboard:null, whatsapp:null, settings:null,
+ students:'students.view', 'student-profile':'students.view',
+ attendance:'attendance.manage', slips:'attendance.manage',
+ results:'results.view', discipline:'behavior.view',
+ teachers:'teachers.view', fees:'fees.view', expenses:'reports.finance',
+ courses:'courses.view', 'course-detail':'courses.view', schedules:'courses.view',
+ reports:'reports.view'
+};
+
+function rbacEnsure(){
+ try{
+  if(typeof data!=='object'||!data) return;
+  if(!data.appUsers) data.appUsers=[];
+  if(!data.activityLog) data.activityLog=[];
+  if(typeof data.activeProfileId==='undefined') data.activeProfileId=null;
+  if(data.nextId && typeof data.nextId.appUser==='undefined') data.nextId.appUser=1;
+  if(data.nextId && typeof data.nextId.activity==='undefined') data.nextId.activity=1;
+ }catch(e){}
+}
+
+function rbacEsc(s){
+ s=(s===null||s===undefined)?'':String(s);
+ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function rbacToast(msg, kind){
+ try{
+  if(typeof showToast==='function'){showToast(msg,kind);return;}
+  if(typeof toast==='function'){toast(msg);return;}
+  if(typeof notify==='function'){notify(msg);return;}
+ }catch(e){}
+ var d=document.createElement('div');
+ d.className='rbac-toast'+(kind==='err'?' err':'');
+ d.textContent=msg; document.body.appendChild(d);
+ setTimeout(function(){d.classList.add('show');},10);
+ setTimeout(function(){d.classList.remove('show');setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},300);},2600);
+}
+
+/* ===== المدير المركزي للصلاحيات ===== */
+var Perms = {
+ ownerProfile: function(){
+  var nm='مالك المعهد';
+  try{ if(typeof currentUser!=='undefined'&&currentUser&&currentUser.email) nm=currentUser.email; }catch(e){}
+  return {id:'__owner__', name:nm, role:'owner', status:'active'};
+ },
+ activeUser: function(){
+  rbacEnsure();
+  var id=data.activeProfileId;
+  if(!id||id==='__owner__') return this.ownerProfile();
+  var u=null,i;
+  for(i=0;i<data.appUsers.length;i++){ if(data.appUsers[i].id===id){u=data.appUsers[i];break;} }
+  if(!u) return this.ownerProfile();
+  return u;
+ },
+ role: function(){ return this.activeUser().role||'owner'; },
+ isOwner: function(){ return this.role()==='owner'; },
+ effective: function(){
+  var u=this.activeUser();
+  if(u.status==='suspended') return {};
+  var def=RBAC_ROLES[u.role]||{};
+  var set={};
+  if(def.all){ set['*']=true; return set; }
+  var list=def.perms||[]; var i;
+  for(i=0;i<list.length;i++) set[list[i]]=true;
+  /* تجاوزات يدوية لكل مستخدم */
+  if(u.perms&&typeof u.perms==='object'){
+   var k;
+   for(k in u.perms){ if(u.perms.hasOwnProperty(k)){ if(u.perms[k]) set[k]=true; else delete set[k]; } }
+  }
+  return set;
+ },
+ can: function(key){
+  var e=this.effective();
+  if(e['*']) return true;
+  return !!e[key];
+ },
+ require: function(key, silent){
+  if(this.can(key)) return true;
+  if(!silent){
+   rbacToast('ليس لديك صلاحية لتنفيذ هذه العملية', 'err');
+   try{ logActivity('محاولة وصول مرفوضة ('+key+')', 'الصلاحيات'); }catch(e){}
+  }
+  return false;
+ },
+ canPage: function(page){
+  var need=RBAC_PAGE_PERM[page];
+  if(need===null||typeof need==='undefined') return true;
+  return this.can(need);
+ },
+ /* تحديد نطاق المدرّس: طلابه/دوراته فقط حسب التخصيص */
+ isScoped: function(){ var u=this.activeUser(); return u.role==='teacher'; },
+ scopeStudents: function(list){
+  if(!this.isScoped()) return list;
+  var u=this.activeUser(); var a=u.assign||{};
+  var tId=u.teacherId;
+  return (list||[]).filter(function(s){
+   if(tId&&s.teacherId===tId) return true;
+   if(a.grades&&a.grades.length&&s.stage&&a.grades.indexOf(s.stage)>-1) return true;
+   if(a.stages&&a.stages.length&&s.stage){ /* قد تكون stage هي المرحلة */ }
+   return tId? false : true;
+  });
+ },
+ scopeCourses: function(list){
+  if(!this.isScoped()) return list;
+  var u=this.activeUser(); var a=u.assign||{}; var tId=u.teacherId;
+  return (list||[]).filter(function(c){
+   if(tId&&c.teacherId===tId) return true;
+   if(a.subjects&&a.subjects.length&&c.subject&&a.subjects.indexOf(c.subject)>-1) return true;
+   if(a.grades&&a.grades.length&&c.grade&&a.grades.indexOf(c.grade)>-1) return true;
+   return false;
+  });
+ },
+ setActive: function(id){
+  rbacEnsure();
+  data.activeProfileId=(id==='__owner__')?null:id;
+  try{ save(); }catch(e){}
+  rbacApply();
+  try{ if(typeof showPage==='function') showPage('dashboard'); }catch(e){}
+ }
+};
+
+/* ===== سجل النشاطات ===== */
+function logActivity(action, section){
+ try{
+  rbacEnsure();
+  var u=Perms.activeUser();
+  var now=new Date();
+  data.activityLog.push({
+   id:(data.nextId?data.nextId.activity++:Date.now()),
+   userName:u.name||'—', role:(RBAC_ROLES[u.role]?RBAC_ROLES[u.role].label:u.role),
+   action:action||'', section:section||'',
+   ts:now.toISOString()
+  });
+  if(data.activityLog.length>1500) data.activityLog=data.activityLog.slice(-1500);
+  try{ save(); }catch(e){}
+ }catch(e){}
+}
+
+/* ===== تطبيق الحجب على الواجهة (شارة الوضع + إخفاء عناصر التنقّل) ===== */
+function rbacApply(){
+ try{
+  rbacEnsure();
+  /* إخفاء عناصر القائمة للأقسام الممنوعة */
+  var navs=document.querySelectorAll('[onclick*="showPage(\'"]');
+  var i;
+  for(i=0;i<navs.length;i++){
+   var oc=navs[i].getAttribute('onclick')||'';
+   var m=oc.match(/showPage\('([a-z-]+)'\)/);
+   if(m){
+    var pg=m[1];
+    var cls=navs[i].className||'';
+    /* نُخفي فقط عناصر التنقّل الرئيسية (nav-item / sidebar) لا كل زر */
+    if((cls.indexOf('nav-item')>-1 || cls.indexOf('side-link')>-1 || cls.indexOf('menu-item')>-1)){
+     navs[i].style.display = Perms.canPage(pg)?'':'none';
+    }
+   }
+  }
+  rbacRenderBadge();
+ }catch(e){}
+}
+
+function rbacRenderBadge(){
+ var bid='rbac-active-badge';
+ var ex=document.getElementById(bid);
+ var u=Perms.activeUser();
+ if(Perms.isOwner()){ if(ex&&ex.parentNode) ex.parentNode.removeChild(ex); return; }
+ if(!ex){
+  ex=document.createElement('div'); ex.id=bid; ex.className='rbac-badge';
+  document.body.appendChild(ex);
+ }
+ var roleLbl=RBAC_ROLES[u.role]?RBAC_ROLES[u.role].label:u.role;
+ ex.innerHTML='<span class="rbac-badge-dot"></span> الوضع: <b>'+rbacEsc(u.name)+'</b> — '+rbacEsc(roleLbl)+
+  '<button onclick="rbacExitProfile()" class="rbac-badge-exit">عودة للمالك</button>';
+}
+function rbacExitProfile(){
+ /* العودة لوضع المالك (قفل ناعم عبر رمز التفويض المالي إن توفّر) */
+ if(typeof requestFinancialEditCode==='function'){
+  try{
+   var p=requestFinancialEditCode();
+   if(p&&typeof p.then==='function'){ p.then(function(code){ if(code){ Perms.setActive('__owner__'); rbacToast('تم الرجوع لوضع المالك'); } }); return; }
+  }catch(e){}
+ }
+ Perms.setActive('__owner__'); rbacToast('تم الرجوع لوضع المالك');
+}
+
+/* ============================================================
+   واجهة الإدارة (نافذة كاملة تُبنى ديناميكياً)
+   ============================================================ */
+function openRbac(){
+ if(!Perms.require('users.manage')) return;
+ rbacEnsure();
+ var ov=document.getElementById('rbac-overlay');
+ if(!ov){
+  ov=document.createElement('div'); ov.id='rbac-overlay'; ov.className='rbac-overlay';
+  document.body.appendChild(ov);
+ }
+ ov.classList.add('open');
+ rbacRender('users');
+}
+function closeRbac(){ var ov=document.getElementById('rbac-overlay'); if(ov) ov.classList.remove('open'); }
+
+function rbacRender(tab){
+ var ov=document.getElementById('rbac-overlay'); if(!ov) return;
+ var h='';
+ h+='<div class="rbac-panel">';
+ h+=' <div class="rbac-head">';
+ h+='  <div class="rbac-h-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> المستخدمون والصلاحيات</div>';
+ h+='  <button class="rbac-x" onclick="closeRbac()" aria-label="إغلاق">×</button>';
+ h+=' </div>';
+ h+=' <div class="rbac-tabs">';
+ h+='  <button class="rbac-tab'+(tab==='users'?' on':'')+'" onclick="rbacRender(\'users\')">المستخدمون</button>';
+ h+='  <button class="rbac-tab'+(tab==='audit'?' on':'')+'" onclick="rbacRender(\'audit\')">سجل النشاطات</button>';
+ h+=' </div>';
+ h+=' <div class="rbac-body" id="rbac-body"></div>';
+ h+='</div>';
+ ov.innerHTML=h;
+ if(tab==='audit') rbacRenderAudit(); else rbacRenderUsers();
+}
+
+function rbacRenderUsers(){
+ var b=document.getElementById('rbac-body'); if(!b) return;
+ var q=(document.getElementById('rbac-search')?document.getElementById('rbac-search').value:'')||'';
+ var rf=(document.getElementById('rbac-role-filter')?document.getElementById('rbac-role-filter').value:'')||'';
+ var h='';
+ h+='<div class="rbac-toolbar">';
+ h+=' <input id="rbac-search" class="rbac-input" placeholder="بحث بالاسم أو البريد..." value="'+rbacEsc(q)+'" oninput="rbacRenderUsers()">';
+ h+=' <select id="rbac-role-filter" class="rbac-input" onchange="rbacRenderUsers()"><option value="">كل الأدوار</option>';
+ var rk; for(rk in RBAC_ROLES){ if(rk==='owner')continue; h+='<option value="'+rk+'"'+(rf===rk?' selected':'')+'>'+RBAC_ROLES[rk].label+'</option>'; }
+ h+=' </select>';
+ h+=' <button class="rbac-btn rbac-btn-gold" onclick="rbacEditUser(null)">+ إضافة مستخدم</button>';
+ h+='</div>';
+
+ var list=(data.appUsers||[]).filter(function(u){
+  if(rf&&u.role!==rf) return false;
+  if(q){ var s=(u.name||'')+' '+(u.email||'')+' '+(u.phone||''); if(s.toLowerCase().indexOf(q.toLowerCase())<0) return false; }
+  return true;
+ });
+
+ if(!list.length){
+  h+='<div class="rbac-empty">لا يوجد مستخدمون بعد. ابدأ بإضافة مستخدم جديد.</div>';
+ } else {
+  h+='<div class="rbac-users">';
+  list.forEach(function(u){
+   var roleLbl=RBAC_ROLES[u.role]?RBAC_ROLES[u.role].label:u.role;
+   var active=(data.activeProfileId===u.id);
+   h+='<div class="rbac-ucard'+(u.status==='suspended'?' susp':'')+'">';
+   h+=' <div class="rbac-uc-top">';
+   h+='  <div class="rbac-uc-av">'+rbacEsc((u.name||'؟').charAt(0))+'</div>';
+   h+='  <div class="rbac-uc-meta"><div class="rbac-uc-name">'+rbacEsc(u.name)+(active?' <span class="rbac-chip on">نشط الآن</span>':'')+'</div>';
+   h+='   <div class="rbac-uc-sub">'+rbacEsc(u.email||'—')+(u.phone?(' • '+rbacEsc(u.phone)):'')+'</div></div>';
+   h+='  <span class="rbac-role-badge r-'+u.role+'">'+rbacEsc(roleLbl)+'</span>';
+   h+=' </div>';
+   h+=' <div class="rbac-uc-status">الحالة: <b style="color:'+(u.status==='suspended'?'var(--danger)':'var(--success)')+'">'+(u.status==='suspended'?'موقوف':'نشط')+'</b></div>';
+   h+=' <div class="rbac-uc-actions">';
+   h+='  <button class="rbac-mini" onclick="rbacEditUser('+JSONid(u.id)+')">تعديل</button>';
+   h+='  <button class="rbac-mini" onclick="rbacToggleSuspend('+JSONid(u.id)+')">'+(u.status==='suspended'?'تفعيل':'إيقاف')+'</button>';
+   h+='  <button class="rbac-mini" onclick="rbacResetPin('+JSONid(u.id)+')">إعادة تعيين الرمز</button>';
+   h+='  <button class="rbac-mini" onclick="rbacActAs('+JSONid(u.id)+')">العمل بهذا الحساب</button>';
+   h+='  <button class="rbac-mini danger" onclick="rbacDeleteUser('+JSONid(u.id)+')">حذف</button>';
+   h+=' </div>';
+   h+='</div>';
+  });
+  h+='</div>';
+ }
+ b.innerHTML=h;
+}
+
+function JSONid(id){ return (typeof id==='number')?id:('\''+String(id).replace(/'/g,"\\'")+'\''); }
+
+function rbacRenderAudit(){
+ var b=document.getElementById('rbac-body'); if(!b) return;
+ var q=(document.getElementById('rbac-audit-q')?document.getElementById('rbac-audit-q').value:'')||'';
+ var h='';
+ h+='<div class="rbac-toolbar"><input id="rbac-audit-q" class="rbac-input" placeholder="بحث في السجل..." value="'+rbacEsc(q)+'" oninput="rbacRenderAudit()"></div>';
+ var rows=(data.activityLog||[]).slice().reverse().filter(function(r){
+  if(!q) return true;
+  var s=(r.userName||'')+' '+(r.action||'')+' '+(r.section||'');
+  return s.toLowerCase().indexOf(q.toLowerCase())>-1;
+ });
+ if(!rows.length){ h+='<div class="rbac-empty">لا توجد نشاطات مسجّلة بعد.</div>'; b.innerHTML=h; return; }
+ h+='<div class="rbac-table-wrap"><table class="rbac-table"><thead><tr><th>المستخدم</th><th>العملية</th><th>القسم</th><th>التاريخ</th><th>الوقت</th></tr></thead><tbody>';
+ rows.slice(0,400).forEach(function(r){
+  var d=new Date(r.ts); var dateS=isNaN(d.getTime())?'—':(d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()));
+  var timeS=isNaN(d.getTime())?'':(pad2(d.getHours())+':'+pad2(d.getMinutes()));
+  h+='<tr><td><b>'+rbacEsc(r.userName)+'</b><div class="rbac-role-sm">'+rbacEsc(r.role||'')+'</div></td><td>'+rbacEsc(r.action)+'</td><td>'+rbacEsc(r.section)+'</td><td>'+dateS+'</td><td>'+timeS+'</td></tr>';
+ });
+ h+='</tbody></table></div>';
+ b.innerHTML=h;
+}
+function pad2(n){ return (n<10?'0':'')+n; }
+
+/* ===== نافذة إضافة/تعديل مستخدم ===== */
+function rbacEditUser(id){
+ rbacEnsure();
+ var u=null,i;
+ if(id!==null&&typeof id!=='undefined'){ for(i=0;i<data.appUsers.length;i++){ if(data.appUsers[i].id===id){u=data.appUsers[i];break;} } }
+ var isNew=!u;
+ var cur=u||{id:null,name:'',email:'',phone:'',role:'registrar',status:'active',perms:{},assign:{stages:[],grades:[],subjects:[]},teacherId:null};
+
+ var dlg=document.getElementById('rbac-dialog');
+ if(!dlg){ dlg=document.createElement('div'); dlg.id='rbac-dialog'; dlg.className='rbac-dialog'; document.body.appendChild(dlg); }
+
+ var h='';
+ h+='<div class="rbac-dlg-card">';
+ h+=' <div class="rbac-dlg-head">'+(isNew?'إضافة مستخدم':'تعديل مستخدم')+'<button class="rbac-x" onclick="rbacCloseDialog()">×</button></div>';
+ h+=' <div class="rbac-dlg-body">';
+ h+='  <div class="rbac-fg"><label>اسم المستخدم</label><input id="ru-name" class="rbac-input" value="'+rbacEsc(cur.name)+'"></div>';
+ h+='  <div class="rbac-row2"><div class="rbac-fg"><label>البريد الإلكتروني</label><input id="ru-email" class="rbac-input" value="'+rbacEsc(cur.email)+'"></div>';
+ h+='  <div class="rbac-fg"><label>رقم الهاتف</label><input id="ru-phone" class="rbac-input" inputmode="numeric" value="'+rbacEsc(cur.phone)+'"></div></div>';
+ h+='  <div class="rbac-row2"><div class="rbac-fg"><label>الدور</label><select id="ru-role" class="rbac-input" onchange="rbacRoleChanged()">';
+ var rk; for(rk in RBAC_ROLES){ if(rk==='owner')continue; h+='<option value="'+rk+'"'+(cur.role===rk?' selected':'')+'>'+RBAC_ROLES[rk].label+'</option>'; }
+ h+='  </select></div>';
+ h+='  <div class="rbac-fg"><label>الحالة</label><select id="ru-status" class="rbac-input"><option value="active"'+(cur.status!=='suspended'?' selected':'')+'>نشط</option><option value="suspended"'+(cur.status==='suspended'?' selected':'')+'>موقوف</option></select></div></div>';
+
+ /* تخصيص المدرّس */
+ h+='  <div id="ru-teacher-box" class="rbac-assign" style="display:none">';
+ h+='   <div class="rbac-assign-title">تخصيص المدرّس (يرى فقط ما يُخصَّص له)</div>';
+ h+='   <div class="rbac-fg"><label>ربط بمدرّس مسجّل (اختياري)</label><select id="ru-teacher-link" class="rbac-input"><option value="">— بدون —</option>';
+ (data.teachers||[]).forEach(function(t){ h+='<option value="'+t.id+'"'+(cur.teacherId===t.id?' selected':'')+'>'+rbacEsc(t.fname+' '+(t.lname||''))+'</option>'; });
+ h+='   </select></div>';
+ h+='   <div class="rbac-fg"><label>المراحل</label><div id="ru-stages" class="rbac-chips"></div></div>';
+ h+='   <div class="rbac-fg"><label>الصفوف</label><div id="ru-grades" class="rbac-chips"></div></div>';
+ h+='   <div class="rbac-fg"><label>المواد</label><div id="ru-subjects" class="rbac-chips"></div></div>';
+ h+='  </div>';
+
+ /* الصلاحيات التفصيلية */
+ h+='  <div class="rbac-assign"><div class="rbac-assign-title">الصلاحيات التفصيلية <span class="rbac-hint">(تبدأ من إعدادات الدور ويمكن تعديلها يدوياً)</span></div>';
+ h+='   <div id="ru-perms"></div></div>';
+
+ h+=' </div>';
+ h+=' <div class="rbac-dlg-foot"><button class="rbac-btn" onclick="rbacCloseDialog()">إلغاء</button><button class="rbac-btn rbac-btn-gold" onclick="rbacSaveUser('+(isNew?'null':JSONid(cur.id))+')">حفظ</button></div>';
+ h+='</div>';
+ dlg.innerHTML=h; dlg.classList.add('open');
+
+ /* خزّن التخصيص الحالي مؤقتاً للرسم */
+ dlg._assign=JSON.parse(JSON.stringify(cur.assign||{stages:[],grades:[],subjects:[]}));
+ dlg._override=JSON.parse(JSON.stringify(cur.perms||{}));
+ rbacRoleChanged(true);
+}
+function rbacCloseDialog(){ var d=document.getElementById('rbac-dialog'); if(d) d.classList.remove('open'); }
+
+function rbacRoleChanged(initial){
+ var roleEl=document.getElementById('ru-role'); if(!roleEl) return;
+ var role=roleEl.value;
+ var tb=document.getElementById('ru-teacher-box');
+ if(tb) tb.style.display=(role==='teacher')?'block':'none';
+ if(role==='teacher') rbacRenderAssign();
+ rbacRenderPermChecks(role, initial);
+}
+
+function rbacRenderAssign(){
+ var dlg=document.getElementById('rbac-dialog'); if(!dlg) return;
+ var a=dlg._assign||{stages:[],grades:[],subjects:[]};
+ var stages=[]; for(var s in CF_GRADES){ if(CF_GRADES.hasOwnProperty(s)) stages.push(s); }
+ var grades=[]; stages.forEach(function(st){ (CF_GRADES[st]||[]).forEach(function(g){ if(grades.indexOf(g)<0) grades.push(g); }); });
+ var subjects=[]; for(var k in CF_SUBJECTS){ if(CF_SUBJECTS.hasOwnProperty(k)){ (CF_SUBJECTS[k]||[]).forEach(function(sub){ if(subjects.indexOf(sub)<0) subjects.push(sub); }); } }
+ chipBox('ru-stages', stages, a.stages, 'stages');
+ chipBox('ru-grades', grades, a.grades, 'grades');
+ chipBox('ru-subjects', subjects, a.subjects, 'subjects');
+}
+function chipBox(elId, all, sel, key){
+ var el=document.getElementById(elId); if(!el) return; sel=sel||[];
+ var h=''; all.forEach(function(v){
+  var on=sel.indexOf(v)>-1;
+  h+='<button type="button" class="rbac-chip-btn'+(on?' on':'')+'" onclick="rbacToggleChip(\''+key+'\',\''+v.replace(/'/g,"\\'")+'\')">'+rbacEsc(v)+'</button>';
+ });
+ el.innerHTML=h;
+}
+function rbacToggleChip(key, val){
+ var dlg=document.getElementById('rbac-dialog'); if(!dlg) return;
+ if(!dlg._assign) dlg._assign={stages:[],grades:[],subjects:[]};
+ var arr=dlg._assign[key]||[]; var i=arr.indexOf(val);
+ if(i>-1) arr.splice(i,1); else arr.push(val);
+ dlg._assign[key]=arr; rbacRenderAssign();
+}
+
+function rbacRenderPermChecks(role, initial){
+ var box=document.getElementById('ru-perms'); if(!box) return;
+ var dlg=document.getElementById('rbac-dialog');
+ var def=RBAC_ROLES[role]||{}; var defSet={};
+ if(def.all){ defSet['*']=true; }
+ (def.perms||[]).forEach(function(p){ defSet[p]=true; });
+ var override=(dlg&&dlg._override)?dlg._override:{};
+ /* عند تغيير الدور (غير الأولي) نعيد التهيئة لافتراضي الدور */
+ if(!initial && dlg){ dlg._override={}; override={}; }
+ /* جمّع حسب القسم */
+ var sections={}; var order=[];
+ RBAC_PERMS.forEach(function(p){ if(!sections[p[0]]){sections[p[0]]=[];order.push(p[0]);} sections[p[0]].push(p); });
+ var h='';
+ order.forEach(function(secName){
+  h+='<div class="rbac-perm-sec"><div class="rbac-perm-sec-t">'+rbacEsc(secName)+'</div><div class="rbac-perm-grid">';
+  sections[secName].forEach(function(p){
+   var key=p[1];
+   var checked = override.hasOwnProperty(key) ? !!override[key] : !!defSet[key];
+   h+='<label class="rbac-check"><input type="checkbox" data-perm="'+key+'" '+(checked?'checked':'')+' onchange="rbacPermToggle(\''+key+'\',this.checked)"> '+rbacEsc(p[2])+'</label>';
+  });
+  h+='</div></div>';
+ });
+ box.innerHTML=h;
+}
+function rbacPermToggle(key, val){
+ var dlg=document.getElementById('rbac-dialog'); if(!dlg) return;
+ if(!dlg._override) dlg._override={};
+ dlg._override[key]=!!val;
+}
+
+function rbacSaveUser(id){
+ rbacEnsure();
+ var name=(document.getElementById('ru-name').value||'').trim();
+ if(!name){ rbacToast('الرجاء إدخال اسم المستخدم','err'); return; }
+ var role=document.getElementById('ru-role').value;
+ var email=(document.getElementById('ru-email').value||'').trim();
+ var phone=(document.getElementById('ru-phone').value||'').trim();
+ var status=document.getElementById('ru-status').value;
+ var dlg=document.getElementById('rbac-dialog');
+ var assign=(role==='teacher')?(dlg._assign||{stages:[],grades:[],subjects:[]}):{stages:[],grades:[],subjects:[]};
+ var teacherId=null;
+ if(role==='teacher'){ var tl=document.getElementById('ru-teacher-link'); if(tl&&tl.value) teacherId=isNaN(+tl.value)?tl.value:(+tl.value); }
+ /* احسب التجاوزات: خزّن فقط ما يختلف عن افتراضي الدور */
+ var def=RBAC_ROLES[role]||{}; var defSet={}; if(def.all)defSet['*']=true; (def.perms||[]).forEach(function(p){defSet[p]=true;});
+ var override={}; var ov=dlg._override||{};
+ RBAC_PERMS.forEach(function(p){
+  var k=p[1]; var defHas=!!defSet[k] || !!defSet['*'];
+  if(ov.hasOwnProperty(k) && (!!ov[k])!==defHas) override[k]=!!ov[k];
+ });
+
+ if(id===null||typeof id==='undefined'){
+  var nid=data.nextId?data.nextId.appUser++:Date.now();
+  data.appUsers.push({id:nid,name:name,email:email,phone:phone,role:role,status:status,perms:override,assign:assign,teacherId:teacherId,pin:'',createdAt:new Date().toISOString()});
+  logActivity('أضاف مستخدماً: '+name, 'المستخدمون');
+ } else {
+  var i; for(i=0;i<data.appUsers.length;i++){ if(data.appUsers[i].id===id){
+   var us=data.appUsers[i];
+   us.name=name; us.email=email; us.phone=phone; us.role=role; us.status=status; us.perms=override; us.assign=assign; us.teacherId=teacherId;
+   break;
+  } }
+  logActivity('عدّل مستخدماً: '+name, 'المستخدمون');
+ }
+ try{ save(); }catch(e){}
+ rbacCloseDialog(); rbacRenderUsers(); rbacApply();
+ rbacToast('تم الحفظ');
+}
+
+function rbacToggleSuspend(id){
+ var i; for(i=0;i<data.appUsers.length;i++){ if(data.appUsers[i].id===id){
+  var u=data.appUsers[i]; u.status=(u.status==='suspended')?'active':'suspended';
+  logActivity((u.status==='suspended'?'أوقف':'فعّل')+' المستخدم: '+u.name, 'المستخدمون');
+  if(u.status==='suspended'&&data.activeProfileId===u.id) data.activeProfileId=null;
+  break;
+ } }
+ try{ save(); }catch(e){} rbacRenderUsers(); rbacApply();
+}
+function rbacDeleteUser(id){
+ var u=null,i; for(i=0;i<data.appUsers.length;i++){ if(data.appUsers[i].id===id){u=data.appUsers[i];break;} }
+ if(!u) return;
+ if(!confirm('حذف المستخدم "'+u.name+'"؟ لا يمكن التراجع.')) return;
+ data.appUsers.splice(i,1);
+ if(data.activeProfileId===id) data.activeProfileId=null;
+ logActivity('حذف المستخدم: '+u.name, 'المستخدمون');
+ try{ save(); }catch(e){} rbacRenderUsers(); rbacApply();
+ rbacToast('تم حذف المستخدم');
+}
+function rbacResetPin(id){
+ var u=null,i; for(i=0;i<data.appUsers.length;i++){ if(data.appUsers[i].id===id){u=data.appUsers[i];break;} }
+ if(!u) return;
+ var pin=prompt('أدخل رمز دخول محلياً جديداً للمستخدم "'+u.name+'" (4 أرقام) — يُستخدم عند الدخول بوضع هذا الحساب على هذا الجهاز:');
+ if(pin===null) return;
+ u.pin=(''+pin).trim();
+ logActivity('أعاد تعيين رمز الدخول للمستخدم: '+u.name, 'المستخدمون');
+ try{ save(); }catch(e){} rbacToast('تم تحديث رمز الدخول المحلي');
+}
+function rbacActAs(id){
+ var u=null,i; for(i=0;i<data.appUsers.length;i++){ if(data.appUsers[i].id===id){u=data.appUsers[i];break;} }
+ if(!u) return;
+ if(u.status==='suspended'){ rbacToast('هذا الحساب موقوف','err'); return; }
+ if(u.pin){ var p=prompt('أدخل رمز الدخول المحلي للحساب "'+u.name+'":'); if(p===null) return; if((''+p).trim()!==u.pin){ rbacToast('رمز غير صحيح','err'); return; } }
+ if(!confirm('الدخول بوضع "'+u.name+'" ('+(RBAC_ROLES[u.role]?RBAC_ROLES[u.role].label:u.role)+')؟ ستُطبَّق صلاحياته على هذا الجهاز.')) return;
+ logActivity('تم الدخول بوضع: '+u.name, 'الصلاحيات');
+ closeRbac();
+ Perms.setActive(id);
+ rbacToast('أنت الآن تعمل بوضع: '+u.name);
+}
+
 function renderDashboard(){
  var td=today();
  var todayAtt=data.attendance.filter(function(a){return a.date===td;});
@@ -5398,6 +6015,7 @@ function renderStudents(){
  }).join('');
 }
 function addStudent(){
+ if(typeof Perms!=='undefined'&&!Perms.require('students.add'))return;
  var fname=document.getElementById('s-fname').value.trim(),lname=document.getElementById('s-lname').value.trim();
  if(!fname||!lname){toast('يرجى إدخال الاسم');return;}
  var stage=document.getElementById('s-stage').value;
@@ -5468,6 +6086,7 @@ async function saveEditStudent(){
  save();closeModal('edit-student');renderStudents();toast('تم تحديث بيانات الطالب');
 }
 function delStudent(id){
+ if(typeof Perms!=='undefined'&&!Perms.require('students.delete'))return;
  var st=gS(id);var stName=st?(st.fname+' '+st.lname):'هذا الطالب';
  showConfirm({title:'حذف '+stName,msg:'سيتم حذف جميع بياناته بشكل نهائي (الحضور، النتائج، الرسوم، السلوك، المخالفات).',confirmText:'نعم، احذف'},function(){
   ['students','attendance','results','fees','payments','behaviors','violationRecords','warningRecords','parentNotifications'].forEach(function(k){if(data[k])data[k]=data[k].filter(function(x){return x.id!==id&&x.studentId!==id;});});
@@ -6647,6 +7266,7 @@ function saveEditTeacher(){
  save();closeModal('edit-teacher');renderTeachers();toast('تم تحديث بيانات المدرس');
 }
 function delTeacher(id){
+ if(typeof Perms!=='undefined'&&!Perms.require('teachers.manage'))return;
  var tc=gT(id);var tcName=tc?(tc.fname+' '+tc.lname):'هذا المدرس';
  showConfirm({title:'حذف '+tcName,msg:'سيتم حذف بيانات المدرس وسجل حضوره بشكل نهائي.',confirmText:'نعم، احذف'},function(){
   data.teachers=data.teachers.filter(function(t){return t.id!==id;});
@@ -6741,6 +7361,7 @@ function addResult(){
  if(sendWA)sendResultWA(nr.id);else toast('تمت إضافة النتيجة');
 }
 function delResult(id){
+ if(typeof Perms!=='undefined'&&!Perms.require('results.manage'))return;
  var r=data.results.find(function(x){return x.id===id;});
  var s=r?gS(r.studentId):null;
  var lbl=(s?(s.fname+' — '):'')+(r?r.subject:'النتيجة');
@@ -7299,6 +7920,7 @@ function saveCourseForm(){
  toast(editId?'تم تحديث الدورة':'تمت إضافة الدورة');
 }
 function deleteCourse(id){
+ if(typeof Perms!=='undefined'&&!Perms.require('courses.manage'))return;
  var c=gCourse(id);
  showConfirm({title:'حذف '+(c?c.name:'الدورة'),msg:'سيتم حذف الدورة وجميع فصولها ومواضيعها بشكل نهائي.',confirmText:'نعم، احذف'},function(){
   var chapIds=(data.courseChapters||[]).filter(function(ch){return ch.courseId===id;}).map(function(ch){return ch.id;});
