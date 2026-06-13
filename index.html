@@ -2090,6 +2090,39 @@ html[data-theme=light] .beh-watch{background:rgba(202,138,4,.10);color:#92400e;}
 html[data-theme=light] .beh-repeat{background:rgba(234,88,12,.10);color:#c2410c;}
 html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c;}
 
+/* ===== مركز القيادة الذكي — Smart Command Center (additive) ===== */
+.cc-wrap{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:18px;position:relative;overflow:hidden}
+.cc-wrap::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),var(--brand-light),transparent)}
+.cc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.cc-title{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--brand-light)}
+.cc-pulse{width:8px;height:8px;border-radius:50%;background:var(--success);display:inline-block;margin-left:5px;box-shadow:0 0 0 0 rgba(59,175,126,.5);animation:ccPulse 2.4s infinite}
+@keyframes ccPulse{0%{box-shadow:0 0 0 0 rgba(59,175,126,.45)}70%{box-shadow:0 0 0 7px rgba(59,175,126,0)}100%{box-shadow:0 0 0 0 rgba(59,175,126,0)}}
+.cc-counts{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cc-count{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--surface-2);color:var(--text-2)}
+.cc-count i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.cc-alerts{display:flex;flex-direction:column;gap:8px}
+.cc-alert{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);border-right:3px solid var(--text-3);transition:transform .15s var(--ease),border-color .15s}
+.cc-alert:hover{transform:translateX(-2px)}
+.cc-alert.crit{border-right-color:var(--danger);background:rgba(192,85,85,.06)}
+.cc-alert.high{border-right-color:var(--warning);background:rgba(184,138,68,.06)}
+.cc-alert.med{border-right-color:var(--info)}
+.cc-alert.low{border-right-color:var(--text-3)}
+.cc-alert-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--card)}
+.cc-alert-body{flex:1;min-width:0}
+.cc-alert-t{font-size:12px;font-weight:700;color:var(--text)}
+.cc-alert-s{font-size:10px;color:var(--text-3);margin-top:2px}
+.cc-alert-btn{flex-shrink:0;font-family:inherit;font-size:10px;font-weight:700;padding:6px 12px;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--text-2);cursor:pointer;white-space:nowrap;transition:all .15s}
+.cc-alert-btn:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+.cc-alert.crit .cc-alert-btn{border-color:rgba(192,85,85,.4);color:var(--danger)}
+.cc-alert.crit .cc-alert-btn:hover{background:var(--danger);color:#fff}
+.cc-clear{display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;padding:18px 12px;color:var(--success);font-size:12px;font-weight:600}
+.cc-insights{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border2)}
+.cc-insight{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:11px;background:var(--surface-2)}
+.cc-insight-ic{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cc-insight-txt{font-size:10.5px;color:var(--text-2);line-height:1.5;font-weight:600}
+.cc-insight-txt b{font-weight:800;color:var(--text)}
+.cc-insight-txt svg{vertical-align:-2px}
+@media(max-width:560px){.cc-insights{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -2394,6 +2427,8 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div id="dash-license-badge" style="display:none;padding:5px 10px;border-radius:20px;font-size:10px;font-weight:700;cursor:default"></div>
  </div>
  </div>
+ <!-- مركز القيادة الذكي -->
+ <div id="dash-command-center"></div>
  <!-- بطاقات الإحصاء الرئيسية -->
  <div class="stats-grid" id="stats-grid"></div>
  <!-- صف سريع: حضور اليوم + صافي الربح -->
@@ -4736,6 +4771,225 @@ function renderSlips(){
  }).join('');
 }
 
+/* ===== مركز القيادة الذكي — Smart Command Center (additive, non-destructive) ===== */
+function ccSvg(paths){
+ return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+paths+'</svg>';
+}
+function ccTrend(cur,prev,goodIsUp){
+ // returns {svg, color, word, pct}
+ var up='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>';
+ var down='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>';
+ var flat='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+ if(prev===null||prev===undefined){ return {svg:flat,color:'var(--text-3)',word:'',pct:null}; }
+ if(cur===prev){ return {svg:flat,color:'var(--text-3)',word:'مستقر',pct:0}; }
+ var rising=cur>prev;
+ var pct=prev>0?Math.round(Math.abs(cur-prev)/prev*100):null;
+ var positive = goodIsUp ? rising : !rising;
+ return {
+  svg: rising?up:down,
+  color: positive?'var(--success)':'var(--danger)',
+  word: rising?'ارتفاع':'انخفاض',
+  pct: pct
+ };
+}
+function renderCommandCenter(){
+ var el=document.getElementById('dash-command-center');
+ if(!el)return;
+ try{
+  var td=today();
+  var students=data.students||[];
+  var teachers=data.teachers||[];
+  // المعهد الجديد الفارغ: نترك بطاقة الترحيب تتكفّل
+  if(students.length===0 && teachers.length===0){ el.innerHTML=''; return; }
+
+  var alerts=[];
+
+  // 1) اشتراكات منتهية
+  var expired=students.filter(function(s){ var d=daysDiff(s.subEnd); return d!==null && d<0; });
+  if(expired.length){
+   alerts.push({prio:'crit',color:'var(--danger)',
+    icon:'<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>',
+    title:'اشتراكات منتهية',
+    sub:expired.length+' طالب انتهى اشتراكه ويحتاج للتجديد',
+    btn:'متابعة', action:"showPage('whatsapp')"});
+  }
+  // 2) اشتراكات تقارب الانتهاء (خلال 7 أيام)
+  var soon=students.filter(function(s){ var d=daysDiff(s.subEnd); return d!==null && d>=0 && d<=7; });
+  if(soon.length){
+   alerts.push({prio:'high',color:'var(--warning)',
+    icon:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    title:'اشتراكات تقارب الانتهاء',
+    sub:soon.length+' اشتراك ينتهي خلال 7 أيام',
+    btn:'إشعار', action:"showPage('whatsapp')"});
+  }
+  // 3) مبالغ مستحقة غير محصّلة
+  var debtors=students.filter(function(s){ return ((s.subPrice||0)-(s.subPaid||0))>0; });
+  var totalDebt=debtors.reduce(function(a,s){return a+((s.subPrice||0)-(s.subPaid||0));},0);
+  if(debtors.length){
+   alerts.push({prio:'high',color:'var(--gold)',
+    icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/>',
+    title:'مبالغ مستحقة غير محصّلة',
+    sub:debtors.length+' طالب — إجمالي '+fmt(totalDebt),
+    btn:'تحصيل', action:"showPage('fees')"});
+  }
+  // 4) حضور لم يُسجَّل اليوم
+  var recordedIds={};
+  data.attendance.forEach(function(a){ if(a.date===td) recordedIds[a.studentId]=1; });
+  var notRecorded=students.filter(function(s){ return !recordedIds[s.id]; });
+  if(notRecorded.length && students.length){
+   var prioAtt = (notRecorded.length===students.length) ? 'high' : 'med';
+   alerts.push({prio:prioAtt,color:'var(--info)',
+    icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+    title:'حضور لم يُسجَّل اليوم',
+    sub:notRecorded.length+' من '+students.length+' طالب بانتظار تسجيل الحضور',
+    btn:'تسجيل', action:"showPage('attendance')"});
+  }
+  // 5) نسبة حضور منخفضة اليوم
+  var todayAtt=data.attendance.filter(function(a){return a.date===td;});
+  if(todayAtt.length>=5){
+   var presToday=todayAtt.filter(function(a){return a.status==='present';}).length;
+   var rateToday=Math.round(presToday/todayAtt.length*100);
+   if(rateToday<60){
+    alerts.push({prio:'high',color:'var(--danger)',
+     icon:'<polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>',
+     title:'نسبة حضور منخفضة اليوم',
+     sub:'الحضور '+rateToday+'% فقط من الطلاب المسجّلين',
+     btn:'عرض', action:"showPage('attendance')"});
+   }
+  }
+  // 6) مدرّسون لم يسجّلوا حضور طلابهم
+  var idleTeachers=teachers.filter(function(t){
+   var hasStudents=false, hasRecord=false;
+   students.forEach(function(s){
+    if(s.teacherId===t.id){ hasStudents=true; if(recordedIds[s.id]) hasRecord=true; }
+   });
+   return hasStudents && !hasRecord;
+  });
+  if(idleTeachers.length){
+   alerts.push({prio:'med',color:'var(--purple)',
+    icon:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    title:'مدرّسون لم يسجّلوا الحضور',
+    sub:idleTeachers.length+' مدرّس لم يُسجَّل حضور طلابهم اليوم',
+    btn:'متابعة', action:"showPage('attendance')"});
+  }
+  // 7) إنذارات سلوكية حديثة (آخر 7 أيام)
+  var weekAgo=new Date(); weekAgo.setDate(weekAgo.getDate()-7); weekAgo.setHours(0,0,0,0);
+  var recentWarn=(data.warningRecords||[]).filter(function(w){ var dd=new Date(w.date); return !isNaN(dd.getTime()) && dd>=weekAgo; });
+  if(recentWarn.length){
+   alerts.push({prio:'med',color:'var(--warning)',
+    icon:'<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+    title:'إنذارات سلوكية جديدة',
+    sub:recentWarn.length+' إنذار خلال الأسبوع الأخير',
+    btn:'عرض', action:"showPage('discipline')"});
+  }
+
+  // ترتيب حسب الأولوية
+  var order={crit:0,high:1,med:2,low:3};
+  alerts.sort(function(a,b){ return order[a.prio]-order[b.prio]; });
+  var counts={crit:0,high:0,med:0,low:0};
+  alerts.forEach(function(a){ counts[a.prio]++; });
+
+  // ===== الرؤى التشغيلية (مقارنة شهرية) =====
+  var now=new Date();
+  function mkey(d){ return d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1); }
+  var curKey=mkey(now);
+  var prevKey=mkey(new Date(now.getFullYear(), now.getMonth()-1, 1));
+  function collected(key){
+   return (data.subPayments||[]).filter(function(p){return (p.date||'').indexOf(key)===0;})
+    .reduce(function(a,p){return a+(p.amount||0);},0);
+  }
+  function attRate(key){
+   var recs=data.attendance.filter(function(a){return (a.date||'').indexOf(key)===0;});
+   if(!recs.length) return null;
+   var p=recs.filter(function(a){return a.status==='present';}).length;
+   return Math.round(p/recs.length*100);
+  }
+  function newStu(key){
+   return students.filter(function(s){return (s.subStart||'').indexOf(key)===0;}).length;
+  }
+  var insights=[];
+  // تحصيل الاشتراكات
+  var colCur=collected(curKey), colPrev=collected(prevKey);
+  if(colCur>0 || colPrev>0){
+   var tC=ccTrend(colCur,colPrev,true);
+   insights.push({color:'var(--gold)',
+    icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/>',
+    txt:'حُصِّل هذا الشهر <b>'+fmt(colCur)+'</b>'+(tC.word?' — <span style="color:'+tC.color+';font-weight:800">'+tC.svg+' '+tC.word+(tC.pct!==null?' '+tC.pct+'%':'')+'</span> عن الشهر الماضي':'')});
+  }
+  // متوسط الحضور
+  var arCur=attRate(curKey), arPrev=attRate(prevKey);
+  if(arCur!==null){
+   var tA=ccTrend(arCur,arPrev,true);
+   var ptsTxt='';
+   if(arPrev!==null && arCur!==arPrev){ ptsTxt=' — <span style="color:'+tA.color+';font-weight:800">'+tA.svg+' '+Math.abs(arCur-arPrev)+' نقطة</span>'; }
+   insights.push({color:'var(--success)',
+    icon:'<polyline points="20 6 9 17 4 12"/>',
+    txt:'متوسط الحضور هذا الشهر <b>'+arCur+'%</b>'+ptsTxt});
+  }
+  // طلاب جدد
+  var nsCur=newStu(curKey), nsPrev=newStu(prevKey);
+  if(nsCur>0 || nsPrev>0){
+   var tN=ccTrend(nsCur,nsPrev,true);
+   insights.push({color:'var(--info)',
+    icon:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>',
+    txt:'انضمّ هذا الشهر <b>'+nsCur+'</b> طالب جديد'+(nsPrev>0?' — <span style="color:'+tN.color+';font-weight:800">'+tN.svg+' '+tN.word+'</span> عن '+nsPrev+' الشهر الماضي':'')});
+  }
+  // إجمالي المستحقات
+  if(totalDebt>0){
+   insights.push({color:'var(--warning)',
+    icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+    txt:'إجمالي المبالغ المستحقة <b>'+fmt(totalDebt)+'</b> على '+debtors.length+' طالب'});
+  }
+  insights=insights.slice(0,4);
+
+  // ===== البناء =====
+  var html='';
+  html+='<div class="cc-wrap">';
+  html+=' <div class="cc-head">';
+  html+='  <span class="cc-title">'+ccSvg('<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>')+' مركز القيادة</span>';
+  if(alerts.length){
+   html+='  <div class="cc-counts">';
+   if(counts.crit) html+='<span class="cc-count"><i style="background:var(--danger)"></i>'+counts.crit+' حرِج</span>';
+   if(counts.high) html+='<span class="cc-count"><i style="background:var(--warning)"></i>'+counts.high+' هام</span>';
+   if(counts.med)  html+='<span class="cc-count"><i style="background:var(--info)"></i>'+counts.med+' متوسط</span>';
+   html+='  </div>';
+  } else {
+   html+='  <span class="cc-count"><span class="cc-pulse"></span>كل شيء تحت السيطرة</span>';
+  }
+  html+=' </div>';
+
+  if(alerts.length){
+   html+=' <div class="cc-alerts">';
+   alerts.forEach(function(al){
+    html+='<div class="cc-alert '+al.prio+'">'+
+     '<span class="cc-alert-ic" style="color:'+al.color+'">'+ccSvg(al.icon)+'</span>'+
+     '<div class="cc-alert-body"><div class="cc-alert-t">'+al.title+'</div><div class="cc-alert-s">'+al.sub+'</div></div>'+
+     '<button class="cc-alert-btn" onclick="'+al.action+'">'+al.btn+'</button>'+
+     '</div>';
+   });
+   html+=' </div>';
+  } else {
+   html+=' <div class="cc-clear">'+ccSvg('<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>')+' لا توجد مهام عاجلة الآن — جميع المؤشرات ضمن المعدّل الطبيعي</div>';
+  }
+
+  if(insights.length){
+   html+=' <div class="cc-insights">';
+   insights.forEach(function(ins){
+    html+='<div class="cc-insight">'+
+     '<span class="cc-insight-ic" style="color:'+ins.color+';background:var(--card)">'+ccSvg(ins.icon)+'</span>'+
+     '<div class="cc-insight-txt">'+ins.txt+'</div>'+
+     '</div>';
+   });
+   html+=' </div>';
+  }
+
+  html+='</div>';
+  el.innerHTML=html;
+ }catch(ccErr){
+  try{ el.innerHTML=''; }catch(e2){}
+ }
+}
+
 function renderDashboard(){
  var td=today();
  var todayAtt=data.attendance.filter(function(a){return a.date===td;});
@@ -4759,6 +5013,7 @@ function renderDashboard(){
  var dateStr=days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
  document.getElementById('dash-greeting').textContent=greeting+' — '+(data.settings.instName||'راصد');
  document.getElementById('dash-date').textContent=dateStr;
+ try{ renderCommandCenter(); }catch(ccE){}
 
  // ── شاشة الترحيب للمستخدم الجديد ──
  var welcomeEl = document.getElementById('dash-welcome');
