@@ -2123,6 +2123,31 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
 .cc-insight-txt b{font-weight:800;color:var(--text)}
 .cc-insight-txt svg{vertical-align:-2px}
 @media(max-width:560px){.cc-insights{grid-template-columns:1fr}}
+/* ===== نظام المؤشرات الدائرية الموحّد — Radial Progress Design System (UI only) ===== */
+.rp-box{display:inline-flex;flex-direction:column;align-items:center;gap:6px;vertical-align:middle}
+.rp{position:relative;width:var(--rp-size,92px);height:var(--rp-size,92px);flex-shrink:0;outline:none;border-radius:50%}
+.rp-svg{width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+.rp-bg{fill:none;stroke:var(--border2);opacity:.6}
+.rp-fg{fill:none;transition:stroke-dashoffset .9s var(--spring,cubic-bezier(.34,1.2,.45,1));animation:rpFill .95s var(--ease,ease) both}
+@keyframes rpFill{from{stroke-dashoffset:var(--rp-c)}to{stroke-dashoffset:var(--rp-off)}}
+.rp-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.rp-val{font-weight:900;color:var(--brand-light);line-height:1;font-size:calc(var(--rp-size,92px)*.27);letter-spacing:-.5px}
+.rp-val i{font-style:normal;font-weight:700;font-size:.55em;color:var(--gold);margin-right:1px}
+.rp-empty-t{font-size:calc(var(--rp-size,92px)*.13);font-weight:700;color:var(--text-3);line-height:1.25;padding:0 6px}
+.rp-empty .rp-bg{opacity:.4}
+.rp-empty .rp-fg{display:none}
+.rp-label{font-size:11px;font-weight:700;color:var(--text-2);text-align:center;max-width:130px;line-height:1.3}
+/* توهّج ذهبي خفيف عند 100% */
+.rp-full .rp-fg{filter:drop-shadow(0 0 4px rgba(212,166,90,.55))}
+.rp-full .rp-val{color:var(--gold)}
+.rp-full::after{content:'';position:absolute;inset:-3px;border-radius:50%;box-shadow:0 0 14px 1px rgba(212,166,90,.30);pointer-events:none;animation:rpGlow 2.6s ease-in-out infinite}
+@keyframes rpGlow{0%,100%{opacity:.5}50%{opacity:1}}
+/* Tooltip */
+.rp-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:var(--surface);color:var(--text);border:1px solid var(--border);box-shadow:0 6px 22px rgba(0,0,0,.22);border-radius:10px;padding:7px 11px;font-size:10.5px;font-weight:600;white-space:nowrap;max-width:220px;white-space:normal;text-align:center;opacity:0;visibility:hidden;transition:opacity .18s,transform .18s;z-index:60;pointer-events:none}
+.rp-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--surface)}
+.rp:hover .rp-tip,.rp:focus .rp-tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+/* أحجام مساعدة */
+@media(max-width:560px){.rp-label{font-size:10px}}
 </style>
 </head>
 <body>
@@ -2427,6 +2452,8 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
  <div id="dash-license-badge" style="display:none;padding:5px 10px;border-radius:20px;font-size:10px;font-weight:700;cursor:default"></div>
  </div>
  </div>
+ <!-- تعريف التدرّج الذهبي الموحّد للمؤشرات الدائرية -->
+ <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true"><defs><linearGradient id="rpGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="var(--gold)"/><stop offset="100%" stop-color="var(--brand-light)"/></linearGradient></defs></svg>
  <!-- مركز القيادة الذكي -->
  <div id="dash-command-center"></div>
  <!-- بطاقات الإحصاء الرئيسية -->
@@ -2477,10 +2504,8 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
    </div>
   </div>
  </div>
- <!-- شريط التقدم -->
- <div style="height:5px;background:var(--border2);border-radius:3px;overflow:hidden">
-  <div id="dash-att-bar" style="height:100%;background:linear-gradient(90deg,var(--success),var(--gold));border-radius:3px;transition:width 0.6s var(--ease)"></div>
- </div>
+ <!-- مؤشر الحضور الدائري -->
+ <div id="dash-att-ring" style="display:flex;justify-content:center;margin-top:4px"></div>
  </div>
  <div class="chart-wrap" style="margin:0;cursor:pointer" onclick="showPage('expenses')">
  <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:10px"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> الملخص المالي</span></div>
@@ -4990,6 +5015,51 @@ function renderCommandCenter(){
  }
 }
 
+/* ===== نظام المؤشرات الدائرية الموحّد — Radial Progress Design System (UI only) ===== */
+var _rpSeq = 0;
+function radialProgress(pct, opts){
+ opts = opts || {};
+ var size = opts.size || 92;
+ var sw = opts.stroke || 9;                 // viewBox units (0..100)
+ var label = opts.label || '';
+ var tip = opts.tip || '';
+ var emptyText = opts.emptyText || 'لا توجد بيانات';
+ var num = (pct===null || pct===undefined || (typeof pct==='number' && isNaN(pct))) ? null : Math.round(Number(pct));
+ var val = num===null ? 0 : Math.max(0, Math.min(100, num));
+ // حسب المطلوب: 0% أو لا قيمة => حالة "لا توجد بيانات"
+ var empty = (num===null || val===0);
+ var full = (val>=100);
+ var r = 50 - sw/2;
+ var c = 2 * Math.PI * r;
+ var off = c * (1 - val/100);
+ var cls = 'rp' + (full?' rp-full':'') + (empty?' rp-empty':'');
+ var center;
+ if(empty){
+  center = '<span class="rp-empty-t">'+emptyText+'</span>';
+ } else {
+  center = '<span class="rp-val">'+val+'<i>%</i></span>';
+ }
+ var tipHtml = tip ? '<span class="rp-tip">'+tip+'</span>' : '';
+ var labelHtml = label ? '<div class="rp-label">'+label+'</div>' : '';
+ var titleAttr = (label?label+' — ':'') + (empty?emptyText:val+'%') + (tip?(' — '+tip):'');
+ var fgStyle = 'stroke-dasharray:'+c.toFixed(2)+';stroke-dashoffset:'+off.toFixed(2)+';--rp-c:'+c.toFixed(2)+';--rp-off:'+off.toFixed(2);
+ return '<div class="rp-box" style="--rp-size:'+size+'px">'+
+  '<div class="'+cls+'" tabindex="0" role="img" aria-label="'+titleAttr+'" title="'+titleAttr+'">'+
+   '<svg viewBox="0 0 100 100" class="rp-svg">'+
+    '<circle class="rp-bg" cx="50" cy="50" r="'+r.toFixed(2)+'" stroke-width="'+sw+'"></circle>'+
+    '<circle class="rp-fg" cx="50" cy="50" r="'+r.toFixed(2)+'" stroke-width="'+sw+'" stroke="url(#rpGrad)" stroke-linecap="round" style="'+fgStyle+'"></circle>'+
+   '</svg>'+
+   '<div class="rp-center">'+center+'</div>'+
+   tipHtml+
+  '</div>'+
+  labelHtml+
+ '</div>';
+}
+/* غلاف مُصغّر للبطاقات والقوائم */
+function miniRing(pct, label, tip){
+ return radialProgress(pct, {size:58, stroke:10, label:label||'', tip:tip||''});
+}
+
 function renderDashboard(){
  var td=today();
  var todayAtt=data.attendance.filter(function(a){return a.date===td;});
@@ -5087,8 +5157,10 @@ function renderDashboard(){
   pctEl.textContent=total>0?Math.round(present/total*100)+'%':'—';
  }
  document.getElementById('dash-notset').textContent=notSet;
- var pct=data.students.length>0?Math.round(present/data.students.length*100):0;
- document.getElementById('dash-att-bar').style.width=pct+'%';
+ var attTotal=present+absent+excused+late;
+ var attRing=attTotal>0?Math.round(present/attTotal*100):null;
+ var ringEl=document.getElementById('dash-att-ring');
+ if(ringEl){ ringEl.innerHTML=radialProgress(attRing,{size:104,label:'نسبة الحضور اليوم',tip:'حاضر '+present+' من '+attTotal+' مسجّل اليوم'}); }
 
  // ── الملخص المالي ──
  document.getElementById('dash-finance').innerHTML=
@@ -5197,7 +5269,7 @@ function renderDashboard(){
     '</div>'+
     '<div style="margin-bottom:12px">'+
     '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px"><span>التقدم الإجمالي</span><span style="color:'+oPc+';font-weight:700">'+allD+' / '+allT+' موضوعاً</span></div>'+
-    '<div class="course-progress-wrap" style="height:8px"><div class="course-progress-bar" style="width:'+oPct+'%;background:'+oPc+';height:8px"></div></div>'+
+    '<div style="display:flex;justify-content:center;margin:8px 0 2px">'+radialProgress(oPct,{size:84,label:'نسبة الإنجاز الكلية'})+'</div>'+
     '</div>';
    // top 3 ongoing courses
    var topCourses=ongoing.slice(0,3);
@@ -5216,7 +5288,7 @@ function renderDashboard(){
      '<div style="display:flex;align-items:center;gap:6px;margin-top:3px">'+
      '<span style="font-size:9px;padding:1px 7px;border-radius:8px;background:'+sb+';color:'+sc+';font-weight:700">'+c.status+'</span>'+
      (tName?'<span style="font-size:9px;color:var(--muted)">'+tName+'</span>':'')+'</div>'+
-     '<div class="course-progress-wrap" style="margin-top:5px"><div class="course-progress-bar" style="width:'+st.pct+'%;background:'+pc+'"></div></div>'+
+     '<div style="display:flex;justify-content:center;margin-top:6px">'+radialProgress(st.pct,{size:54,stroke:11,tip:st.done+' من '+st.totalTopics+' موضوع مكتمل'})+'</div>'+
      '</div>'+
      '<div style="font-size:12px;font-weight:800;color:'+pc+';flex-shrink:0">'+st.pct+'%</div>'+
      '</div>';
@@ -5317,8 +5389,8 @@ function renderStudents(){
  </div>
  </div>
  <div class="item-stats">
- <div class="item-stat"><div class="item-stat-val" style="color:${rc}">${rate!==null?rate+'%':'—'}</div><div class="item-stat-lbl">الحضور</div></div>
- <div class="item-stat"><div class="item-stat-val" style="color:${ac}">${avg!==null?avg+'%':'—'}</div><div class="item-stat-lbl">المعدل</div></div>
+ <div class="item-stat" style="display:flex;justify-content:center;align-items:center">${radialProgress(rate,{size:50,stroke:12,label:'الحضور'})}</div>
+ <div class="item-stat" style="display:flex;justify-content:center;align-items:center">${radialProgress(avg,{size:50,stroke:12,label:'المعدل'})}</div>
  <div class="item-stat"><div class="item-stat-val" style="color:${remaining>0?'var(--danger)':'var(--success)'};font-size:11px">${total>0?(remaining===0?'':fmt(remaining)):'—'}</div><div class="item-stat-lbl">الرسوم</div></div>
  </div>
  ${(function(){var sp=s.subPrice||0;var spd=s.subPaid||0;var srem=sp-spd;return srem>0?'<div style="margin-top:8px;padding:7px 10px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:var(--danger)">متبقي من الاشتراك</span><span style="font-size:11px;font-weight:700;color:var(--danger)">'+fmt(srem)+'</span></div>':'';}())}
@@ -5449,8 +5521,8 @@ function openStudentProfile(id){
  <div class="profile-section">
  <div class="profile-sec-title"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ملخص الأداء</div>
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
- <div class="item-stat"><div class="item-stat-val" style="color:${rate===null?'var(--muted)':rate>=75?'var(--success)':'var(--danger)'}">${rate!==null?rate+'%':'—'}</div><div class="item-stat-lbl">نسبة الحضور</div></div>
- <div class="item-stat"><div class="item-stat-val" style="color:${avg===null?'var(--muted)':avg>=75?'var(--success)':avg>=50?'var(--warning)':'var(--danger)'}">${avg!==null?avg+'%':'—'}</div><div class="item-stat-lbl">متوسط الدرجات</div></div>
+ <div class="item-stat" style="display:flex;justify-content:center;align-items:center">${radialProgress(rate,{size:66,stroke:11,label:'نسبة الحضور'})}</div>
+ <div class="item-stat" style="display:flex;justify-content:center;align-items:center">${radialProgress(avg,{size:66,stroke:11,label:'متوسط الدرجات'})}</div>
  <div class="item-stat"><div class="item-stat-val" style="color:var(--success)">${present}</div><div class="item-stat-lbl">أيام حضور</div></div>
  <div class="item-stat"><div class="item-stat-val" style="color:var(--danger)">${absent}</div><div class="item-stat-lbl">أيام غياب</div></div>
  <div class="item-stat"><div class="item-stat-val" style="color:#d4a017">${excusedCnt||0}</div><div class="item-stat-lbl">غياب بعلم ولي الأمر</div></div>
@@ -6499,7 +6571,7 @@ function renderTeachers(){
  </div>
  </div>
  <div class="item-stats">
- <div class="item-stat"><div class="item-stat-val" style="color:${rc}">${rate!==null?rate+'%':'—'}</div><div class="item-stat-lbl">الحضور</div></div>
+ <div class="item-stat" style="display:flex;justify-content:center;align-items:center">${radialProgress(rate,{size:50,stroke:12,label:'الحضور'})}</div>
  <div class="item-stat"><div class="item-stat-val" style="color:var(--success)">${present}</div><div class="item-stat-lbl">أيام حضور</div></div>
  <div class="item-stat"><div class="item-stat-val" style="color:var(--danger)">${absent}</div><div class="item-stat-lbl">أيام غياب</div></div>
  </div>
@@ -6622,8 +6694,7 @@ function renderResults(){
  </div>
  </td>
  <td>
- <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
- <span style="font-size:11px;font-weight:700">${pct}%</span>
+ ${radialProgress(pct,{size:48,stroke:13})}
  </td>
  <td>${passed?`<span class="badge badge-success">ناجح</span>`:`<span class="badge badge-danger">يعيد</span>`}</td>
  <td style="display:flex;gap:4px;align-items:center">
@@ -6780,6 +6851,7 @@ function renderFees(){
  '</div>'+
  '</div>'+
  (price>0?
+ '<div style="display:flex;justify-content:center;margin:10px 0 4px">'+radialProgress(pct,{size:74,label:'نسبة السداد',tip:fmt(paid)+' من '+fmt(price)})+'</div>'+
  '<div class="item-stats">'+
  '<div class="item-stat"><div class="item-stat-val" style="color:var(--gold);font-size:11px">'+fmt(price)+'</div><div class="item-stat-lbl">سعر الاشتراك</div></div>'+
  '<div class="item-stat"><div class="item-stat-val" style="color:var(--success);font-size:11px">'+fmt(paid)+'</div><div class="item-stat-lbl">المسدد</div></div>'+
@@ -7002,7 +7074,7 @@ function renderCourses(){
    '<div class="item-stat"><div class="item-stat-val" style="color:var(--success)">'+st.done+'</div><div class="item-stat-lbl">مكتمل</div></div>' +
    '<div class="item-stat"><div class="item-stat-val" style="color:'+pc+'">'+st.pct+'%</div><div class="item-stat-lbl">الإنجاز</div></div>' +
    '</div>' +
-   '<div class="course-progress-wrap"><div class="course-progress-bar" style="width:'+st.pct+'%;background:'+pc+'"></div></div>' +
+   '<div style="display:flex;justify-content:center;margin-top:10px">'+radialProgress(st.pct,{size:78,label:'نسبة الإنجاز',tip:st.done+' من '+st.totalTopics+' موضوع مكتمل'})+'</div>' +
    '</div>';
  }).join('');
 }
@@ -7066,7 +7138,7 @@ function renderCourseDetail(){
    '<button onclick="deleteChapter('+ch.id+')" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:11px;padding:3px 5px">✕</button>' +
    '</div>' +
    '</div>' +
-   '<div class="course-progress-wrap" style="margin-bottom:10px"><div class="course-progress-bar" style="width:'+chPct+'%;background:'+chPc+'"></div></div>' +
+   '<div style="display:flex;justify-content:center;margin-bottom:10px">'+radialProgress(chPct,{size:62,stroke:11,tip:'تقدّم الفصل'})+'</div>' +
    (topicsHtml||'<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px 0">لا توجد مواضيع — اضغط "+ موضوع"</div>') +
    '</div>';
  }).join('');
@@ -7097,7 +7169,7 @@ function renderCourseDetail(){
   '<div class="item-stat"><div class="item-stat-val" style="color:'+pc+'">'+st.pct+'%</div><div class="item-stat-lbl">الإنجاز</div></div>' +
   '</div>' +
   // ── progress bar ──
-  '<div class="course-progress-wrap" style="height:10px;margin-bottom:6px"><div class="course-progress-bar" style="width:'+st.pct+'%;background:'+pc+';height:10px"></div></div>' +
+  '<div style="display:flex;justify-content:center;margin:10px 0 6px">'+radialProgress(st.pct,{size:80,label:'نسبة الإنجاز',tip:st.done+' من '+st.totalTopics+' موضوع مكتمل'})+'</div>' +
   '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted)">' +
   '<span>'+st.done+' / '+st.totalTopics+' موضوعاً مكتملاً</span><span style="font-weight:700;color:'+pc+'">'+st.pct+'%</span>' +
   '</div>' +
@@ -7518,7 +7590,7 @@ renderCourses=function(){
    '<div class="item-stat"><div class="item-stat-val">'+st.totalTopics+'</div><div class="item-stat-lbl">مواضيع</div></div>' +
    '<div class="item-stat"><div class="item-stat-val" style="color:var(--success)">'+st.done+'</div><div class="item-stat-lbl">مكتمل</div></div>' +
    '<div class="item-stat"><div class="item-stat-val" style="color:'+pc+'">'+st.pct+'%</div><div class="item-stat-lbl">الإنجاز</div></div>' +
-   '</div><div class="course-progress-wrap"><div class="course-progress-bar" style="width:'+st.pct+'%;background:'+pc+'"></div></div></div>';
+   '</div><div style="display:flex;justify-content:center;margin-top:8px">'+radialProgress(st.pct,{size:76,label:'نسبة الإنجاز',tip:st.done+' من '+st.totalTopics+' موضوع مكتمل'})+'</div></div>';
  }).join('');
 };
 
@@ -7939,8 +8011,8 @@ function renderReports(){
  </div>
  </div>
  <div class="item-stats">
- <div class="item-stat"><div class="item-stat-val" style="color:${rate===null?'var(--muted)':rate>=75?'var(--success)':'var(--danger)'}">${rate!==null?rate+'%':'—'}</div><div class="item-stat-lbl">الحضور</div></div>
- <div class="item-stat"><div class="item-stat-val" style="color:${avg===null?'var(--muted)':avg>=75?'var(--success)':avg>=50?'var(--warning)':'var(--danger)'}">${avg!==null?avg+'%':'—'}</div><div class="item-stat-lbl">المعدل</div></div>
+ <div class="item-stat" style="display:flex;justify-content:center;align-items:center">${radialProgress(rate,{size:50,stroke:12,label:'الحضور'})}</div>
+ <div class="item-stat" style="display:flex;justify-content:center;align-items:center">${radialProgress(avg,{size:50,stroke:12,label:'المعدل'})}</div>
  <div class="item-stat"><div class="item-stat-val" style="color:${attempts>0?'var(--warning)':'var(--muted)'}">${attempts}</div><div class="item-stat-lbl">إعادة</div></div>
  </div>
  ${total>0?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border2);display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--muted)">الرسوم:</span><span style="color:${remaining>0?'var(--danger)':'var(--success)'};font-weight:700">${remaining===0?' مسدد':fmt(remaining)+' متبقي'}</span></div>`:''}
@@ -10302,7 +10374,7 @@ function renderTeacherPerformanceCard(courseId){
   '<div class="item-stat"><div class="item-stat-val" style="color:var(--success)">'+st.done+'</div><div class="item-stat-lbl">مواضيع مكتملة</div></div>' +
   '<div class="item-stat"><div class="item-stat-val" style="color:var(--muted)">'+st.notStarted+'</div><div class="item-stat-lbl">مواضيع متبقية</div></div>' +
   '</div>' +
-  '<div class="course-progress-wrap" style="margin-bottom:6px"><div class="course-progress-bar" style="width:'+st.pct+'%;background:'+pc+'"></div></div>' +
+  '<div style="display:flex;justify-content:center;margin-bottom:8px">'+radialProgress(st.pct,{size:86,label:'نسبة إنجاز الدورة',tip:st.done+' من '+st.totalTopics+' موضوع مكتمل'})+'</div>' +
   (st.lastChapter?'<div style="font-size:10px;color:var(--muted);margin-top:6px">آخر فصل: <strong>'+st.lastChapter.title+'</strong>'+(st.lastTopic?' | آخر موضوع: <strong>'+st.lastTopic.title+'</strong>':'')+'</div>':'') +
   '</div>';
 }
@@ -10411,8 +10483,8 @@ function renderKPIDashboard(){
  html += kpiCard('الطلبة النشطون', activeStudents, 'var(--info)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>');
  html += kpiCard('الدورات الجارية', ongoingCourses.length, 'var(--success)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>');
  html += kpiCard('الدورات المكتملة', completedCourses.length, 'var(--brand-light)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 21 12 18 16 21"/><path d="M5 3h14"/><path d="M5 3a7 7 0 0 0 7 7 7 7 0 0 0 7-7"/><line x1="12" y1="10" x2="12" y2="18"/></svg>');
- html += kpiCard('متوسط التقدم', avgCoursePct+'%', progressBarColor(avgCoursePct), '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>');
- html += kpiCard('نسبة الحضور', overallAttRate+'%', overallAttRate>=75?'var(--success)':'var(--danger)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>');
+ html += kpiRingCard('متوسط تقدّم الدورات', avgCoursePct, 'متوسط نسبة إنجاز جميع الدورات');
+ html += kpiRingCard('نسبة الحضور العامة', overallAttRate, 'نسبة الحضور خلال الفترة');
  html += kpiCard('غيابات الأسبوع', weekAbsent, weekAbsent>5?'var(--danger)':'var(--muted)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>');
  html += kpiCard('الإيرادات', fmt(monthRevenue), 'var(--success)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>');
  html += kpiCard('المصروفات', fmt(monthExpTotal), 'var(--danger)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>');
@@ -10506,6 +10578,11 @@ function kpiCard(label, value, color, icon){
   '<div style="display:flex;align-items:center;justify-content:center;margin-bottom:6px">'+icon+'</div>' +
   '<div style="font-size:16px;font-weight:800;color:'+color+'">'+value+'</div>' +
   '<div style="font-size:10px;color:var(--muted);margin-top:2px">'+label+'</div>' +
+  '</div>';
+}
+function kpiRingCard(label, pct, tip){
+ return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 10px;display:flex;justify-content:center;align-items:center">' +
+  radialProgress(pct,{size:80,label:label,tip:tip||''}) +
   '</div>';
 }
 
@@ -10604,7 +10681,7 @@ function renderStudentCoursesSection(studentId){
   html += '</div>';
 
   // progress bar
-  html += '<div class="course-progress-wrap" style="height:8px;margin-bottom:6px"><div class="course-progress-bar" style="width:'+st.pct+'%;background:'+pc+';height:8px"></div></div>';
+  html += '<div style="display:flex;justify-content:center;margin-bottom:8px">'+radialProgress(st.pct,{size:88,label:'نسبة إنجاز الدورة',tip:st.done+' من '+st.totalTopics+' موضوع مكتمل'})+'</div>';
   html += '<div style="display:flex;justify-content:space-between;align-items:center;font-size:10px">';
   html += '<span style="color:var(--muted)">'+st.done+' / '+st.totalTopics+' موضوعاً مكتملاً</span>';
   html += '<span style="font-weight:700;padding:2px 7px;border-radius:7px;background:'+perf.bg+';color:'+perf.color+'">'+perf.label+'</span>';
