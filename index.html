@@ -88,6 +88,16 @@
 .login-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
 .login-error{background:rgba(239,83,80,.10);border:1px solid rgba(239,83,80,.25);border-radius:10px;color:#EF5350;font-size:12px;padding:10px 14px;margin-bottom:14px;display:none;text-align:center;}
 .login-error.show{display:block;}
+.login-tabs{display:flex;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:5px;margin-bottom:20px;}
+.login-tab{flex:1;font-family:inherit;font-size:13px;font-weight:800;padding:10px;border:none;border-radius:9px;background:transparent;color:#8A93A6;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:7px;}
+.login-tab.on{background:#D4A65A;color:#1a1206;box-shadow:0 4px 14px rgba(212,166,90,.3);}
+html[data-theme=light] .login-tabs{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);}
+html[data-theme=light] .login-tab{color:#8c7d6b;}
+.login-quick{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-size:13px;font-weight:800;padding:12px;border-radius:12px;border:1px solid #D4A65A;background:rgba(212,166,90,.10);color:#D4A65A;cursor:pointer;transition:all .15s;margin-bottom:16px;}
+.login-quick:hover{background:#D4A65A;color:#1a1206;}
+.login-or{display:flex;align-items:center;gap:10px;margin:4px 0 16px;color:#55556a;font-size:10px;font-weight:700;}
+.login-or::before,.login-or::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08);}
+html[data-theme=light] .login-or::before,html[data-theme=light] .login-or::after{background:rgba(0,0,0,.1);}
 
 /* ── زر تبديل الثيم ── */
 .login-theme-toggle{margin-top:20px;display:flex;justify-content:center;}
@@ -2275,8 +2285,26 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
  <div class="login-sub">نظام إدارة المراكز التعليمية</div>
  </div>
 
+ <div class="login-tabs">
+ <button type="button" class="login-tab on" id="login-tab-owner" onclick="switchLoginTab('owner')">
+ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+ مالك المعهد
+ </button>
+ <button type="button" class="login-tab" id="login-tab-emp" onclick="switchLoginTab('emp')">
+ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+ موظف
+ </button>
+ </div>
+
  <div class="login-error" id="login-error-msg"></div>
 
+ <!-- ══ وضع المالك ══ -->
+ <div id="owner-pane">
+ <button class="login-quick" id="owner-quick-btn" style="display:none" onclick="continueAsOwner()">
+ <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+ متابعة كمالك المعهد
+ </button>
+ <div class="login-or" id="owner-or" style="display:none"><span>أو سجّل الدخول بحساب المعهد</span></div>
  <div class="login-field">
  <label>اسم المستخدم</label>
  <input type="text" id="login-username" placeholder="أدخل اسم المستخدم" autocomplete="username" />
@@ -2285,8 +2313,25 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
  <label>كلمة المرور</label>
  <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
  </div>
-
  <button class="login-btn" id="login-submit-btn" onclick="doLogin()">تسجيل الدخول</button>
+ </div>
+
+ <!-- ══ وضع الموظف ══ -->
+ <div id="employee-pane" style="display:none">
+ <div class="login-field">
+ <label>كود المعهد</label>
+ <input type="text" id="login-instcode" placeholder="كود المعهد" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;font-weight:800;text-align:center" onkeydown="if(event.key==='Enter'){document.getElementById('login-emp-username').focus();}" />
+ </div>
+ <div class="login-field">
+ <label>اسم المستخدم</label>
+ <input type="text" id="login-emp-username" placeholder="اسم المستخدم الخاص بك" autocomplete="off" onkeydown="if(event.key==='Enter'){document.getElementById('login-emp-password').focus();}" />
+ </div>
+ <div class="login-field">
+ <label>كلمة المرور</label>
+ <input type="password" id="login-emp-password" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter'){doEmployeeLogin();}" />
+ </div>
+ <button class="login-btn" id="emp-login-btn" onclick="doEmployeeLogin()">دخول الموظف</button>
+ </div>
 
  <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.07);text-align:center;">
  <div style="font-size:11px;color:#55556a;margin-bottom:10px">هل تحتاج مساعدة؟ تواصل معنا</div>
@@ -5540,8 +5585,10 @@ function rbacRenderBadge(){
   document.body.appendChild(ex);
  }
  var roleLbl=RBAC_ROLES[u.role]?RBAC_ROLES[u.role].label:u.role;
- ex.innerHTML='<span class="rbac-badge-dot"></span> الوضع: <b>'+rbacEsc(u.name)+'</b> — '+rbacEsc(roleLbl)+
-  '<button onclick="rbacSwitchAccount()" class="rbac-badge-exit">تبديل الحساب</button>';
+ var exitBtn = _employeeEntryMode
+  ? '<button onclick="employeeExitToLogin()" class="rbac-badge-exit">خروج</button>'
+  : '<button onclick="rbacSwitchAccount()" class="rbac-badge-exit">تبديل الحساب</button>';
+ ex.innerHTML='<span class="rbac-badge-dot"></span> الوضع: <b>'+rbacEsc(u.name)+'</b> — '+rbacEsc(roleLbl)+exitBtn;
 }
 function rbacExitProfile(){
  /* العودة لوضع المالك (قفل ناعم عبر رمز التفويض المالي إن توفّر) */
@@ -10268,6 +10315,98 @@ async function logFinancialAudit(operationType, codeUsed, beforeData, afterData)
 var AUTH_DOMAIN = '@rasid.local';
 function usernameToEmail(u){ return u.trim().toLowerCase() + AUTH_DOMAIN; }
 
+/* ============================================================
+   واجهة الدخول المزدوجة: مالك / موظف
+   ============================================================ */
+var _entryMode = null;          /* 'owner' | 'employee' | null */
+var _forceEmployeeId = null;    /* معرّف الموظف المختار عند الدخول */
+var _skipStaffGate = false;     /* منع ظهور نافذة اختيار الوضع بعد البدء */
+var _employeeEntryMode = false; /* هل الجلسة الحالية دخول موظف من شاشة البدء */
+
+function switchLoginTab(mode){
+ var ow=document.getElementById('owner-pane'), ep=document.getElementById('employee-pane');
+ var to=document.getElementById('login-tab-owner'), te=document.getElementById('login-tab-emp');
+ var err=document.getElementById('login-error-msg'); if(err) err.classList.remove('show');
+ if(mode==='emp'){
+  if(ow) ow.style.display='none'; if(ep) ep.style.display='';
+  if(to) to.classList.remove('on'); if(te) te.classList.add('on');
+  var c=document.getElementById('login-instcode'); if(c){ try{ c.focus(); }catch(e){} }
+ } else {
+  if(ep) ep.style.display='none'; if(ow) ow.style.display='';
+  if(te) te.classList.remove('on'); if(to) to.classList.add('on');
+ }
+}
+
+/* تُعرض شاشة الدخول مع الوضعين. canQuickOwner: هل يوجد حساب معهد محفوظ يسمح بمتابعة سريعة للمالك */
+function showEntryLogin(canQuickOwner){
+ try{ hideAuthLoader(); }catch(e){}
+ var ls=document.getElementById('login-screen'); if(ls) ls.classList.remove('hidden');
+ var appEl=document.getElementById('app'); if(appEl) appEl.style.display='none';
+ var qb=document.getElementById('owner-quick-btn'), qo=document.getElementById('owner-or');
+ if(qb) qb.style.display=canQuickOwner?'':'none';
+ if(qo) qo.style.display=canQuickOwner?'':'none';
+ switchLoginTab('owner');
+}
+
+/* متابعة كمالك باستخدام جلسة/حساب المعهد المحفوظ على الجهاز (يعمل دون اتصال) */
+async function continueAsOwner(){
+ var err=document.getElementById('login-error-msg');
+ if(!currentUser){ try{ var c=localStorage.getItem('cached_user'); if(c) currentUser=JSON.parse(c); }catch(e){} }
+ if(!currentUser){ if(err){ err.textContent='تعذّر المتابعة — سجّل الدخول بحساب المعهد'; err.classList.add('show'); } switchLoginTab('owner'); return; }
+ _entryMode='owner'; _forceEmployeeId=null; _employeeEntryMode=false; _skipStaffGate=true;
+ updateUserInfo(currentUser);
+ showApp();
+ await checkAndStart();
+}
+
+/* دخول الموظف من شاشة البدء — يتحقق محلياً ويدخل مباشرةً إلى وضعه المقيّد بدوره */
+async function doEmployeeLogin(){
+ var err=document.getElementById('login-error-msg');
+ function fail(m){ if(err){ err.textContent=m; err.classList.add('show'); } }
+ if(err) err.classList.remove('show');
+ var code=rbacNormCode(document.getElementById('login-instcode')?document.getElementById('login-instcode').value:'');
+ var u=((document.getElementById('login-emp-username')?document.getElementById('login-emp-username').value:'')||'').trim();
+ var pw=(document.getElementById('login-emp-password')?document.getElementById('login-emp-password').value:'')||'';
+ if(!code||!u||!pw){ fail('أدخل كود المعهد واسم المستخدم وكلمة المرور'); return; }
+ var btn=document.getElementById('emp-login-btn'); if(btn){ btn.disabled=true; btn.textContent='جاري الدخول...'; }
+ /* حمّل بيانات هذا الجهاز الفعلية من التخزين قبل التحقق (المصفوفة الافتراضية فارغة) */
+ try{ await initDB(); }catch(e){}
+ try{ rbacEnsure(); }catch(e){}
+ if(btn){ btn.disabled=false; btn.textContent='دخول الموظف'; }
+ var cachedRaw=null; try{ cachedRaw=localStorage.getItem('cached_user'); }catch(e){}
+ if(!cachedRaw || !data || !data.appUsers || !data.appUsers.length){
+  fail('هذا الجهاز غير مُهيّأ لأي معهد بعد. على مالك المعهد تسجيل الدخول مرة واحدة على هذا الجهاز أولاً.');
+  return;
+ }
+ var instCode=rbacNormCode(rbacInstCode());
+ if(code!==instCode){ fail('كود المعهد غير صحيح'); return; }
+ var found=null,i;
+ for(i=0;i<data.appUsers.length;i++){ var x=data.appUsers[i]; if(x.username && (''+x.username).toLowerCase()===u.toLowerCase()){ found=x; break; } }
+ if(!found){ fail('اسم المستخدم غير موجود'); return; }
+ if(found.status==='suspended'){ fail('هذا الحساب موقوف — راجع إدارة المعهد'); return; }
+ if(found.instCode && rbacNormCode(found.instCode)!==instCode){ fail('هذا الموظف غير مرتبط بهذا المعهد'); return; }
+ if(!rbacVerifyPassword(pw, found.password)){ fail('كلمة المرور غير صحيحة'); return; }
+ /* ترقية تلقائية: تشفير كلمة المرور القديمة + ختم كود المعهد */
+ try{ var ch=false; if(!rbacIsHashed(found.password)){ found.password=rbacHashPassword(pw); ch=true; } if(!found.instCode){ found.instCode=rbacInstCode(); ch=true; } if(ch) save(); }catch(e){}
+ /* هوية المعهد (للمزامنة واحتساب الاشتراك) من الحساب المحفوظ على الجهاز */
+ try{ currentUser=JSON.parse(cachedRaw); }catch(e){}
+ _entryMode='employee'; _forceEmployeeId=found.id; _employeeEntryMode=true; _skipStaffGate=true;
+ try{ updateUserInfo(currentUser); }catch(e){}
+ showApp();
+ await checkAndStart();
+}
+
+/* خروج الموظف — العودة إلى شاشة الدخول مع إبقاء الجهاز مهيّأً للمعهد */
+function employeeExitToLogin(){
+ _entryMode=null; _forceEmployeeId=null; _employeeEntryMode=false;
+ try{ if(data){ data.activeProfileId=null; save(); } }catch(e){}
+ try{ rbacApply(); }catch(e){}
+ try{ var b=document.getElementById('rbac-active-badge'); if(b&&b.parentNode) b.parentNode.removeChild(b); }catch(e){}
+ var pe=document.getElementById('login-emp-password'); if(pe) pe.value='';
+ showEntryLogin(!!currentUser);
+ switchLoginTab('emp');
+}
+
 // ══════════════════════════════════════════════
 // نظام الاشتراك — مرتبط بالـ user_id في Supabase
 // ══════════════════════════════════════════════
@@ -10558,6 +10697,7 @@ async function doLogin(){
  }));
  } catch(e){}
  updateUserInfo(currentUser);
+ _entryMode='owner'; _forceEmployeeId=null; _employeeEntryMode=false; _skipStaffGate=true;
  showApp();
  // بعد تسجيل الدخول: تحقق من الاشتراك
  await checkAndStart();
@@ -10621,10 +10761,9 @@ async function checkSession(){
  var sessionData = resp.data;
  if(sessionData && sessionData.session && sessionData.session.user){
  currentUser = sessionData.session.user;
- updateUserInfo(currentUser);
+ try{ updateUserInfo(currentUser); }catch(e){}
  hideAuthLoader();
- showApp();
- await checkAndStart();
+ showEntryLogin(true);
  return;
  }
  // fallback أوفلاين — استخدم آخر مستخدم محفوظ محلياً
@@ -10632,15 +10771,14 @@ async function checkSession(){
  if(cached){
  try {
  currentUser = JSON.parse(cached);
- updateUserInfo(currentUser);
+ try{ updateUserInfo(currentUser); }catch(e){}
  hideAuthLoader();
- showApp();
- await checkAndStart();
+ showEntryLogin(true);
  return;
  } catch(e){}
  }
  hideAuthLoader();
- showLoginScreen();
+ showEntryLogin(false);
  } catch(e){
  console.warn('Auth check failed:', e && e.message ? e.message : e);
  // عند فشل Supabase تماماً — جرّب الكاش المحلي
@@ -10648,15 +10786,14 @@ async function checkSession(){
  var cached2 = localStorage.getItem('cached_user');
  if(cached2){
  currentUser = JSON.parse(cached2);
- updateUserInfo(currentUser);
+ try{ updateUserInfo(currentUser); }catch(e){}
  hideAuthLoader();
- showApp();
- await checkAndStart();
+ showEntryLogin(true);
  return;
  }
  } catch(err){}
  hideAuthLoader();
- showLoginScreen();
+ showEntryLogin(false);
  }
 }
 
@@ -10705,7 +10842,28 @@ async function startApp(){
  currentPage = 'dashboard';
  renderDashboard();
  _appReady = true;
- try{ if(typeof staffGateNeeded==='function' && staffGateNeeded()){ showStaffLogin(); } }catch(_sg){}
+ try{
+  if(_entryMode==='employee' && _forceEmployeeId!=null){
+   var fu=null,fi; for(fi=0;fi<data.appUsers.length;fi++){ if(data.appUsers[fi].id===_forceEmployeeId){ fu=data.appUsers[fi]; break; } }
+   if(!fu || fu.status==='suspended'){
+    /* الموظف لم يَعُد موجوداً أو أصبح موقوفاً بعد المزامنة — لا تَمنح أي صلاحية */
+    _entryMode=null; _forceEmployeeId=null; _employeeEntryMode=false;
+    data.activeProfileId=null; try{ save(); }catch(e){}
+    try{ showEntryLogin(!!currentUser); switchLoginTab('emp'); }catch(e){}
+    var le=document.getElementById('login-error-msg'); if(le){ le.textContent='تعذّر إكمال دخول الموظف — تواصل مع إدارة المعهد'; le.classList.add('show'); }
+    return;
+   }
+   data.activeProfileId=_forceEmployeeId; try{ save(); }catch(e){}
+   try{ rbacApply(); }catch(e){}
+   try{ showPage('dashboard'); }catch(e){}
+   try{ logActivity('تسجيل دخول الموظف: '+fu.name,'الصلاحيات'); rbacToast('مرحباً '+fu.name); }catch(e){}
+  } else if(_entryMode==='owner'){
+   data.activeProfileId=null; try{ save(); }catch(e){}
+   try{ rbacApply(); }catch(e){}
+  } else {
+   if(typeof staffGateNeeded==='function' && !_skipStaffGate && staffGateNeeded()){ showStaffLogin(); }
+  }
+ }catch(_sg){}
 }
 
 // ════════════════════════════════════════════════
