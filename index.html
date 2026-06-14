@@ -2331,10 +2331,6 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
  <input type="password" id="login-emp-password" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter'){doEmployeeLogin();}" />
  </div>
  <button class="login-btn" id="emp-login-btn" onclick="doEmployeeLogin()">دخول الموظف</button>
- <input type="file" id="device-setup-file" accept=".rsd,.txt,application/json,application/octet-stream" style="display:none" onchange="importDeviceSetup(event)">
- <div style="margin-top:12px;text-align:center">
- <a href="javascript:void(0)" onclick="triggerDeviceSetupImport()" style="font-size:11px;color:#8A93A6;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,.2);padding-bottom:1px">جهاز جديد؟ استورد ملف التهيئة الذي زوّدك به المعهد</a>
- </div>
  </div>
 
  <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.07);text-align:center;">
@@ -2474,7 +2470,7 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
  <div class="nav-section">الحضور</div>
  <div class="nav-item" onclick="showPage('attendance')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> الحضور</div>
  <div class="nav-item" onclick="showPage('teachers')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></span> المدرسون</div>
- <div class="nav-section">المالية</div>
+ <div class="nav-section" id="nav-sec-finance">المالية</div>
  <div class="nav-item" onclick="showPage('fees')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><circle cx="16" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg></span> الاشتراكات والدفعات</div>
  <div class="nav-item" onclick="showPage('expenses')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg></span> المصروفات والأرباح</div>
  <div class="nav-section">التواصل</div>
@@ -2659,7 +2655,7 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
  <!-- مؤشر الحضور الدائري -->
  <div id="dash-att-ring" style="display:flex;justify-content:center;margin-top:4px"></div>
  </div>
- <div class="chart-wrap" style="margin:0;cursor:pointer" onclick="showPage('expenses')">
+ <div class="chart-wrap" id="dash-finance-card" style="margin:0;cursor:pointer" onclick="showPage('expenses')">
  <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:10px"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> الملخص المالي</span></div>
  <div id="dash-finance"></div>
  </div>
@@ -2735,7 +2731,7 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
  <option value="">الكل</option><option value="ابتدائي">ابتدائي</option><option value="متوسط">متوسط</option><option value="اعدادي">اعدادي</option>
  </select>
  </div>
- <div>
+ <div id="filter-fees-wrap">
  <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700">حالة الرسوم</div>
  <select id="filter-fees" onchange="renderStudents()" style="width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;">
  <option value="">الكل</option><option value="paid">مسدد بالكامل</option><option value="partial">متبقي رسوم</option><option value="none">لا توجد رسوم</option>
@@ -5262,7 +5258,7 @@ var RBAC_PERMS = [
 /* الأدوار وصلاحياتها الافتراضية */
 var RBAC_ROLES = {
  owner:      {label:'مالك المعهد', all:true},
- manager:    {label:'مدير', perms:['students.view','students.add','students.edit','students.delete','attendance.manage','results.view','results.manage','behavior.view','behavior.manage','courses.view','courses.manage','courses.progress','courses.enroll','teachers.view','teachers.manage','reports.view']},
+ manager:    {label:'مدير', perms:['students.view','students.add','students.edit','students.delete','fees.view','payments.add','payments.edit','payments.delete','attendance.manage','results.view','results.manage','behavior.view','behavior.manage','courses.view','courses.manage','courses.progress','courses.enroll','teachers.view','teachers.manage','reports.view','reports.finance']},
  accountant: {label:'محاسب', perms:['fees.view','payments.add','reports.finance','reports.view']},
  registrar:  {label:'موظف تسجيل', perms:['students.view','students.add','students.edit','courses.view','courses.enroll']},
  teacher:    {label:'مدرّس', scoped:true, perms:['students.view','attendance.manage','results.view','results.manage','courses.view','courses.progress','teachers.view']}
@@ -5412,23 +5408,6 @@ function rbacVerifyPassword(plain,stored){
  return stored===plain;
 }
 
-/* ===== تشفير متماثل خفيف لملف تهيئة الجهاز (keystream عبر SHA-256) ===== */
-function _rsUtf8Decode(bytes){
- var out='',i=0,c,c2,c3,c4,cp;
- while(i<bytes.length){
-  c=bytes.charCodeAt(i++);
-  if(c<128){ out+=String.fromCharCode(c); }
-  else if(c>=192 && c<224){ c2=bytes.charCodeAt(i++); out+=String.fromCharCode(((c&31)<<6)|(c2&63)); }
-  else if(c>=224 && c<240){ c2=bytes.charCodeAt(i++); c3=bytes.charCodeAt(i++); out+=String.fromCharCode(((c&15)<<12)|((c2&63)<<6)|(c3&63)); }
-  else { c2=bytes.charCodeAt(i++); c3=bytes.charCodeAt(i++); c4=bytes.charCodeAt(i++); cp=((c&7)<<18)|((c2&63)<<12)|((c3&63)<<6)|(c4&63); cp-=0x10000; out+=String.fromCharCode(0xD800+(cp>>10),0xDC00+(cp&0x3FF)); }
- }
- return out;
-}
-function rsKeystreamByte(key,i){ var block=rsSha256(key+':'+Math.floor(i/32)); var off=(i%32)*2; return parseInt(block.substr(off,2),16); }
-function rsXor(binstr,keyStr){ var key=rsSha256(keyStr+'::rsd'); var out='',i; for(i=0;i<binstr.length;i++){ out+=String.fromCharCode(binstr.charCodeAt(i)^rsKeystreamByte(key,i)); } return out; }
-function rsEncryptStr(plain,keyStr){ return btoa(rsXor(_rsUtf8(plain),keyStr)); }
-function rsDecryptStr(b64,keyStr){ return _rsUtf8Decode(rsXor(atob(b64),keyStr)); }
-
 /* ===== كود المعهد — يربط الموظف بمعهده ===== */
 function rbacGenInstCode(){
  var chars='ACDEFGHJKLMNPQRTUVWXY3479', s='', i; /* بلا أحرف ملتبسة (O0I1...) */
@@ -5472,22 +5451,6 @@ function rbacRegenInstCode(){
  if(typeof showConfirm==='function'){ showConfirm({title:'تغيير كود المعهد', msg:msg, confirmText:'تغيير'}, apply); }
  else if(confirm(msg)){ apply(); }
 }
-/* المالك يولّد ملف تهيئة مشفّراً لجهاز موظف جديد — يُرسله للموظف فيستورده مرة واحدة */
-function rbacExportDeviceSetup(){
- if(typeof Perms!=='undefined' && !Perms.require('users.manage')) return;
- rbacEnsure();
- var code=rbacInstCode();
- try{
-  var plain='RSDOK1\n'+JSON.stringify(data);
-  var ct=rsEncryptStr(plain, rbacNormCode(code));
-  var wrap=JSON.stringify({rsd_setup:1, v:1, inst:(data.settings.instName||'راصد'), ct:ct});
-  var uri='data:application/octet-stream;charset=utf-8,'+encodeURIComponent(wrap);
-  var a=document.createElement('a'); a.href=uri; a.download='rasid-setup-'+code+'.rsd';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  try{ logActivity('أنشأ ملف تهيئة جهاز موظف','المستخدمون'); }catch(e){}
-  try{ rbacToast('تم إنشاء ملف التهيئة. أرسله للموظف، وأبلغه بكود المعهد: '+code); }catch(e){}
- }catch(ex){ try{ rbacToast('تعذّر إنشاء ملف التهيئة','err'); }catch(e){} }
-}
 
 /* ===== المدير المركزي للصلاحيات ===== */
 var Perms = {
@@ -5527,6 +5490,8 @@ var Perms = {
   if(e['*']) return true;
   return !!e[key];
  },
+ /* بوابة الرؤية المالية المركزية: المالك والمدير والمحاسب فقط */
+ canFinance: function(){ return this.can('fees.view'); },
  require: function(key, silent){
   if(this.can(key)) return true;
   if(!silent){
@@ -5608,6 +5573,8 @@ function rbacApply(){
     }
    }
   }
+  /* إخفاء عنوان قسم «المالية» في القائمة إن لم تكن للمستخدم رؤية مالية */
+  try{ var _nsf=document.getElementById('nav-sec-finance'); if(_nsf) _nsf.style.display=Perms.canFinance()?'':'none'; }catch(eNF){}
   rbacRenderBadge();
  }catch(e){}
 }
@@ -5682,11 +5649,10 @@ function rbacRenderUsers(){
  h+=' <div class="rbac-ic-meta"><span class="rbac-ic-label">كود المعهد</span><span class="rbac-ic-val" id="rbac-ic-val">'+_ic+'</span></div>';
  h+=' <div class="rbac-ic-actions">';
  h+='  <button class="rbac-mini" onclick="rbacCopyInstCode()">نسخ</button>';
- h+='  <button class="rbac-mini" onclick="rbacExportDeviceSetup()">تجهيز جهاز موظف</button>';
  h+='  <button class="rbac-mini danger" onclick="rbacRegenInstCode()">تغيير الكود</button>';
  h+=' </div>';
  h+='</div>';
- h+='<div class="rbac-ic-hint">يُسلَّم هذا الكود للموظفين — يُطلب منهم عند تسجيل الدخول لربطهم بمعهدك. «تجهيز جهاز موظف» يُنشئ ملفاً مشفّراً تُرسله للموظف ليستورده على جهازه الخاص مرة واحدة دون حاجة لتسجيل دخولك على جهازه.</div>';
+ h+='<div class="rbac-ic-hint">يُسلَّم هذا الكود للموظفين — يدخل الموظف من أي جهاز بكود المعهد واسم المستخدم وكلمة المرور، فتُجلب بياناته تلقائياً. تغيير الكود يمنع أي موظف لم يحصل على الكود الجديد.</div>';
  h+='<div class="rbac-toolbar">';
  h+=' <input id="rbac-search" class="rbac-input" placeholder="بحث بالاسم أو البريد..." value="'+rbacEsc(q)+'" oninput="rbacRenderUsers()">';
  h+=' <select id="rbac-role-filter" class="rbac-input" onchange="rbacRenderUsers()"><option value="">كل الأدوار</option>';
@@ -6160,7 +6126,10 @@ function renderDashboard(){
  var ringEl=document.getElementById('dash-att-ring');
  if(ringEl){ ringEl.innerHTML=radialProgress(attRing,{size:104,label:'نسبة الحضور اليوم',tip:'حاضر '+present+' من '+attTotal+' مسجّل اليوم'}); }
 
- // ── الملخص المالي ──
+ // ── الملخص المالي ── (المالك/المدير/المحاسب فقط)
+ var _finCard=document.getElementById('dash-finance-card');
+ if(_finCard){ _finCard.style.display = Perms.canFinance()?'':'none'; }
+ if(Perms.canFinance()){
  document.getElementById('dash-finance').innerHTML=
  '<div style="display:grid;grid-template-columns:1fr;gap:7px">'+
  '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--card2);border-radius:8px">'+
@@ -6176,6 +6145,7 @@ function renderDashboard(){
  '<span style="font-size:13px;font-weight:900;color:'+(netProfit>=0?'var(--success)':'var(--danger)')+'">'+fmt(netProfit)+'</span>'+
  '</div>'+
  '</div>';
+ }
 
  // ── آخر النتائج ──
  var recentRes=data.results.slice().reverse().slice(0,4);
@@ -6335,6 +6305,8 @@ function toggleAttFilter(){
 }
 function renderStudents(){
  var el0=document.getElementById('students-cards');if(el0&&!el0.dataset.loaded){showCardsLoading('students-cards',3);}
+ var _finView = (typeof Perms!=='undefined') ? Perms.canFinance() : true;
+ var _ffw=document.getElementById('filter-fees-wrap'); if(_ffw){ _ffw.style.display=_finView?'':'none'; }
  var q=(document.getElementById('student-search')?document.getElementById('student-search').value:'').toLowerCase().trim();
  var stageF=document.getElementById('filter-stage')?document.getElementById('filter-stage').value:'';
  var feesF=document.getElementById('filter-fees')?document.getElementById('filter-fees').value:'';
@@ -6389,9 +6361,9 @@ function renderStudents(){
  <div class="item-stats">
  <div class="item-stat" style="display:flex;justify-content:center;align-items:center">${radialProgress(rate,{size:50,stroke:12,label:'الحضور'})}</div>
  <div class="item-stat" style="display:flex;justify-content:center;align-items:center">${radialProgress(avg,{size:50,stroke:12,label:'المعدل'})}</div>
- <div class="item-stat"><div class="item-stat-val" style="color:${remaining>0?'var(--danger)':'var(--success)'};font-size:11px">${total>0?(remaining===0?'':fmt(remaining)):'—'}</div><div class="item-stat-lbl">الرسوم</div></div>
+ <div class="item-stat"><div class="item-stat-val" style="color:${remaining>0?'var(--danger)':'var(--success)'};font-size:11px">${_finView?(total>0?(remaining===0?'':fmt(remaining)):'—'):'—'}</div><div class="item-stat-lbl">الرسوم</div></div>
  </div>
- ${(function(){var sp=s.subPrice||0;var spd=s.subPaid||0;var srem=sp-spd;return srem>0?'<div style="margin-top:8px;padding:7px 10px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:var(--danger)">متبقي من الاشتراك</span><span style="font-size:11px;font-weight:700;color:var(--danger)">'+fmt(srem)+'</span></div>':'';}())}
+ ${(_finView&&(function(){var sp=s.subPrice||0;var spd=s.subPaid||0;var srem=sp-spd;return srem>0?'<div style="margin-top:8px;padding:7px 10px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:var(--danger)">متبقي من الاشتراك</span><span style="font-size:11px;font-weight:700;color:var(--danger)">'+fmt(srem)+'</span></div>':'';}()))||''}
  </div>`;
  }).join('');
 }
@@ -6531,7 +6503,7 @@ function openStudentProfile(id){
  <div class="item-stat"><div class="item-stat-val" style="color:${attempts>0?'var(--warning)':'var(--muted)'}">${attempts}</div><div class="item-stat-lbl">إعادة اختبار</div></div>
  </div>
  </div>
- <div class="profile-section">
+ <div class="profile-section" id="profile-fees-section">
  <div class="profile-sec-title"> الرسوم والاشتراك</div>
  ${(s.subPrice>0)?`<div style="background:rgba(240,192,96,0.06);border:1px solid var(--border);border-radius:9px;padding:10px;margin-bottom:10px">
  <div style="font-size:9px;color:var(--gold);font-weight:700;margin-bottom:8px"> اشتراك المعهد</div>
@@ -6578,6 +6550,7 @@ function openStudentProfile(id){
 
  profileHtml+=`</div>`;
  document.getElementById('student-profile-content').innerHTML=profileHtml;
+ if(typeof Perms!=='undefined' && !Perms.canFinance()){ var _pf=document.getElementById('profile-fees-section'); if(_pf) _pf.style.display='none'; }
  showPage('student-profile');
 }
 
@@ -9537,6 +9510,7 @@ function exportExcel(){
  {name:'الإنذارات',headers:['الطالب','التاريخ','الإجراء','عدد المخالفات'],rows:(data.warningRecords||[]).map(function(w){var s=gS(w.studentId);return[s?s.fname+' '+s.lname:'',w.date,w.levelLabel,w.violationCount];})},
  {name:'سجل واتساب',headers:['الطالب','النوع','التاريخ'],rows:data.waLog.map(l=>[sName(l.studentId),l.type,l.date])},
  ];
+ if(typeof Perms!=='undefined' && !Perms.canFinance()){ sheets=sheets.filter(function(sh){ return ['الرسوم','سجل الدفعات'].indexOf(sh.name)<0; }); }
  var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets>';
  sheets.forEach(s=>{html+=`<x:ExcelWorksheet><x:Name>${s.name}</x:Name></x:ExcelWorksheet>`;});
  html+='</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>';
@@ -10443,7 +10417,7 @@ async function doEmployeeLogin(){
  try{ rbacEnsure(); }catch(e){}
  if(btn){ btn.disabled=false; btn.textContent='دخول الموظف'; }
  if(!data || !data.appUsers || !data.appUsers.length || !(data.settings && data.settings.instituteCode)){
-  fail('تعذّر تجهيز الجهاز. تأكد من اتصالك بالإنترنت وصحة كود المعهد، أو استورد ملف التهيئة الذي زوّدك به المعهد.');
+  fail('تعذّر تجهيز الجهاز. تأكد من اتصالك بالإنترنت وصحة كود المعهد واسم المستخدم وكلمة المرور.');
   return;
  }
  var instCode=rbacNormCode(rbacInstCode());
@@ -10478,36 +10452,6 @@ function employeeExitToLogin(){
  var pe=document.getElementById('login-emp-password'); if(pe) pe.value='';
  showEntryLogin(!!currentUser);
  switchLoginTab('emp');
-}
-
-/* استيراد ملف التهيئة على جهاز موظف جديد — يهيّئ الجهاز دون حاجة لدخول المالك عليه */
-function triggerDeviceSetupImport(){ var f=document.getElementById('device-setup-file'); if(f){ try{ f.click(); }catch(e){} } }
-function importDeviceSetup(e){
- var err=document.getElementById('login-error-msg');
- function fail(m){ if(err){ err.textContent=m; err.classList.add('show'); } }
- var f=(e.target.files&&e.target.files[0])?e.target.files[0]:null; e.target.value='';
- if(!f) return;
- var code=rbacNormCode(document.getElementById('login-instcode')?document.getElementById('login-instcode').value:'');
- if(!code){ fail('أدخل كود المعهد أولاً، ثم اختر ملف التهيئة'); return; }
- var r=new FileReader();
- r.onload=function(ev){
-  try{
-   var wrap=JSON.parse(ev.target.result);
-   if(!wrap || !wrap.rsd_setup || !wrap.ct){ fail('ملف التهيئة غير صالح'); return; }
-   var dec=rsDecryptStr(wrap.ct, code);
-   if(dec.indexOf('RSDOK1\n')!==0){ fail('كود المعهد غير صحيح أو الملف تالف'); return; }
-   var obj=JSON.parse(dec.slice(7));
-   if(!obj || !obj.students){ fail('بيانات التهيئة غير صالحة'); return; }
-   data=migrateData(obj);
-   try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(_e){}
-   try{ save(); }catch(_e){}
-   if(err){ err.textContent=''; err.classList.remove('show'); }
-   try{ rbacToast('تم تجهيز الجهاز بنجاح. أدخل اسم المستخدم وكلمة المرور للدخول.'); }catch(_e){}
-   var uu=document.getElementById('login-emp-username'); if(uu){ try{ uu.focus(); }catch(_e){} }
-  }catch(ex){ fail('تعذّر قراءة ملف التهيئة — تأكد من كود المعهد وسلامة الملف'); }
- };
- r.onerror=function(){ fail('تعذّر قراءة الملف'); };
- r.readAsText(f);
 }
 
 // ══════════════════════════════════════════════
