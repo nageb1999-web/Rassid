@@ -2331,6 +2331,10 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
  <input type="password" id="login-emp-password" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter'){doEmployeeLogin();}" />
  </div>
  <button class="login-btn" id="emp-login-btn" onclick="doEmployeeLogin()">دخول الموظف</button>
+ <input type="file" id="device-setup-file" accept=".rsd,.txt,application/json,application/octet-stream" style="display:none" onchange="importDeviceSetup(event)">
+ <div style="margin-top:12px;text-align:center">
+ <a href="javascript:void(0)" onclick="triggerDeviceSetupImport()" style="font-size:11px;color:#8A93A6;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,.2);padding-bottom:1px">جهاز جديد؟ استورد ملف التهيئة الذي زوّدك به المعهد</a>
+ </div>
  </div>
 
  <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.07);text-align:center;">
@@ -5408,6 +5412,23 @@ function rbacVerifyPassword(plain,stored){
  return stored===plain;
 }
 
+/* ===== تشفير متماثل خفيف لملف تهيئة الجهاز (keystream عبر SHA-256) ===== */
+function _rsUtf8Decode(bytes){
+ var out='',i=0,c,c2,c3,c4,cp;
+ while(i<bytes.length){
+  c=bytes.charCodeAt(i++);
+  if(c<128){ out+=String.fromCharCode(c); }
+  else if(c>=192 && c<224){ c2=bytes.charCodeAt(i++); out+=String.fromCharCode(((c&31)<<6)|(c2&63)); }
+  else if(c>=224 && c<240){ c2=bytes.charCodeAt(i++); c3=bytes.charCodeAt(i++); out+=String.fromCharCode(((c&15)<<12)|((c2&63)<<6)|(c3&63)); }
+  else { c2=bytes.charCodeAt(i++); c3=bytes.charCodeAt(i++); c4=bytes.charCodeAt(i++); cp=((c&7)<<18)|((c2&63)<<12)|((c3&63)<<6)|(c4&63); cp-=0x10000; out+=String.fromCharCode(0xD800+(cp>>10),0xDC00+(cp&0x3FF)); }
+ }
+ return out;
+}
+function rsKeystreamByte(key,i){ var block=rsSha256(key+':'+Math.floor(i/32)); var off=(i%32)*2; return parseInt(block.substr(off,2),16); }
+function rsXor(binstr,keyStr){ var key=rsSha256(keyStr+'::rsd'); var out='',i; for(i=0;i<binstr.length;i++){ out+=String.fromCharCode(binstr.charCodeAt(i)^rsKeystreamByte(key,i)); } return out; }
+function rsEncryptStr(plain,keyStr){ return btoa(rsXor(_rsUtf8(plain),keyStr)); }
+function rsDecryptStr(b64,keyStr){ return _rsUtf8Decode(rsXor(atob(b64),keyStr)); }
+
 /* ===== كود المعهد — يربط الموظف بمعهده ===== */
 function rbacGenInstCode(){
  var chars='ACDEFGHJKLMNPQRTUVWXY3479', s='', i; /* بلا أحرف ملتبسة (O0I1...) */
@@ -5450,6 +5471,22 @@ function rbacRegenInstCode(){
  var msg='تغيير كود المعهد؟ لن يتمكّن أي موظف من الدخول إلا بعد إبلاغه بالكود الجديد.';
  if(typeof showConfirm==='function'){ showConfirm({title:'تغيير كود المعهد', msg:msg, confirmText:'تغيير'}, apply); }
  else if(confirm(msg)){ apply(); }
+}
+/* المالك يولّد ملف تهيئة مشفّراً لجهاز موظف جديد — يُرسله للموظف فيستورده مرة واحدة */
+function rbacExportDeviceSetup(){
+ if(typeof Perms!=='undefined' && !Perms.require('users.manage')) return;
+ rbacEnsure();
+ var code=rbacInstCode();
+ try{
+  var plain='RSDOK1\n'+JSON.stringify(data);
+  var ct=rsEncryptStr(plain, rbacNormCode(code));
+  var wrap=JSON.stringify({rsd_setup:1, v:1, inst:(data.settings.instName||'راصد'), ct:ct});
+  var uri='data:application/octet-stream;charset=utf-8,'+encodeURIComponent(wrap);
+  var a=document.createElement('a'); a.href=uri; a.download='rasid-setup-'+code+'.rsd';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  try{ logActivity('أنشأ ملف تهيئة جهاز موظف','المستخدمون'); }catch(e){}
+  try{ rbacToast('تم إنشاء ملف التهيئة. أرسله للموظف، وأبلغه بكود المعهد: '+code); }catch(e){}
+ }catch(ex){ try{ rbacToast('تعذّر إنشاء ملف التهيئة','err'); }catch(e){} }
 }
 
 /* ===== المدير المركزي للصلاحيات ===== */
@@ -5645,10 +5682,11 @@ function rbacRenderUsers(){
  h+=' <div class="rbac-ic-meta"><span class="rbac-ic-label">كود المعهد</span><span class="rbac-ic-val" id="rbac-ic-val">'+_ic+'</span></div>';
  h+=' <div class="rbac-ic-actions">';
  h+='  <button class="rbac-mini" onclick="rbacCopyInstCode()">نسخ</button>';
+ h+='  <button class="rbac-mini" onclick="rbacExportDeviceSetup()">تجهيز جهاز موظف</button>';
  h+='  <button class="rbac-mini danger" onclick="rbacRegenInstCode()">تغيير الكود</button>';
  h+=' </div>';
  h+='</div>';
- h+='<div class="rbac-ic-hint">يُسلَّم هذا الكود للموظفين — يُطلب منهم عند تسجيل الدخول لربطهم بمعهدك. تغييره يمنع أي موظف لم يحصل على الكود الجديد.</div>';
+ h+='<div class="rbac-ic-hint">يُسلَّم هذا الكود للموظفين — يُطلب منهم عند تسجيل الدخول لربطهم بمعهدك. «تجهيز جهاز موظف» يُنشئ ملفاً مشفّراً تُرسله للموظف ليستورده على جهازه الخاص مرة واحدة دون حاجة لتسجيل دخولك على جهازه.</div>';
  h+='<div class="rbac-toolbar">';
  h+=' <input id="rbac-search" class="rbac-input" placeholder="بحث بالاسم أو البريد..." value="'+rbacEsc(q)+'" oninput="rbacRenderUsers()">';
  h+=' <select id="rbac-role-filter" class="rbac-input" onchange="rbacRenderUsers()"><option value="">كل الأدوار</option>';
@@ -10369,13 +10407,43 @@ async function doEmployeeLogin(){
  var pw=(document.getElementById('login-emp-password')?document.getElementById('login-emp-password').value:'')||'';
  if(!code||!u||!pw){ fail('أدخل كود المعهد واسم المستخدم وكلمة المرور'); return; }
  var btn=document.getElementById('emp-login-btn'); if(btn){ btn.disabled=true; btn.textContent='جاري الدخول...'; }
- /* حمّل بيانات هذا الجهاز الفعلية من التخزين قبل التحقق (المصفوفة الافتراضية فارغة) */
- try{ await initDB(); }catch(e){}
+ /* محاولة الجلب من Supabase أولاً عند الاتصال — تجلب أحدث بيانات المعهد وتتحقق من الموظف على الخادم
+    عبر دالة staff_fetch المُحمَّلة (RPC). تعمل حتى على جهاز جديد لم يُسجّل المالك دخوله عليه. */
+ if(navigator.onLine && _supabase && _supabase.rpc){
+  if(btn) btn.textContent='جاري الاتصال بالخادم...';
+  try{
+   var _res=await _supabase.rpc('staff_fetch', { p_code: code, p_user: u, p_pass: pw });
+   if(!_res.error){
+    var _out=_res.data; if(typeof _out==='string'){ try{ _out=JSON.parse(_out); }catch(_pe){} }
+    if(_out && _out.error){
+     if(btn){ btn.disabled=false; btn.textContent='دخول الموظف'; }
+     var _em=_out.error;
+     if(_em==='code') fail('كود المعهد غير صحيح');
+     else if(_em==='user') fail('اسم المستخدم غير موجود');
+     else if(_em==='suspended') fail('هذا الحساب موقوف — راجع إدارة المعهد');
+     else if(_em==='password') fail('كلمة المرور غير صحيحة');
+     else fail('تعذّر الدخول');
+     return;
+    }
+    if(_out && _out.data){
+     var _cd=_out.data; if(typeof _cd==='string'){ try{ _cd=JSON.parse(_cd); }catch(_ce){} }
+     if(_cd && _cd.appUsers){
+      try{ data=migrateData(_cd); }catch(_me){}
+      try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(_le){}
+      try{ save(); }catch(_se){}
+     }
+    }
+   }
+   /* عند خطأ شبكة (_res.error) نُكمل بالبيانات المحلية إن وُجدت (وضع أوفلاين) */
+  }catch(_re){}
+ }
+ if(btn){ btn.disabled=false; btn.textContent='دخول الموظف'; }
+ /* حمّل بيانات هذا الجهاز الفعلية من التخزين قبل التحقق (إن لم تكن محمّلة بعد) */
+ try{ if(!data || !data.appUsers || !data.appUsers.length){ await initDB(); } }catch(e){}
  try{ rbacEnsure(); }catch(e){}
  if(btn){ btn.disabled=false; btn.textContent='دخول الموظف'; }
- var cachedRaw=null; try{ cachedRaw=localStorage.getItem('cached_user'); }catch(e){}
- if(!cachedRaw || !data || !data.appUsers || !data.appUsers.length){
-  fail('هذا الجهاز غير مُهيّأ لأي معهد بعد. على مالك المعهد تسجيل الدخول مرة واحدة على هذا الجهاز أولاً.');
+ if(!data || !data.appUsers || !data.appUsers.length || !(data.settings && data.settings.instituteCode)){
+  fail('تعذّر تجهيز الجهاز. تأكد من اتصالك بالإنترنت وصحة كود المعهد، أو استورد ملف التهيئة الذي زوّدك به المعهد.');
   return;
  }
  var instCode=rbacNormCode(rbacInstCode());
@@ -10388,12 +10456,17 @@ async function doEmployeeLogin(){
  if(!rbacVerifyPassword(pw, found.password)){ fail('كلمة المرور غير صحيحة'); return; }
  /* ترقية تلقائية: تشفير كلمة المرور القديمة + ختم كود المعهد */
  try{ var ch=false; if(!rbacIsHashed(found.password)){ found.password=rbacHashPassword(pw); ch=true; } if(!found.instCode){ found.instCode=rbacInstCode(); ch=true; } if(ch) save(); }catch(e){}
- /* هوية المعهد (للمزامنة واحتساب الاشتراك) من الحساب المحفوظ على الجهاز */
- try{ currentUser=JSON.parse(cachedRaw); }catch(e){}
+ /* هوية المعهد (للمزامنة) من الحساب المحفوظ على الجهاز إن وُجد، وإلا من معرّف المالك المخزّن مع البيانات */
+ try{
+  var _cu=localStorage.getItem('cached_user');
+  if(_cu){ currentUser=JSON.parse(_cu); }
+  else if(data.settings && data.settings._ownerId){ currentUser={id:data.settings._ownerId}; }
+ }catch(e){}
  _entryMode='employee'; _forceEmployeeId=found.id; _employeeEntryMode=true; _skipStaffGate=true;
  try{ updateUserInfo(currentUser); }catch(e){}
  showApp();
- await checkAndStart();
+ /* الموظف يدخل ببيانات الجهاز المحلية مباشرةً — لا يمرّ عبر بوابة اشتراك المالك (لا يملكها) */
+ startApp();
 }
 
 /* خروج الموظف — العودة إلى شاشة الدخول مع إبقاء الجهاز مهيّأً للمعهد */
@@ -10405,6 +10478,36 @@ function employeeExitToLogin(){
  var pe=document.getElementById('login-emp-password'); if(pe) pe.value='';
  showEntryLogin(!!currentUser);
  switchLoginTab('emp');
+}
+
+/* استيراد ملف التهيئة على جهاز موظف جديد — يهيّئ الجهاز دون حاجة لدخول المالك عليه */
+function triggerDeviceSetupImport(){ var f=document.getElementById('device-setup-file'); if(f){ try{ f.click(); }catch(e){} } }
+function importDeviceSetup(e){
+ var err=document.getElementById('login-error-msg');
+ function fail(m){ if(err){ err.textContent=m; err.classList.add('show'); } }
+ var f=(e.target.files&&e.target.files[0])?e.target.files[0]:null; e.target.value='';
+ if(!f) return;
+ var code=rbacNormCode(document.getElementById('login-instcode')?document.getElementById('login-instcode').value:'');
+ if(!code){ fail('أدخل كود المعهد أولاً، ثم اختر ملف التهيئة'); return; }
+ var r=new FileReader();
+ r.onload=function(ev){
+  try{
+   var wrap=JSON.parse(ev.target.result);
+   if(!wrap || !wrap.rsd_setup || !wrap.ct){ fail('ملف التهيئة غير صالح'); return; }
+   var dec=rsDecryptStr(wrap.ct, code);
+   if(dec.indexOf('RSDOK1\n')!==0){ fail('كود المعهد غير صحيح أو الملف تالف'); return; }
+   var obj=JSON.parse(dec.slice(7));
+   if(!obj || !obj.students){ fail('بيانات التهيئة غير صالحة'); return; }
+   data=migrateData(obj);
+   try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(_e){}
+   try{ save(); }catch(_e){}
+   if(err){ err.textContent=''; err.classList.remove('show'); }
+   try{ rbacToast('تم تجهيز الجهاز بنجاح. أدخل اسم المستخدم وكلمة المرور للدخول.'); }catch(_e){}
+   var uu=document.getElementById('login-emp-username'); if(uu){ try{ uu.focus(); }catch(_e){} }
+  }catch(ex){ fail('تعذّر قراءة ملف التهيئة — تأكد من كود المعهد وسلامة الملف'); }
+ };
+ r.onerror=function(){ fail('تعذّر قراءة الملف'); };
+ r.readAsText(f);
 }
 
 // ══════════════════════════════════════════════
@@ -10858,6 +10961,7 @@ async function startApp(){
    try{ showPage('dashboard'); }catch(e){}
    try{ logActivity('تسجيل دخول الموظف: '+fu.name,'الصلاحيات'); rbacToast('مرحباً '+fu.name); }catch(e){}
   } else if(_entryMode==='owner'){
+   try{ if(currentUser && currentUser.id && data.settings){ data.settings._ownerId=currentUser.id; } }catch(e){}
    data.activeProfileId=null; try{ save(); }catch(e){}
    try{ rbacApply(); }catch(e){}
   } else {
