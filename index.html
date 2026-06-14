@@ -2225,6 +2225,26 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
 .rbac-toast.show{opacity:1;transform:translate(-50%,0)}
 .rbac-toast.err{border-color:var(--danger);color:var(--danger)}
 @media(max-width:560px){.rbac-row2{grid-template-columns:1fr}.rbac-users{grid-template-columns:1fr}.rbac-badge{font-size:10px;left:10px;right:10px;transform:none;justify-content:center}}
+/* ===== شاشة دخول الموظف ===== */
+.staff-login{position:fixed;inset:0;z-index:4500;display:none;align-items:center;justify-content:center;padding:20px;background:var(--bg,#15110b);background:radial-gradient(circle at 50% 0%,var(--surface-2),var(--surface) 70%)}
+.staff-login.open{display:flex}
+.sl-card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px 22px 24px;box-shadow:0 24px 60px rgba(0,0,0,.4);text-align:center;animation:rbacIn .3s var(--ease,ease)}
+.sl-logo-ic{width:54px;height:54px;border-radius:16px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:#fff;background:var(--brand-gradient,var(--brand));box-shadow:0 8px 22px rgba(212,166,90,.3)}
+.sl-logo{font-size:18px;font-weight:900;color:var(--brand-light);margin-bottom:2px}
+.sl-title{font-size:15px;font-weight:800;color:var(--text);margin-top:6px}
+.sl-sub{font-size:11px;color:var(--text-3);margin:6px 0 18px;line-height:1.6}
+.sl-owner{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-size:13px;font-weight:800;padding:12px;border-radius:12px;border:1px solid var(--gold);background:var(--surface-2);color:var(--brand-light);cursor:pointer;transition:all .15s}
+.sl-owner:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+.sl-or{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--text-3);font-size:10px;font-weight:700}
+.sl-or::before,.sl-or::after{content:'';flex:1;height:1px;background:var(--border2)}
+.sl-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px}
+.sl-chip{font-family:inherit;font-size:11px;font-weight:700;padding:6px 13px;border-radius:20px;border:1px solid var(--border2);background:var(--card);color:var(--text-2);cursor:pointer;transition:all .15s}
+.sl-chip:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+.sl-input{width:100%;box-sizing:border-box;font-family:inherit;font-size:13px;background:var(--card);border:1px solid var(--border2);border-radius:11px;padding:12px 13px;color:var(--text);outline:none;margin-bottom:10px;text-align:center}
+.sl-input:focus{border-color:var(--gold)}
+.sl-error{color:var(--danger);font-size:11px;font-weight:700;min-height:15px;margin-bottom:6px}
+.sl-btn{width:100%;font-family:inherit;font-size:14px;font-weight:800;padding:12px;border-radius:12px;border:none;background:var(--brand);color:#fff;cursor:pointer;transition:filter .15s}
+.sl-btn:hover{filter:brightness(1.08)}
 </style>
 </head>
 <body>
@@ -5366,7 +5386,7 @@ function rbacRenderBadge(){
  }
  var roleLbl=RBAC_ROLES[u.role]?RBAC_ROLES[u.role].label:u.role;
  ex.innerHTML='<span class="rbac-badge-dot"></span> الوضع: <b>'+rbacEsc(u.name)+'</b> — '+rbacEsc(roleLbl)+
-  '<button onclick="rbacExitProfile()" class="rbac-badge-exit">عودة للمالك</button>';
+  '<button onclick="rbacSwitchAccount()" class="rbac-badge-exit">تبديل الحساب</button>';
 }
 function rbacExitProfile(){
  /* العودة لوضع المالك (قفل ناعم عبر رمز التفويض المالي إن توفّر) */
@@ -5443,14 +5463,14 @@ function rbacRenderUsers(){
    h+=' <div class="rbac-uc-top">';
    h+='  <div class="rbac-uc-av">'+rbacEsc((u.name||'؟').charAt(0))+'</div>';
    h+='  <div class="rbac-uc-meta"><div class="rbac-uc-name">'+rbacEsc(u.name)+(active?' <span class="rbac-chip on">نشط الآن</span>':'')+'</div>';
-   h+='   <div class="rbac-uc-sub">'+rbacEsc(u.email||'—')+(u.phone?(' • '+rbacEsc(u.phone)):'')+'</div></div>';
+   h+='   <div class="rbac-uc-sub">'+(u.username?('@'+rbacEsc(u.username)+' • '):'')+rbacEsc(u.email||'—')+(u.phone?(' • '+rbacEsc(u.phone)):'')+'</div></div>';
    h+='  <span class="rbac-role-badge r-'+u.role+'">'+rbacEsc(roleLbl)+'</span>';
    h+=' </div>';
    h+=' <div class="rbac-uc-status">الحالة: <b style="color:'+(u.status==='suspended'?'var(--danger)':'var(--success)')+'">'+(u.status==='suspended'?'موقوف':'نشط')+'</b></div>';
    h+=' <div class="rbac-uc-actions">';
    h+='  <button class="rbac-mini" onclick="rbacEditUser('+JSONid(u.id)+')">تعديل</button>';
    h+='  <button class="rbac-mini" onclick="rbacToggleSuspend('+JSONid(u.id)+')">'+(u.status==='suspended'?'تفعيل':'إيقاف')+'</button>';
-   h+='  <button class="rbac-mini" onclick="rbacResetPin('+JSONid(u.id)+')">إعادة تعيين الرمز</button>';
+   h+='  <button class="rbac-mini" onclick="rbacResetPin('+JSONid(u.id)+')">إعادة تعيين كلمة المرور</button>';
    h+='  <button class="rbac-mini" onclick="rbacActAs('+JSONid(u.id)+')">العمل بهذا الحساب</button>';
    h+='  <button class="rbac-mini danger" onclick="rbacDeleteUser('+JSONid(u.id)+')">حذف</button>';
    h+=' </div>';
@@ -5503,6 +5523,8 @@ function rbacEditUser(id){
  h+='  <div class="rbac-fg"><label>اسم المستخدم</label><input id="ru-name" class="rbac-input" value="'+rbacEsc(cur.name)+'"></div>';
  h+='  <div class="rbac-row2"><div class="rbac-fg"><label>البريد الإلكتروني</label><input id="ru-email" class="rbac-input" value="'+rbacEsc(cur.email)+'"></div>';
  h+='  <div class="rbac-fg"><label>رقم الهاتف</label><input id="ru-phone" class="rbac-input" inputmode="numeric" value="'+rbacEsc(cur.phone)+'"></div></div>';
+ h+='  <div class="rbac-row2"><div class="rbac-fg"><label>اسم المستخدم (للدخول)</label><input id="ru-username" class="rbac-input" autocomplete="off" value="'+rbacEsc(cur.username||'')+'"></div>';
+ h+='  <div class="rbac-fg"><label>كلمة المرور</label><input id="ru-password" type="text" class="rbac-input" autocomplete="new-password" placeholder="'+(isNew?'مطلوبة':'اتركها فارغة للإبقاء على الحالية')+'"></div></div>';
  h+='  <div class="rbac-row2"><div class="rbac-fg"><label>الدور</label><select id="ru-role" class="rbac-input" onchange="rbacRoleChanged()">';
  var rk; for(rk in RBAC_ROLES){ if(rk==='owner')continue; h+='<option value="'+rk+'"'+(cur.role===rk?' selected':'')+'>'+RBAC_ROLES[rk].label+'</option>'; }
  h+='  </select></div>';
@@ -5608,6 +5630,11 @@ function rbacSaveUser(id){
  var email=(document.getElementById('ru-email').value||'').trim();
  var phone=(document.getElementById('ru-phone').value||'').trim();
  var status=document.getElementById('ru-status').value;
+ var username=((document.getElementById('ru-username')?document.getElementById('ru-username').value:'')||'').trim();
+ var password=((document.getElementById('ru-password')?document.getElementById('ru-password').value:'')||'');
+ if(!username){ rbacToast('الرجاء إدخال اسم المستخدم (للدخول)','err'); return; }
+ var _uTaken=false,_ui; for(_ui=0;_ui<data.appUsers.length;_ui++){ if(data.appUsers[_ui].id!==id && (''+(data.appUsers[_ui].username||'')).toLowerCase()===username.toLowerCase()){ _uTaken=true; break; } }
+ if(_uTaken){ rbacToast('اسم المستخدم مستخدم مسبقاً','err'); return; }
  var dlg=document.getElementById('rbac-dialog');
  var assign=(role==='teacher')?(dlg._assign||{stages:[],grades:[],subjects:[]}):{stages:[],grades:[],subjects:[]};
  var teacherId=null;
@@ -5621,13 +5648,14 @@ function rbacSaveUser(id){
  });
 
  if(id===null||typeof id==='undefined'){
+  if(!password){ rbacToast('الرجاء إدخال كلمة مرور للمستخدم الجديد','err'); return; }
   var nid=data.nextId?data.nextId.appUser++:Date.now();
-  data.appUsers.push({id:nid,name:name,email:email,phone:phone,role:role,status:status,perms:override,assign:assign,teacherId:teacherId,pin:'',createdAt:new Date().toISOString()});
+  data.appUsers.push({id:nid,name:name,email:email,phone:phone,role:role,status:status,username:username,password:password,perms:override,assign:assign,teacherId:teacherId,pin:'',createdAt:new Date().toISOString()});
   logActivity('أضاف مستخدماً: '+name, 'المستخدمون');
  } else {
   var i; for(i=0;i<data.appUsers.length;i++){ if(data.appUsers[i].id===id){
    var us=data.appUsers[i];
-   us.name=name; us.email=email; us.phone=phone; us.role=role; us.status=status; us.perms=override; us.assign=assign; us.teacherId=teacherId;
+   us.name=name; us.email=email; us.phone=phone; us.role=role; us.status=status; us.username=username; if(password) us.password=password; us.perms=override; us.assign=assign; us.teacherId=teacherId;
    break;
   } }
   logActivity('عدّل مستخدماً: '+name, 'المستخدمون');
@@ -5659,11 +5687,13 @@ function rbacDeleteUser(id){
 function rbacResetPin(id){
  var u=null,i; for(i=0;i<data.appUsers.length;i++){ if(data.appUsers[i].id===id){u=data.appUsers[i];break;} }
  if(!u) return;
- var pin=prompt('أدخل رمز دخول محلياً جديداً للمستخدم "'+u.name+'" (4 أرقام) — يُستخدم عند الدخول بوضع هذا الحساب على هذا الجهاز:');
- if(pin===null) return;
- u.pin=(''+pin).trim();
- logActivity('أعاد تعيين رمز الدخول للمستخدم: '+u.name, 'المستخدمون');
- try{ save(); }catch(e){} rbacToast('تم تحديث رمز الدخول المحلي');
+ var pw=prompt('أدخل كلمة مرور جديدة للمستخدم "'+u.name+'" (يستخدمها للدخول):');
+ if(pw===null) return;
+ pw=(''+pw).trim();
+ if(!pw){ rbacToast('كلمة المرور فارغة','err'); return; }
+ u.password=pw;
+ logActivity('أعاد تعيين كلمة مرور المستخدم: '+u.name, 'المستخدمون');
+ try{ save(); }catch(e){} rbacToast('تم تحديث كلمة المرور');
 }
 function rbacActAs(id){
  var u=null,i; for(i=0;i<data.appUsers.length;i++){ if(data.appUsers[i].id===id){u=data.appUsers[i];break;} }
@@ -5676,6 +5706,92 @@ function rbacActAs(id){
  Perms.setActive(id);
  rbacToast('أنت الآن تعمل بوضع: '+u.name);
 }
+
+/* ============================================================
+   شاشة تسجيل دخول الموظف — تظهر بعد دخول حساب المعهد (المالك)
+   آلية على مستوى الجهاز: المالك ينشئ اليوزر ودوره، والموظف يدخل به.
+   ============================================================ */
+function _slActiveStaff(){
+ rbacEnsure();
+ return (data.appUsers||[]).filter(function(u){ return u.status!=='suspended' && u.username; });
+}
+function staffGateNeeded(){
+ try{ return _slActiveStaff().length>0; }catch(e){ return false; }
+}
+function showStaffLogin(){
+ rbacEnsure();
+ var ov=document.getElementById('staff-login-overlay');
+ if(!ov){ ov=document.createElement('div'); ov.id='staff-login-overlay'; ov.className='staff-login'; document.body.appendChild(ov); }
+ var inst=(data.settings&&data.settings.instName)?data.settings.instName:'راصد';
+ var staff=_slActiveStaff();
+ var h='';
+ h+='<div class="sl-card">';
+ h+=' <div class="sl-logo-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>';
+ h+=' <div class="sl-logo">'+rbacEsc(inst)+'</div>';
+ h+=' <div class="sl-title">تسجيل دخول الموظف</div>';
+ h+=' <div class="sl-sub">اختر الدخول كمالك المعهد أو سجّل دخول موظف بحسابه</div>';
+ h+=' <button class="sl-owner" onclick="staffLoginAsOwner()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> الدخول كمالك المعهد</button>';
+ h+=' <div class="sl-or"><span>أو دخول موظف</span></div>';
+ if(staff.length){
+  h+=' <div class="sl-chips">';
+  staff.forEach(function(u){
+   h+='<button type="button" class="sl-chip" onclick="staffPick(\''+(''+u.username).replace(/'/g,"\\'")+'\')">'+rbacEsc(u.name)+'</button>';
+  });
+  h+=' </div>';
+ }
+ h+=' <input id="sl-username" class="sl-input" placeholder="اسم المستخدم" autocomplete="off" onkeydown="if(event.key===\'Enter\'){document.getElementById(\'sl-password\').focus();}">';
+ h+=' <input id="sl-password" type="password" class="sl-input" placeholder="كلمة المرور" autocomplete="off" onkeydown="if(event.key===\'Enter\'){staffDoLogin();}">';
+ h+=' <div id="sl-error" class="sl-error"></div>';
+ h+=' <button class="sl-btn" onclick="staffDoLogin()">دخول</button>';
+ h+='</div>';
+ ov.innerHTML=h; ov.classList.add('open');
+}
+function staffPick(uname){
+ var el=document.getElementById('sl-username'); if(el){ el.value=uname; }
+ var p=document.getElementById('sl-password'); if(p){ p.focus(); }
+}
+function hideStaffLogin(){ var ov=document.getElementById('staff-login-overlay'); if(ov) ov.classList.remove('open'); }
+function _slSetActive(id){ rbacEnsure(); data.activeProfileId=(id==='__owner__')?null:id; try{ save(); }catch(e){} }
+function _slPostLogin(){
+ try{ if(typeof rbacApply==='function') rbacApply(); }catch(e){}
+ try{ currentPage='dashboard'; if(typeof showPage==='function') showPage('dashboard'); }catch(e){}
+}
+function staffLoginAsOwner(){
+ /* إن كان الوضع الحالي موظفاً (تبديل حساب) نطلب رمز التفويض المالي قبل صعود صلاحية المالك */
+ try{
+  if(typeof Perms!=='undefined' && !Perms.isOwner() && typeof requestFinancialEditCode==='function'){
+   var p=requestFinancialEditCode();
+   if(p && typeof p.then==='function'){ p.then(function(c){ if(c){ _slOwnerEnter(); } }); return; }
+  }
+ }catch(e){}
+ _slOwnerEnter();
+}
+function _slOwnerEnter(){
+ _slSetActive('__owner__'); hideStaffLogin();
+ try{ logActivity('دخول كمالك المعهد','الصلاحيات'); }catch(e){}
+ _slPostLogin();
+}
+function staffDoLogin(){
+ rbacEnsure();
+ var uEl=document.getElementById('sl-username'), pEl=document.getElementById('sl-password');
+ var u=((uEl?uEl.value:'')||'').trim();
+ var pw=(pEl?pEl.value:'')||'';
+ var err=document.getElementById('sl-error');
+ function fail(m){ if(err) err.textContent=m; }
+ if(!u||!pw){ fail('أدخل اسم المستخدم وكلمة المرور'); return; }
+ var found=null,i;
+ for(i=0;i<data.appUsers.length;i++){ var x=data.appUsers[i]; if(x.username && (''+x.username).toLowerCase()===u.toLowerCase()){ found=x; break; } }
+ if(!found){ fail('اسم المستخدم غير موجود'); return; }
+ if(found.status==='suspended'){ fail('هذا الحساب موقوف'); return; }
+ if((''+(found.password||''))!==pw){ fail('كلمة المرور غير صحيحة'); return; }
+ _slSetActive(found.id);
+ try{ logActivity('تسجيل دخول الموظف: '+found.name,'الصلاحيات'); }catch(e){}
+ hideStaffLogin();
+ _slPostLogin();
+ try{ rbacToast('مرحباً '+found.name); }catch(e){}
+}
+/* يُستدعى من شارة الوضع لتبديل الحساب */
+function rbacSwitchAccount(){ showStaffLogin(); }
 
 function renderDashboard(){
  var td=today();
@@ -10409,6 +10525,7 @@ async function startApp(){
  currentPage = 'dashboard';
  renderDashboard();
  _appReady = true;
+ try{ if(typeof staffGateNeeded==='function' && staffGateNeeded()){ showStaffLogin(); } }catch(_sg){}
 }
 
 // ════════════════════════════════════════════════
