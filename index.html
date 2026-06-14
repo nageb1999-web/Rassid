@@ -2162,6 +2162,12 @@ html[data-theme=light] .beh-warning{background:rgba(185,28,28,.10);color:#b91c1c
 .rbac-tab.on{color:var(--brand-light);border-bottom-color:var(--gold);background:var(--surface-2)}
 .rbac-body{padding:16px 18px 20px;max-height:70vh;overflow:auto}
 .rbac-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.rbac-instcode-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--surface-2);border:1px solid var(--gold);border-radius:13px;padding:11px 14px;margin-bottom:8px}
+.rbac-ic-meta{display:flex;flex-direction:column;gap:3px}
+.rbac-ic-label{font-size:10px;font-weight:700;color:var(--text-3)}
+.rbac-ic-val{font-size:20px;font-weight:900;letter-spacing:4px;color:var(--brand-light);font-family:monospace}
+.rbac-ic-actions{display:flex;gap:6px}
+.rbac-ic-hint{font-size:10px;color:var(--text-3);line-height:1.6;margin-bottom:14px;padding:0 2px}
 .rbac-input{font-family:inherit;font-size:12px;background:var(--card);border:1px solid var(--border2);border-radius:9px;padding:9px 11px;color:var(--text);outline:none;flex:1;min-width:120px}
 .rbac-input:focus{border-color:var(--gold)}
 select.rbac-input{flex:0 0 auto;min-width:140px}
@@ -5230,6 +5236,10 @@ function rbacEnsure(){
   if(!data.appUsers) data.appUsers=[];
   if(!data.activityLog) data.activityLog=[];
   if(typeof data.activeProfileId==='undefined') data.activeProfileId=null;
+  if(!data.settings) data.settings={};
+  if(!data.settings.instituteCode){
+   try{ data.settings.instituteCode=rbacGenInstCode(); }catch(eIC){}
+  }
   if(data.nextId && typeof data.nextId.appUser==='undefined') data.nextId.appUser=1;
   if(data.nextId && typeof data.nextId.activity==='undefined') data.nextId.activity=1;
  }catch(e){}
@@ -5250,6 +5260,151 @@ function rbacToast(msg, kind){
  d.textContent=msg; document.body.appendChild(d);
  setTimeout(function(){d.classList.add('show');},10);
  setTimeout(function(){d.classList.remove('show');setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},300);},2600);
+}
+
+/* ============================================================
+   تشفير كلمات مرور الموظفين — SHA-256 خالص بـJavaScript
+   متوافق مع WebView القديم وبيئة file:// (لا يعتمد على crypto.subtle)
+   التخزين: 'h1$<التكرارات>$<الملح>$<التجزئة>'
+   التوافق الرجعي: أي كلمة مرور قديمة (نص صريح) تظل تعمل مرة واحدة
+   ثم تُرقّى تلقائياً إلى صيغة مشفّرة عند أول دخول ناجح.
+   ============================================================ */
+var RS_PW_ITER = 1000;
+function _rsRotr(n,x){ return (x>>>n)|(x<<(32-n)); }
+function _rsSha256(ascii){
+ var K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+ 0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+ 0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+ 0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+ 0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+ 0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+ 0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+ 0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+ var H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+ var i,j,w=[],a,b,c,d,e,f,g,h,T1,T2,len=ascii.length;
+ var withOne = ascii + String.fromCharCode(0x80);
+ var l = withOne.length/4 + 2;
+ var N = Math.ceil(l/16);
+ var M = new Array(N);
+ for(i=0;i<N;i++){
+  M[i]=new Array(16);
+  for(j=0;j<16;j++){
+   M[i][j]=(withOne.charCodeAt(i*64+j*4)<<24)|(withOne.charCodeAt(i*64+j*4+1)<<16)|(withOne.charCodeAt(i*64+j*4+2)<<8)|(withOne.charCodeAt(i*64+j*4+3));
+  }
+ }
+ M[N-1][14]=Math.floor((len*8)/Math.pow(2,32));
+ M[N-1][15]=(len*8)&0xffffffff;
+ for(i=0;i<N;i++){
+  for(j=0;j<16;j++) w[j]=M[i][j];
+  for(j=16;j<64;j++){
+   var s0=_rsRotr(7,w[j-15])^_rsRotr(18,w[j-15])^(w[j-15]>>>3);
+   var s1=_rsRotr(17,w[j-2])^_rsRotr(19,w[j-2])^(w[j-2]>>>10);
+   w[j]=(w[j-16]+s0+w[j-7]+s1)|0;
+  }
+  a=H[0];b=H[1];c=H[2];d=H[3];e=H[4];f=H[5];g=H[6];h=H[7];
+  for(j=0;j<64;j++){
+   var S1=_rsRotr(6,e)^_rsRotr(11,e)^_rsRotr(25,e);
+   var ch=(e&f)^((~e)&g);
+   T1=(h+S1+ch+K[j]+w[j])|0;
+   var S0=_rsRotr(2,a)^_rsRotr(13,a)^_rsRotr(22,a);
+   var maj=(a&b)^(a&c)^(b&c);
+   T2=(S0+maj)|0;
+   h=g;g=f;f=e;e=(d+T1)|0;d=c;c=b;b=a;a=(T1+T2)|0;
+  }
+  H[0]=(H[0]+a)|0;H[1]=(H[1]+b)|0;H[2]=(H[2]+c)|0;H[3]=(H[3]+d)|0;
+  H[4]=(H[4]+e)|0;H[5]=(H[5]+f)|0;H[6]=(H[6]+g)|0;H[7]=(H[7]+h)|0;
+ }
+ var out='';
+ for(i=0;i<8;i++){ var hv=(H[i]>>>0).toString(16); while(hv.length<8) hv='0'+hv; out+=hv; }
+ return out;
+}
+function _rsUtf8(str){
+ str=(str===null||str===undefined)?'':String(str);
+ var out='',i,c;
+ for(i=0;i<str.length;i++){
+  c=str.charCodeAt(i);
+  if(c<128) out+=String.fromCharCode(c);
+  else if(c<2048){ out+=String.fromCharCode(192|(c>>6)); out+=String.fromCharCode(128|(c&63)); }
+  else if(c<55296||c>=57344){ out+=String.fromCharCode(224|(c>>12)); out+=String.fromCharCode(128|((c>>6)&63)); out+=String.fromCharCode(128|(c&63)); }
+  else { i++; var c2=str.charCodeAt(i); var cp=0x10000+((c&0x3ff)<<10)+(c2&0x3ff);
+   out+=String.fromCharCode(240|(cp>>18)); out+=String.fromCharCode(128|((cp>>12)&63)); out+=String.fromCharCode(128|((cp>>6)&63)); out+=String.fromCharCode(128|(cp&63)); }
+ }
+ return out;
+}
+function rsSha256(str){ return _rsSha256(_rsUtf8(str)); }
+function rsGenSalt(){
+ var s='',i,chars='0123456789abcdef';
+ for(i=0;i<24;i++) s+=chars.charAt(Math.floor(Math.random()*16));
+ return s;
+}
+function rsHashRaw(plain,salt,iter){
+ var h=rsSha256(salt+'|'+plain),i;
+ for(i=0;i<iter;i++) h=rsSha256(h+salt);
+ return h;
+}
+function rbacHashPassword(plain){
+ var salt=rsGenSalt();
+ var h=rsHashRaw((plain===null||plain===undefined)?'':String(plain), salt, RS_PW_ITER);
+ return 'h1$'+RS_PW_ITER+'$'+salt+'$'+h;
+}
+function rbacIsHashed(stored){
+ return typeof stored==='string' && stored.indexOf('h1$')===0;
+}
+function rbacVerifyPassword(plain,stored){
+ plain=(plain===null||plain===undefined)?'':String(plain);
+ stored=(stored===null||stored===undefined)?'':String(stored);
+ if(rbacIsHashed(stored)){
+  var parts=stored.split('$');
+  if(parts.length!==4) return false;
+  var iter=parseInt(parts[1],10)||RS_PW_ITER;
+  return rsHashRaw(plain, parts[2], iter)===parts[3];
+ }
+ /* توافق رجعي: كلمة مرور قديمة مخزّنة كنص صريح */
+ return stored===plain;
+}
+
+/* ===== كود المعهد — يربط الموظف بمعهده ===== */
+function rbacGenInstCode(){
+ var chars='ACDEFGHJKLMNPQRTUVWXY3479', s='', i; /* بلا أحرف ملتبسة (O0I1...) */
+ for(i=0;i<6;i++) s+=chars.charAt(Math.floor(Math.random()*chars.length));
+ return s;
+}
+function rbacInstCode(){
+ rbacEnsure();
+ if(!data.settings) data.settings={};
+ if(!data.settings.instituteCode) data.settings.instituteCode=rbacGenInstCode();
+ return data.settings.instituteCode;
+}
+function rbacNormCode(c){ return (''+(c===null||c===undefined?'':c)).trim().toUpperCase(); }
+function rbacCopyInstCode(){
+ var code=rbacInstCode();
+ function done(){ try{ rbacToast('تم نسخ كود المعهد: '+code); }catch(e){} }
+ try{
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(code).then(done, function(){ _rbacCopyFallback(code); done(); }); return; }
+ }catch(e){}
+ _rbacCopyFallback(code); done();
+}
+function _rbacCopyFallback(text){
+ try{
+  var ta=document.createElement('textarea'); ta.value=text;
+  ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+  ta.focus(); ta.select(); try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+ }catch(e){}
+}
+function rbacRegenInstCode(){
+ if(typeof Perms!=='undefined' && !Perms.require('users.manage')) return;
+ function apply(){
+  rbacEnsure();
+  data.settings.instituteCode=rbacGenInstCode();
+  try{ save(); }catch(e){}
+  try{ logActivity('تغيير كود المعهد', 'المستخدمون'); }catch(e){}
+  try{ rbacRenderUsers(); }catch(e){}
+  try{ rbacToast('تم تغيير كود المعهد. أبلغ الموظفين بالكود الجديد.'); }catch(e){}
+ }
+ var msg='تغيير كود المعهد؟ لن يتمكّن أي موظف من الدخول إلا بعد إبلاغه بالكود الجديد.';
+ if(typeof showConfirm==='function'){ showConfirm({title:'تغيير كود المعهد', msg:msg, confirmText:'تغيير'}, apply); }
+ else if(confirm(msg)){ apply(); }
 }
 
 /* ===== المدير المركزي للصلاحيات ===== */
@@ -5438,6 +5593,15 @@ function rbacRenderUsers(){
  var q=(document.getElementById('rbac-search')?document.getElementById('rbac-search').value:'')||'';
  var rf=(document.getElementById('rbac-role-filter')?document.getElementById('rbac-role-filter').value:'')||'';
  var h='';
+ var _ic=rbacEsc(rbacInstCode());
+ h+='<div class="rbac-instcode-bar">';
+ h+=' <div class="rbac-ic-meta"><span class="rbac-ic-label">كود المعهد</span><span class="rbac-ic-val" id="rbac-ic-val">'+_ic+'</span></div>';
+ h+=' <div class="rbac-ic-actions">';
+ h+='  <button class="rbac-mini" onclick="rbacCopyInstCode()">نسخ</button>';
+ h+='  <button class="rbac-mini danger" onclick="rbacRegenInstCode()">تغيير الكود</button>';
+ h+=' </div>';
+ h+='</div>';
+ h+='<div class="rbac-ic-hint">يُسلَّم هذا الكود للموظفين — يُطلب منهم عند تسجيل الدخول لربطهم بمعهدك. تغييره يمنع أي موظف لم يحصل على الكود الجديد.</div>';
  h+='<div class="rbac-toolbar">';
  h+=' <input id="rbac-search" class="rbac-input" placeholder="بحث بالاسم أو البريد..." value="'+rbacEsc(q)+'" oninput="rbacRenderUsers()">';
  h+=' <select id="rbac-role-filter" class="rbac-input" onchange="rbacRenderUsers()"><option value="">كل الأدوار</option>';
@@ -5650,12 +5814,12 @@ function rbacSaveUser(id){
  if(id===null||typeof id==='undefined'){
   if(!password){ rbacToast('الرجاء إدخال كلمة مرور للمستخدم الجديد','err'); return; }
   var nid=data.nextId?data.nextId.appUser++:Date.now();
-  data.appUsers.push({id:nid,name:name,email:email,phone:phone,role:role,status:status,username:username,password:password,perms:override,assign:assign,teacherId:teacherId,pin:'',createdAt:new Date().toISOString()});
+  data.appUsers.push({id:nid,name:name,email:email,phone:phone,role:role,status:status,username:username,password:rbacHashPassword(password),instCode:rbacInstCode(),perms:override,assign:assign,teacherId:teacherId,pin:'',createdAt:new Date().toISOString()});
   logActivity('أضاف مستخدماً: '+name, 'المستخدمون');
  } else {
   var i; for(i=0;i<data.appUsers.length;i++){ if(data.appUsers[i].id===id){
    var us=data.appUsers[i];
-   us.name=name; us.email=email; us.phone=phone; us.role=role; us.status=status; us.username=username; if(password) us.password=password; us.perms=override; us.assign=assign; us.teacherId=teacherId;
+   us.name=name; us.email=email; us.phone=phone; us.role=role; us.status=status; us.username=username; if(password) us.password=rbacHashPassword(password); if(!us.instCode) us.instCode=rbacInstCode(); us.perms=override; us.assign=assign; us.teacherId=teacherId;
    break;
   } }
   logActivity('عدّل مستخدماً: '+name, 'المستخدمون');
@@ -5691,7 +5855,7 @@ function rbacResetPin(id){
  if(pw===null) return;
  pw=(''+pw).trim();
  if(!pw){ rbacToast('كلمة المرور فارغة','err'); return; }
- u.password=pw;
+ u.password=rbacHashPassword(pw);
  logActivity('أعاد تعيين كلمة مرور المستخدم: '+u.name, 'المستخدمون');
  try{ save(); }catch(e){} rbacToast('تم تحديث كلمة المرور');
 }
@@ -5739,6 +5903,7 @@ function showStaffLogin(){
   });
   h+=' </div>';
  }
+ h+=' <input id="sl-instcode" class="sl-input" placeholder="كود المعهد" autocomplete="off" inputmode="text" style="text-transform:uppercase;letter-spacing:2px;font-weight:800" onkeydown="if(event.key===\'Enter\'){document.getElementById(\'sl-username\').focus();}">';
  h+=' <input id="sl-username" class="sl-input" placeholder="اسم المستخدم" autocomplete="off" onkeydown="if(event.key===\'Enter\'){document.getElementById(\'sl-password\').focus();}">';
  h+=' <input id="sl-password" type="password" class="sl-input" placeholder="كلمة المرور" autocomplete="off" onkeydown="if(event.key===\'Enter\'){staffDoLogin();}">';
  h+=' <div id="sl-error" class="sl-error"></div>';
@@ -5773,17 +5938,32 @@ function _slOwnerEnter(){
 }
 function staffDoLogin(){
  rbacEnsure();
+ var cEl=document.getElementById('sl-instcode');
  var uEl=document.getElementById('sl-username'), pEl=document.getElementById('sl-password');
+ var code=rbacNormCode(cEl?cEl.value:'');
  var u=((uEl?uEl.value:'')||'').trim();
  var pw=(pEl?pEl.value:'')||'';
  var err=document.getElementById('sl-error');
  function fail(m){ if(err) err.textContent=m; }
+ if(!code){ fail('أدخل كود المعهد'); return; }
  if(!u||!pw){ fail('أدخل اسم المستخدم وكلمة المرور'); return; }
+ /* التحقق من كود المعهد — يربط الدخول بالمعهد الصحيح */
+ var instCode=rbacNormCode(rbacInstCode());
+ if(code!==instCode){ fail('كود المعهد غير صحيح'); return; }
  var found=null,i;
  for(i=0;i<data.appUsers.length;i++){ var x=data.appUsers[i]; if(x.username && (''+x.username).toLowerCase()===u.toLowerCase()){ found=x; break; } }
  if(!found){ fail('اسم المستخدم غير موجود'); return; }
  if(found.status==='suspended'){ fail('هذا الحساب موقوف'); return; }
- if((''+(found.password||''))!==pw){ fail('كلمة المرور غير صحيحة'); return; }
+ /* ربط الموظف بمعهده: لو كان للسجل كود معهد فيجب أن يطابق */
+ if(found.instCode && rbacNormCode(found.instCode)!==instCode){ fail('هذا الموظف غير مرتبط بهذا المعهد'); return; }
+ if(!rbacVerifyPassword(pw, found.password)){ fail('كلمة المرور غير صحيحة'); return; }
+ /* ترقية تلقائية: تشفير كلمة المرور القديمة + ختم كود المعهد إن كان ناقصاً */
+ try{
+  var changed=false;
+  if(!rbacIsHashed(found.password)){ found.password=rbacHashPassword(pw); changed=true; }
+  if(!found.instCode){ found.instCode=rbacInstCode(); changed=true; }
+  if(changed) save();
+ }catch(eUp){}
  _slSetActive(found.id);
  try{ logActivity('تسجيل دخول الموظف: '+found.name,'الصلاحيات'); }catch(e){}
  hideStaffLogin();
