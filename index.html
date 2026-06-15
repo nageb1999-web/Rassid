@@ -3095,7 +3095,7 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
  <button class="tab-btn" onclick="switchWaTab('expiry',this)"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> الاشتراكات</span></button>
  <button class="tab-btn" onclick="switchWaTab('absent',this)"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> الغياب</span></button>
  <button class="tab-btn" onclick="switchWaTab('excused',this)"><span style="display:inline-flex;align-items:center;gap:5px">🟡 غياب بعلم ولي الأمر</span></button>
- <button class="tab-btn" onclick="switchWaTab('fees',this)"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> الأقساط</span></button>
+ <button class="tab-btn wa-fin-tab" onclick="switchWaTab('fees',this)"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> الأقساط</span></button>
  <button class="tab-btn" onclick="switchWaTab('subs',this)"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> الاشتراكات</span></button>
  <button class="tab-btn" onclick="switchWaTab('bulk',this)"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg> جماعي</span></button>
  <button class="tab-btn" onclick="switchWaTab('custom',this)"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> مخصص</span></button>
@@ -6084,11 +6084,12 @@ function renderDashboard(){
  '<div class="stat-value" style="color:var(--info)">'+data.results.length+'</div>'+
  '<div class="stat-sub">نتيجة مسجلة</div>'+
  '</div>'+
+ (((typeof Perms==='undefined')||Perms.canFinance())?(
  '<div class="stat-card" onclick="showPage(\'fees\')" style="cursor:pointer">'+
  '<div class="stat-icon" style="background:rgba(168,134,90,.10);border:1px solid rgba(168,134,90,.20)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><circle cx="16" cy="15" r="1.5" fill="#c8a878" stroke="none"/></svg></div><div class="stat-label">الاشتراكات</div>'+
  '<div class="stat-value" style="color:var(--gold);font-size:16px">'+fmt(allSubPaid)+'</div>'+
  '<div class="stat-sub" style="color:var(--danger)">متبقي: '+fmt(allSubPrice-allSubPaid)+'</div>'+
- '</div>'+
+ '</div>'):'')+
  // ── بطاقة الدورات ──
  (function(){
   var courses=data.courses||[];
@@ -6129,6 +6130,7 @@ function renderDashboard(){
  // ── الملخص المالي ── (المالك/المدير/المحاسب فقط)
  var _finCard=document.getElementById('dash-finance-card');
  if(_finCard){ _finCard.style.display = Perms.canFinance()?'':'none'; }
+ var _dq=document.getElementById('dash-quick'); if(_dq){ _dq.style.gridTemplateColumns = Perms.canFinance()?'1fr 1fr':'1fr'; }
  if(Perms.canFinance()){
  document.getElementById('dash-finance').innerHTML=
  '<div style="display:grid;grid-template-columns:1fr;gap:7px">'+
@@ -7847,6 +7849,7 @@ function renderFees(){
  }).join('');
 }
 function openFeeDetail(sid){
+ if((typeof Perms!=='undefined') && !Perms.canFinance()){ try{ rbacToast('ليس لديك صلاحية لعرض الأمور المالية','err'); }catch(e){} return; }
  var s=gS(sid);
  document.getElementById('fee-detail-title').textContent=`رسوم ${s.fname} ${s.lname}`;
  var fees=data.fees.filter(f=>f.studentId===sid);
@@ -8768,6 +8771,7 @@ function sendAbsentWA(sid){
  logWA(sid,'غياب',msg);toast('فتح واتساب...');
 }
 function sendFeeWA(sid){
+ if((typeof Perms!=='undefined') && !Perms.canFinance()){ try{ rbacToast('ليس لديك صلاحية للأمور المالية','err'); }catch(e){} return; }
  var s=gS(sid);if(!s||!s.parentPhone){toast('لا يوجد رقم ولي أمر');return;}
  var _fs=feeStats(sid);var total=_fs.total;var paid=_fs.paid;var remaining=_fs.remaining;var pct=Math.round(paid/total*100);
  var tmpl=(data.settings&&data.settings.templates?data.settings.templates.fees:'');
@@ -8841,11 +8845,13 @@ function renderSubsTab(){
 }
 
 function renderWhatsapp(){
+ try{ var _finOK=(typeof Perms==='undefined')||Perms.canFinance(); var _ft=document.querySelectorAll('#page-whatsapp .wa-fin-tab'); for(var _i=0;_i<_ft.length;_i++){ _ft[_i].style.display=_finOK?'':'none'; } }catch(eWF){}
  document.getElementById('wa-custom-student').innerHTML=data.students.map(s=>`<option value="${s.id}">${sName(s.id)}</option>`).join('');
  renderWaTab('results');
  renderSubsTab();
 }
 function switchWaTab(tab,btn){
+ if(tab==='fees' && (typeof Perms!=='undefined') && !Perms.canFinance()){ try{ rbacToast('ليس لديك صلاحية لعرض الأمور المالية','err'); }catch(e){} return; }
  document.querySelectorAll('#page-whatsapp .tab-content').forEach(e=>e.classList.remove('active'));
  document.querySelectorAll('#page-whatsapp .tab-btn').forEach(b=>b.classList.remove('active'));
  document.getElementById(`wa-tab-${tab}`).classList.add('active');
@@ -8853,6 +8859,7 @@ function switchWaTab(tab,btn){
  renderWaTab(tab);
 }
 function renderWaTab(tab){
+ if(tab==='fees' && (typeof Perms!=='undefined') && !Perms.canFinance()){ var _ef=document.getElementById('wa-tab-fees'); if(_ef) _ef.innerHTML=''; return; }
  if(tab==='results'){
  var el=document.getElementById('wa-tab-results');
  var recent=data.results.slice().reverse().slice(0,15);
@@ -11611,9 +11618,11 @@ function renderKPIDashboard(){
  html += kpiRingCard('متوسط تقدّم الدورات', avgCoursePct, 'متوسط نسبة إنجاز جميع الدورات');
  html += kpiRingCard('نسبة الحضور العامة', overallAttRate, 'نسبة الحضور خلال الفترة');
  html += kpiCard('غيابات الأسبوع', weekAbsent, weekAbsent>5?'var(--danger)':'var(--muted)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>');
+ if((typeof Perms==='undefined')||Perms.canFinance()){
  html += kpiCard('الإيرادات', fmt(monthRevenue), 'var(--success)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>');
  html += kpiCard('المصروفات', fmt(monthExpTotal), 'var(--danger)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>');
  html += kpiCard('صافي الربح', fmt(netProfit), netProfit>=0?'var(--success)':'var(--danger)', netProfit>=0?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>');
+ }
 
  html += '</div>';
 
