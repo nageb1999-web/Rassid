@@ -13396,5 +13396,216 @@ function _sendBugReport(){
 })();
 
 </script>
+<style id="rasid-ux-enhancements">
+/* ═══════════════════════════════════════════════════════════════
+   RASID — UX/UI Enhancement Layer · طبقة تحسينات تجربة المستخدم
+   تحسينات إضافية فقط (CSS) — لا تمسّ أي منطق برمجي أو استعلام Supabase.
+   موضوعة في نهاية المستند لتطبّق بأمان فوق القواعد الحالية.
+   تستخدم متغيّرات التطبيق نفسها فتتكيّف تلقائياً مع الوضعين الليلي والنهاري.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1) إمكانية الوصول: مؤشّر تركيز واضح للوحة المفاتيح ──
+   لم يكن في التطبيق أي :focus-visible؛ تنقّل لوحة المفاتيح كان غير مرئي.
+   لا يظهر عند النقر بالفأرة/اللمس، فقط عند التنقّل بلوحة المفاتيح. */
+.btn:focus-visible,
+.nav-item:focus-visible,
+.mobile-nav-item:focus-visible,
+.tab-btn:focus-visible,
+.theme-btn:focus-visible,
+.logout-btn:focus-visible,
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible{
+  outline:2px solid var(--brand);
+  outline-offset:2px;
+  border-radius:var(--r-sm);
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible{
+  outline:2px solid var(--brand-border);
+  outline-offset:1px;
+}
+
+/* ── 2) أهداف لمس مريحة على الهاتف (معيار 44px) ──
+   يحسّن الاستخدام بيد واحدة ويقلّل النقرات الخاطئة. */
+@media (max-width:768px){
+  .btn{min-height:44px;}
+  .nav-item{min-height:44px;}
+  .theme-btn{min-width:42px;min-height:42px;}
+}
+
+/* ── 3) إصلاح: المحتوى كان يُحجب خلف شريط التنقّل السفلي ──
+   ارتفاع الشريط = 58px + Safe Area، بينما الحشو السفلي السابق كان 50px فقط.
+   هذا يضمن ظهور آخر صف/زر فوق الشريط دائماً. */
+@media (max-width:768px){
+  .content{
+    padding-bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;
+  }
+}
+
+/* ── 4) أيقونات القائمة الجانبية تتكيّف مع المظهر وتُبرز القسم النشط ──
+   كانت ثابتة على لون واحد (#a0aec0) لا يتغيّر في الوضع النهاري،
+   والأيقونة النشطة لم تكن ذهبية رغم أن النص ذهبي. */
+.nav-icon svg{stroke:var(--text-2);transition:stroke .15s var(--ease);}
+.nav-item:hover .nav-icon svg{stroke:var(--text);}
+.nav-item.active .nav-icon svg{stroke:var(--brand);}
+
+/* ── 5) احترام تفضيل تقليل الحركة (إمكانية وصول) ──
+   لمن يفعّل "تقليل الحركة" في النظام: تهدئة الأنيميشن والانتقالات. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+</style>
+<style id="rasid-card-tables">
+/* ═══════════════════════════════════════════════════════════════
+   RASID — Mobile Card-View للجداول · المهمة الأولى
+   على الهاتف فقط (≤768px) تتحوّل صفوف الجداول إلى بطاقات قابلة للقراءة.
+   سطح المكتب يبقى جداول كما هو. لا تغيير في أي منطق أو بيانات.
+   يُفعَّل فقط على الحاويات التي تحمل class="rasid-cardify"
+   (يضيفها السكربت تلقائياً للجداول الحقيقية، فلا تتأثر النماذج).
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width:768px){
+  .rasid-cardify{
+    overflow:visible !important;
+    border:none !important;
+    background:transparent !important;
+    border-radius:0 !important;
+    padding:0 !important;
+  }
+  .rasid-cardify > table{display:block;width:100%;min-width:0 !important;}
+  .rasid-cardify > table > thead{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+  .rasid-cardify > table > tbody{display:block;}
+
+  /* كل صف = بطاقة */
+  .rasid-cardify > table > tbody > tr{
+    display:block;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:var(--r-md);
+    padding:6px 14px;
+    margin-bottom:12px;
+    box-shadow:var(--shadow-xs);
+  }
+  .rasid-cardify > table > tbody > tr:hover > td{background:transparent !important;}
+
+  /* كل خلية = سطر (عنوان : قيمة) */
+  .rasid-cardify > table > tbody > tr > td{
+    display:flex !important;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    width:100%;
+    box-sizing:border-box;
+    padding:9px 0 !important;
+    border:none !important;
+    border-bottom:1px solid var(--border) !important;
+    text-align:right;
+    font-size:13px;
+    min-height:0;
+  }
+  .rasid-cardify > table > tbody > tr > td:last-child{border-bottom:none !important;}
+  .rasid-cardify > table > tbody > tr > td::before{
+    content:attr(data-label);
+    font-size:11px;font-weight:700;color:var(--text-3);
+    flex-shrink:0;letter-spacing:.2px;
+  }
+
+  /* العمود الأول = عنوان البطاقة (بلا تسمية، أبرز) */
+  .rasid-cardify > table > tbody > tr > td:first-child:not([colspan]){
+    justify-content:flex-start;
+    font-weight:700;
+    padding-bottom:11px !important;
+    border-bottom:1px solid var(--border-strong) !important;
+    margin-bottom:2px;
+  }
+  .rasid-cardify > table > tbody > tr > td:first-child:not([colspan])::before{display:none;}
+
+  /* خلايا الإجراءات (العمود بلا عنوان) — أزرار بمحاذاة النهاية */
+  .rasid-cardify > table > tbody > tr > td[data-label=""]{
+    justify-content:flex-end;
+    flex-wrap:wrap;
+    gap:6px;
+    padding-top:11px !important;
+  }
+  .rasid-cardify > table > tbody > tr > td[data-label=""]::before{display:none;}
+
+  /* حالة "لا توجد بيانات" بكامل العرض */
+  .rasid-cardify > table > tbody > tr > td[colspan]{
+    display:block !important;
+    border-bottom:none !important;
+    text-align:center;
+    padding:4px 0 !important;
+  }
+  .rasid-cardify > table > tbody > tr > td[colspan]::before{display:none;}
+}
+</style>
+<script>
+/* RASID — Table cardify labeler (المهمة الأولى)
+   إضافي بالكامل: يقرأ عناوين الأعمدة ويضيف data-label للخلايا،
+   ويضع class="rasid-cardify" على حاويات الجداول الحقيقية فقط.
+   لا يعدّل أي بيانات أو منطق. متوافق مع WebView القديم (ES5). */
+(function(){
+  'use strict';
+  function labelTables(){
+    var tables = document.querySelectorAll('.table-wrap > table, .rbac-table-wrap > table');
+    for(var t=0; t<tables.length; t++){
+      var table = tables[t];
+      var wrap = table.parentNode;
+      if(wrap && wrap.classList){ wrap.classList.add('rasid-cardify'); }
+      var heads = table.querySelectorAll('thead th');
+      if(!heads.length){ continue; }
+      var labels = [];
+      for(var h=0; h<heads.length; h++){
+        labels.push((heads[h].textContent || '').trim());
+      }
+      var rows = table.querySelectorAll('tbody tr');
+      for(var r=0; r<rows.length; r++){
+        var cells = rows[r].children;
+        if(cells.length === 1 && cells[0].getAttribute && cells[0].getAttribute('colspan')){ continue; }
+        for(var c=0; c<cells.length; c++){
+          var cell = cells[c];
+          if(cell.tagName === 'TD'){
+            var lbl = c < labels.length ? labels[c] : '';
+            if(cell.getAttribute('data-label') !== lbl){
+              cell.setAttribute('data-label', lbl);
+            }
+          }
+        }
+      }
+    }
+  }
+  var _timer = null;
+  function schedule(){
+    if(_timer){ return; }
+    _timer = setTimeout(function(){
+      _timer = null;
+      try{ labelTables(); }catch(e){}
+    }, 80);
+  }
+  function start(){
+    try{ labelTables(); }catch(e){}
+    var root = document.querySelector('.main-wrap') || document.body;
+    if(window.MutationObserver && root){
+      var mo = new MutationObserver(function(){ schedule(); });
+      mo.observe(root, { childList:true, subtree:true });
+    }
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(start, 200); });
+  } else {
+    setTimeout(start, 200);
+  }
+})();
+</script>
 </body>
 </html>
