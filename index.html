@@ -2492,8 +2492,12 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
 <div class="main-wrap">
  <div class="topbar rz-topbar" id="rz-topbar">
 
-  <!-- ▸ يمين الشريط (بداية RTL): هوية راصد داخل الشريط (حسب الموكب) -->
+  <!-- ▸ الهوية + مُشغّل التنقّل (يسار الشريط على الحاسوب/التابلت بعد العكس؛ مخفية على الهاتف) -->
   <div class="rz-zone rz-zone-brand">
+   <button type="button" class="rz-launcher" onclick="openSidebar()" aria-label="فتح قائمة التنقّل" title="القائمة">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+   </button>
+   <span class="rz-divider" aria-hidden="true"></span>
    <span class="rz-brand-mark">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
    </span>
@@ -13876,7 +13880,11 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   });
   /* اختصارات لوحة المفاتيح: Esc للإغلاق، Ctrl/Cmd+K للبحث */
   document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){ rzCloseAllMenus(null); return; }
+    if(e.key==='Escape'){
+      var _sb=document.getElementById('sidebar');
+      if(_sb && _sb.classList.contains('open') && window.innerWidth>=769){ if(typeof closeSidebar==='function') closeSidebar(); }
+      rzCloseAllMenus(null); return;
+    }
     var k=(e.key||'').toLowerCase();
     if((e.ctrlKey||e.metaKey) && k==='k'){
       e.preventDefault();
@@ -13902,6 +13910,43 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
 #dash-quick{gap:16px;}
 .stat-card{transition:transform .18s var(--ease),border-color .18s var(--ease),box-shadow .18s var(--ease);}
 .stat-card:hover{transform:translateY(-2px);}
+</style>
+
+<style id="rasid-launcher-2026">
+/* ═══════════════════════════════════════════════════════════════
+   RASID — Nav Launcher + Floating Panel (حاسوب + تابلت فقط)
+   الهاتف (≤768px) بلا أي تغيير — كل القواعد ضمن @media(min-width:769px).
+   يعيد استخدام openSidebar/closeSidebar/showPage بالكامل (بلا تغيير منطق).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* مُشغّل التنقّل + الهوية: مخفيان افتراضياً (الهاتف لا يراهما) */
+.rz-launcher{display:none;width:40px;height:40px;border-radius:11px;align-items:center;justify-content:center;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);cursor:pointer;flex-shrink:0;transition:background .16s var(--ease),color .16s var(--ease),border-color .16s var(--ease),transform .12s var(--ease);}
+.rz-launcher:hover{background:var(--surface-hover);color:var(--text);border-color:var(--border-strong);}
+.rz-launcher:active{transform:scale(.94);}
+.rz-zone-brand{display:none;gap:11px;flex-shrink:0;}
+.rz-divider{width:1px;height:26px;background:var(--border-strong);margin:0 2px;}
+
+/* ════════ حاسوب + تابلت فقط (≥769px) ════════ */
+@media (min-width:769px){
+  .rz-launcher{display:flex;}
+  .rz-zone-brand{display:flex;}
+
+  /* عكس الشريط: الهوية يسار، المستخدم/الإجراءات يمين (البحث يبقى وسطاً) */
+  .rz-topbar{flex-direction:row-reverse;}
+  .rz-pop{right:0;left:auto;}
+
+  /* الشريط الجانبي → لوحة عائمة تنزلق من جهة البداية */
+  .sidebar{position:fixed!important;top:0;right:0;height:100dvh;width:min(300px,86vw)!important;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)!important;z-index:1400!important;box-shadow:none;display:flex!important;flex-direction:column;overflow-y:auto;}
+  .sidebar.open{transform:translateX(0)!important;box-shadow:var(--shadow-xl);}
+
+  /* المحتوى يأخذ كامل العرض + تنفّس أكبر */
+  .main-wrap{margin-right:0!important;width:100%!important;min-width:0!important;}
+  .content{padding-left:clamp(28px,3vw,44px);padding-right:clamp(28px,3vw,44px);}
+
+  /* الطبقة الخلفية (إغلاق بالنقر خارجاً) */
+  .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:1390;}
+  .sidebar-overlay.open{display:block!important;}
+}
 </style>
 
 </body>
