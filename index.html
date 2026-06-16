@@ -2494,7 +2494,7 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
 
   <!-- ▸ الهوية + مُشغّل التنقّل (يسار الشريط على الحاسوب/التابلت بعد العكس؛ مخفية على الهاتف) -->
   <div class="rz-zone rz-zone-brand">
-   <button type="button" class="rz-launcher" onclick="openSidebar()" aria-label="فتح قائمة التنقّل" title="القائمة">
+   <button type="button" class="rz-launcher" onclick="rzOpenNav(event)" aria-label="فتح قائمة التنقّل" title="القائمة">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
    </button>
    <span class="rz-divider" aria-hidden="true"></span>
@@ -13869,6 +13869,19 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
     rzCloseAllMenus(null);
     try{ if(typeof fn==='function') fn(); }catch(e){ console.error('rzRun',e); }
   };
+  /* فتح قائمة التنقّل المنبثقة وتثبيتها تحت الزر (حاسوب/تابلت فقط) — يعيد استخدام openSidebar */
+  window.rzOpenNav=function(ev){
+    try{
+      var sb=document.getElementById('sidebar');
+      if(sb && window.innerWidth>=769 && ev && ev.currentTarget){
+        var r=ev.currentTarget.getBoundingClientRect();
+        var left=Math.min(Math.max(12,r.left), window.innerWidth-308);
+        sb.style.setProperty('--rz-nav-left', left+'px');
+        sb.style.setProperty('--rz-nav-top', (r.bottom+8)+'px');
+      }
+    }catch(e){}
+    if(typeof openSidebar==='function') openSidebar();
+  };
   /* إغلاق عند النقر خارج القوائم */
   document.addEventListener('click',function(e){
     var n=e.target;
@@ -13936,15 +13949,27 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   .rz-pop{right:0;left:auto;}
 
   /* الشريط الجانبي → لوحة عائمة تنزلق من جهة البداية */
-  .sidebar{position:fixed!important;top:0;right:0;height:100dvh;width:min(300px,86vw)!important;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)!important;z-index:1400!important;box-shadow:none;display:flex!important;flex-direction:column;overflow-y:auto;}
-  .sidebar.open{transform:translateX(0)!important;box-shadow:var(--shadow-xl);}
+  /* الشريط الجانبي → قائمة منبثقة عائمة (Popover) قرب زر القائمة */
+  .sidebar{position:fixed!important;top:var(--rz-nav-top,64px);left:var(--rz-nav-left,16px);right:auto!important;height:auto!important;max-height:min(72vh,560px);width:300px!important;border:1px solid var(--border-strong)!important;border-radius:18px;z-index:1400!important;box-shadow:none;display:flex!important;flex-direction:column;overflow-y:auto;padding-bottom:8px;opacity:0;visibility:hidden;transform:scale(.96) translateY(-10px);transform-origin:top left;transition:opacity .18s var(--ease),transform .2s cubic-bezier(.34,1.3,.64,1),visibility .2s!important;}
+  .sidebar.open{opacity:1;visibility:visible;transform:none!important;box-shadow:var(--shadow-xl);}
+
+  /* جعل المحتوى داخل القائمة المنبثقة مدمجاً كقائمة اختيار (وليس لوحة جانبية) */
+  .sidebar .sidebar-nav{padding:7px!important;gap:0;}
+  .sidebar .nav-section{font-size:9.5px!important;letter-spacing:.4px;padding:9px 10px 4px!important;opacity:.65;margin:0!important;}
+  .sidebar .nav-section:first-child{padding-top:2px!important;}
+  .sidebar .nav-item{padding:9px 11px!important;margin:1px 0!important;border-radius:10px!important;font-size:13px!important;}
+  .sidebar .nav-item .nav-icon{transform:scale(.92);}
+  .sidebar .sidebar-footer{padding:7px!important;margin-top:4px!important;}
+  /* شريط تمرير نحيف وأنيق */
+  .sidebar::-webkit-scrollbar{width:8px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px;border:2px solid transparent;background-clip:content-box;}
 
   /* المحتوى يأخذ كامل العرض + تنفّس أكبر */
   .main-wrap{margin-right:0!important;width:100%!important;min-width:0!important;}
   .content{padding-left:clamp(28px,3vw,44px);padding-right:clamp(28px,3vw,44px);}
 
   /* الطبقة الخلفية (إغلاق بالنقر خارجاً) */
-  .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:1390;}
+  .sidebar-overlay{display:none;position:fixed;inset:0;background:transparent;z-index:1390;}
   .sidebar-overlay.open{display:block!important;}
 }
 </style>
