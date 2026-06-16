@@ -2499,23 +2499,111 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
 
 <!-- MAIN -->
 <div class="main-wrap">
- <div class="topbar">
-  <div class="topbar-header-row">
-   <div class="topbar-title-group">
-    <div class="topbar-title" id="page-title">لوحة التحكم</div>
-    <div class="topbar-subtitle">نظام إدارة المراكز التعليمية</div>
-   </div>
-   <div class="topbar-actions">
-    <button class="hamburger" onclick="openSidebar()" style="display:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-    <span class="save-indicator" id="save-indicator"></span>
-   </div>
+ <div class="topbar rz-topbar" id="rz-topbar">
+
+  <!-- ▸ يمين الشريط (بداية RTL): سياق الصفحة فقط — الهوية في القائمة الجانبية لتفادي التكرار -->
+  <div class="rz-zone rz-zone-page">
+   <h1 class="topbar-title rz-page-title" id="page-title">لوحة التحكم</h1>
+   <span class="rz-page-sub" id="rz-page-sub">ملخص أداء المركز اليوم</span>
   </div>
-  <div class="topbar-search-row">
-   <div class="global-search-wrap" id="global-search-wrap">
-    <span class="global-search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-    <input class="global-search-input" id="global-search-input" type="text" placeholder="بحث سريع في كل شيء..." oninput="globalSearch(this.value)" onblur="setTimeout(closeGlobalSearch,180)" autocomplete="off">
+
+  <!-- ▸ وسط الشريط: البحث العالمي (العنصر الأبرز) -->
+  <div class="rz-zone rz-zone-search">
+   <div class="global-search-wrap rz-search" id="global-search-wrap">
+    <span class="global-search-icon rz-search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+    <input class="global-search-input rz-search-input" id="global-search-input" type="text" placeholder="ابحث عن طالب، مدرس، دفعة، نتيجة، قسط..." oninput="globalSearch(this.value)" onblur="setTimeout(closeGlobalSearch,180)" autocomplete="off">
+    <span class="rz-kbd" aria-hidden="true"><kbd>Ctrl</kbd><kbd>K</kbd></span>
     <div class="global-search-results" id="global-search-results"></div>
    </div>
+  </div>
+
+  <!-- ▸ يسار الشريط (نهاية RTL): الإجراءات + المستخدم -->
+  <div class="rz-zone rz-zone-actions">
+
+   <button class="hamburger" onclick="openSidebar()" style="display:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+
+   <!-- إضافة سريعة (+) -->
+   <div class="rz-menu" id="rz-quick-menu">
+    <button type="button" class="rz-add-btn" onclick="rzToggleMenu('rz-quick-menu',event)" aria-label="إضافة سريعة" title="إضافة سريعة">
+     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <div class="rz-pop rz-pop-add" role="menu">
+     <div class="rz-pop-head">إضافة سريعة</div>
+     <button type="button" class="rz-pop-item" role="menuitem" onclick="rzRun(function(){openModal('add-student')})">
+      <svg class="rz-pi-ic" style="color:var(--info)" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      إضافة طالب</button>
+     <button type="button" class="rz-pop-item" role="menuitem" onclick="rzRun(function(){showPage('attendance')})">
+      <svg class="rz-pi-ic" style="color:var(--success)" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      تسجيل حضور</button>
+     <button type="button" class="rz-pop-item" role="menuitem" onclick="rzRun(function(){openModal('add-sub-payment')})">
+      <svg class="rz-pi-ic" style="color:var(--warning)" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      تسجيل دفعة</button>
+     <button type="button" class="rz-pop-item" role="menuitem" onclick="rzRun(function(){openModal('add-result')})">
+      <svg class="rz-pi-ic" style="color:var(--purple)" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/></svg>
+      إضافة نتيجة</button>
+     <button type="button" class="rz-pop-item" role="menuitem" onclick="rzRun(function(){showPage('whatsapp')})">
+      <svg class="rz-pi-ic" style="color:var(--danger)" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      إرسال إشعار</button>
+    </div>
+   </div>
+
+   <!-- الرسائل -->
+   <button type="button" class="rz-icon-btn rz-hide-tablet" onclick="showPage('whatsapp')" aria-label="الرسائل" title="الرسائل">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+   </button>
+
+   <!-- الإشعارات -->
+   <div class="rz-menu" id="rz-notif-menu">
+    <button type="button" class="rz-icon-btn" onclick="rzToggleMenu('rz-notif-menu',event)" aria-label="الإشعارات" title="الإشعارات">
+     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+     <span class="rz-badge" id="rz-notif-badge" style="display:none">0</span>
+    </button>
+    <div class="rz-pop rz-pop-notif" role="menu">
+     <div class="rz-pop-head rz-pop-head-row"><span>الإشعارات</span><button type="button" class="rz-pop-link" onclick="rzRun(function(){showPage('whatsapp')})">عرض الكل</button></div>
+     <div class="rz-notif-empty" id="rz-notif-empty">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span>لا توجد إشعارات جديدة</span>
+     </div>
+    </div>
+   </div>
+
+   <span class="save-indicator" id="save-indicator"></span>
+
+   <!-- بطاقة المستخدم -->
+   <div class="rz-menu" id="rz-user-menu">
+    <button type="button" class="rz-user" onclick="rzToggleMenu('rz-user-menu',event)" aria-label="حساب المستخدم">
+     <span class="rz-avatar">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+     </span>
+     <span class="rz-user-meta rz-hide-tablet">
+      <span class="rz-user-name">المدير</span>
+      <span class="rz-user-role">مدير النظام</span>
+     </span>
+     <svg class="rz-chevron rz-hide-tablet" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="rz-pop rz-pop-user" role="menu">
+     <div class="rz-user-head">
+      <span class="rz-avatar rz-avatar-lg">
+       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </span>
+      <span class="rz-user-meta">
+       <span class="rz-user-name">المدير</span>
+       <span class="rz-user-role">مدير النظام</span>
+      </span>
+     </div>
+     <button type="button" class="rz-pop-item" role="menuitem" onclick="rzRun(function(){showPage('settings')})">
+      <svg class="rz-pi-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      الإعدادات</button>
+     <button type="button" class="rz-pop-item" role="menuitem" onclick="rzRun(function(){toggleTheme()})">
+      <svg class="rz-pi-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      تبديل المظهر</button>
+     <div class="rz-pop-sep"></div>
+     <button type="button" class="rz-pop-item rz-pop-item-danger" role="menuitem" onclick="rzRun(function(){doLogout()})">
+      <svg class="rz-pi-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      تسجيل الخروج</button>
+    </div>
+   </div>
+
   </div>
  </div>
 
@@ -4410,6 +4498,7 @@ function getAttemptNum(sid,subject,type){return data.results.filter(r=>r.student
 // NAVIGATION
 // ══════════════════════════════════════════════
 var pageTitles={dashboard:'لوحة التحكم',students:'الطلبة','student-profile':'ملف الطالب',results:'النتائج',attendance:'الحضور',teachers:'المدرسون',fees:'الاشتراكات والدفعات',expenses:'المصروفات والأرباح',slips:'القصاصات',courses:'الدورات','course-detail':'تفاصيل الدورة',whatsapp:'إشعارات واتساب',reports:'التقارير',settings:'الإعدادات',discipline:'السلوك والانضباط',schedules:'الجداول الدراسية'};
+var pageSubs={dashboard:'ملخص أداء المركز اليوم',students:'إدارة بيانات الطلبة وملفاتهم',results:'الدرجات والتقييمات','student-profile':'الملف الكامل للطالب',attendance:'تسجيل ومتابعة الحضور اليومي',teachers:'إدارة المدرسين وأدائهم',fees:'الاشتراكات والدفعات المالية',expenses:'المصروفات والأرباح',slips:'إدارة القصاصات',courses:'إدارة الدورات والمحتوى','course-detail':'تفاصيل الدورة وتقدّمها',whatsapp:'إرسال الإشعارات والرسائل',reports:'التقارير والإحصاءات',settings:'إعدادات النظام والمعهد',discipline:'متابعة السلوك والإنذارات',schedules:'الجداول الدراسية الأسبوعية'};
 var currentPage='dashboard';
 
 
@@ -4422,6 +4511,7 @@ function showPage(name){
  if(el)el.classList.add('active');
  document.querySelectorAll('.nav-item').forEach(n=>{if(n.textContent.trim().includes(pageTitles[currentPage]?pageTitles[currentPage].substring(0,4):''||''))n.classList.add('active');});
  document.getElementById('page-title').textContent=pageTitles[currentPage]||currentPage;
+ var _rzSub=document.getElementById('rz-page-sub'); if(_rzSub){_rzSub.textContent=(typeof pageSubs!=='undefined'&&pageSubs[currentPage])?pageSubs[currentPage]:'';}
  var renders={dashboard:renderDashboard,students:renderStudents,results:renderResults,attendance:renderAttendance,teachers:renderTeachers,fees:renderFees,expenses:renderExpenses,slips:renderSlips,courses:renderCourses,whatsapp:renderWhatsapp,reports:renderReports,settings:renderSettings,discipline:renderDisciplinePage,schedules:renderSchedules};
  if(renders[currentPage])renders[currentPage]();
  try{ if(typeof rbacApply==='function') rbacApply(); }catch(_ra){}
@@ -13549,6 +13639,98 @@ textarea:focus-visible{
   .rasid-cardify > table > tbody > tr > td[colspan]::before{display:none;}
 }
 </style>
+<style id="rasid-topbar-2026">
+/* ═══════════════════════════════════════════════════════════════
+   RASID — Premium Top Navigation 2026 · شريط علوي بمستوى SaaS
+   ثلاث مناطق: الهوية | البحث العالمي | الإجراءات + المستخدم.
+   UI فقط — كل المعرّفات والوظائف محفوظة كما هي:
+   globalSearch / closeGlobalSearch / openModal / showPage / toggleTheme / doLogout / openSidebar.
+   الألوان عبر متغيّرات التطبيق فتتكيّف مع الوضعين، مع تعميق ليلي حسب المواصفة.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── تخطيط الشريط (محايد للثيم) ── */
+.rz-topbar{display:flex;align-items:center;gap:20px;padding:11px 28px;min-height:60px;}
+.rz-zone{display:flex;align-items:center;min-width:0;}
+.rz-zone-page{flex-direction:column;align-items:flex-start;gap:1px;flex-shrink:0;min-width:0;}
+.rz-zone-search{flex:1;justify-content:center;}
+.rz-zone-actions{gap:10px;flex-shrink:0;}
+
+/* ── سياق الصفحة (بديل كتلة الهوية المكررة) ── */
+.rz-page-title{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.3px;line-height:1.2;white-space:nowrap;margin:0;}
+.rz-page-sub{font-size:11.5px;color:var(--text-3);font-weight:600;white-space:nowrap;}
+
+/* ── البحث العالمي (العنصر الأبرز) ── */
+.rz-search{flex:1;max-width:520px;}
+.rz-search-input{padding:11px 44px 11px 70px;border-radius:12px;font-size:13.5px;background:var(--bg-elevated);}
+.rz-search-icon{right:15px;left:auto;}
+.rz-kbd{position:absolute;left:12px;top:50%;transform:translateY(-50%);display:flex;gap:3px;pointer-events:none;}
+.rz-kbd kbd{font-family:inherit;font-size:10px;font-weight:700;color:var(--text-3);background:var(--surface-2);border:1px solid var(--border-strong);border-radius:5px;padding:2px 5px;line-height:1;}
+
+/* ── أزرار الأيقونات وزر الإضافة الذهبي ── */
+.rz-icon-btn{position:relative;width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;color:var(--text-2);cursor:pointer;transition:background .16s var(--ease),color .16s var(--ease),border-color .16s var(--ease),transform .12s var(--ease);}
+.rz-icon-btn:hover{background:var(--surface-hover);color:var(--text);border-color:var(--border);}
+.rz-icon-btn:active{transform:scale(.94);}
+.rz-add-btn{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--brand);color:#171204;border:none;cursor:pointer;box-shadow:var(--brand-glow);transition:background .16s var(--ease),transform .12s var(--ease);}
+.rz-add-btn:hover{background:var(--brand-light);transform:translateY(-1px);}
+.rz-add-btn:active{transform:scale(.94);}
+
+/* ── شارة الإشعارات ── */
+.rz-badge{position:absolute;top:3px;left:3px;min-width:16px;height:16px;padding:0 4px;border-radius:9px;background:var(--danger);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);}
+
+/* ── بطاقة المستخدم ── */
+.rz-user{display:flex;align-items:center;gap:9px;padding:5px 10px 5px 6px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;color:var(--text);transition:background .16s var(--ease),border-color .16s var(--ease);}
+.rz-user:hover{background:var(--surface-hover);border-color:var(--border-strong);}
+.rz-avatar{width:30px;height:30px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--brand-soft-gradient);border:1px solid var(--brand-border);color:var(--brand-light);}
+.rz-avatar-lg{width:40px;height:40px;border-radius:11px;}
+.rz-user-meta{display:flex;flex-direction:column;line-height:1.2;text-align:right;}
+.rz-user-name{font-size:12.5px;font-weight:700;color:var(--text);}
+.rz-user-role{font-size:10px;color:var(--text-3);font-weight:600;}
+.rz-chevron{color:var(--text-3);transition:transform .2s var(--ease);}
+.rz-user-menu.open .rz-chevron{transform:rotate(180deg);}
+
+/* ── القوائم المنسدلة ── */
+.rz-menu{position:relative;}
+.rz-pop{position:absolute;top:calc(100% + 10px);left:0;min-width:230px;max-width:calc(100vw - 24px);background:var(--bg-elevated);border:1px solid var(--border-strong);border-radius:16px;box-shadow:var(--shadow-xl);padding:7px;z-index:1200;direction:rtl;opacity:0;transform:translateY(-6px) scale(.98);pointer-events:none;transition:opacity .16s var(--ease),transform .16s var(--ease);}
+.rz-menu.open .rz-pop{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+.rz-pop-user{min-width:240px;}
+.rz-pop-notif{min-width:300px;}
+.rz-pop-head{font-size:10.5px;font-weight:800;color:var(--text-3);letter-spacing:.6px;padding:8px 10px 6px;}
+.rz-pop-head-row{display:flex;align-items:center;justify-content:space-between;}
+.rz-pop-link{background:none;border:none;color:var(--brand);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;}
+.rz-pop-item{display:flex;align-items:center;gap:11px;width:100%;padding:10px 11px;border-radius:10px;background:none;border:none;color:var(--text);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:right;transition:background .14s var(--ease);}
+.rz-pop-item:hover{background:var(--surface-hover);}
+.rz-pop-item:active{transform:scale(.985);}
+.rz-pi-ic{flex-shrink:0;color:var(--text-2);}
+.rz-pop-item-danger{color:var(--danger);}
+.rz-pop-item-danger .rz-pi-ic{color:var(--danger);}
+.rz-pop-sep{height:1px;background:var(--border);margin:6px 4px;}
+.rz-user-head{display:flex;align-items:center;gap:12px;padding:10px 10px 12px;margin-bottom:5px;border-bottom:1px solid var(--border);}
+.rz-notif-empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:26px 14px;color:var(--text-3);font-size:12.5px;font-weight:600;}
+
+/* ── تعميق الوضع الليلي حسب المواصفة (#181B20 شريط / #1D2128 قوائم) ── */
+html:not([data-theme=light]) .rz-topbar{background:rgba(24,27,32,.82);border-bottom:1px solid rgba(255,255,255,.05);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);}
+html:not([data-theme=light]) .rz-pop{background:#1D2128;}
+html:not([data-theme=light]) .rz-search-input{background:#15181D;}
+
+/* ── تابلت (≤1100px): تصغير ذكي مع إبقاء البحث وبطاقة المستخدم ── */
+@media (max-width:1100px){
+  .rz-topbar{gap:14px;padding:11px 18px;}
+  .rz-hide-tablet{display:none !important;}
+  .rz-page-sub{display:none;}
+  .rz-page-title{font-size:16px;}
+  .rz-search{max-width:none;}
+  .rz-user{padding:5px;gap:0;}
+}
+
+/* ── هاتف (≤768px): احترام نمط الموبايل الحالي (Bottom-Nav + عنوان مركزي) ── */
+@media (max-width:768px){
+  .rz-topbar{gap:10px;}
+  .rz-zone-search{display:none;}
+  .rz-zone-page{flex-direction:row;align-items:center;gap:0;}
+  .rz-page-sub{display:none;}
+  .rz-icon-btn,.rz-add-btn{width:38px;height:38px;}
+}
+</style>
 <script>
 /* RASID — Table cardify labeler (المهمة الأولى)
    إضافي بالكامل: يقرأ عناوين الأعمدة ويضيف data-label للخلايا،
@@ -13607,5 +13789,53 @@ textarea:focus-visible{
   }
 })();
 </script>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   RASID — Top Navigation interactions (UI فقط)
+   فتح/إغلاق قوائم الشريط العلوي + اختصار Ctrl/Cmd+K للبحث.
+   لا يمسّ أي منطق أو بيانات. متوافق مع WebView القديم (var، بدون أسهم).
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  function rzCloseAllMenus(except){
+    var menus=document.querySelectorAll('.rz-menu');
+    for(var i=0;i<menus.length;i++){
+      if(menus[i]!==except) menus[i].classList.remove('open');
+    }
+  }
+  window.rzToggleMenu=function(id,ev){
+    if(ev){ ev.stopPropagation(); ev.preventDefault(); }
+    var el=document.getElementById(id);
+    if(!el) return;
+    var isOpen=el.classList.contains('open');
+    rzCloseAllMenus(el);
+    if(isOpen){ el.classList.remove('open'); }
+    else{ el.classList.add('open'); }
+  };
+  window.rzRun=function(fn){
+    rzCloseAllMenus(null);
+    try{ if(typeof fn==='function') fn(); }catch(e){ console.error('rzRun',e); }
+  };
+  /* إغلاق عند النقر خارج القوائم */
+  document.addEventListener('click',function(e){
+    var n=e.target;
+    while(n){
+      if(n.classList && n.classList.contains('rz-menu')) return;
+      n=n.parentNode;
+    }
+    rzCloseAllMenus(null);
+  });
+  /* اختصارات لوحة المفاتيح: Esc للإغلاق، Ctrl/Cmd+K للبحث */
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){ rzCloseAllMenus(null); return; }
+    var k=(e.key||'').toLowerCase();
+    if((e.ctrlKey||e.metaKey) && k==='k'){
+      e.preventDefault();
+      var inp=document.getElementById('global-search-input');
+      if(inp){ inp.focus(); inp.select(); }
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
