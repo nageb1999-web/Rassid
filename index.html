@@ -326,38 +326,7 @@ body{
  transition:transform 0.4s var(--ease);
  overflow-y:auto;
 }
-.sidebar-logo{
- padding:22px 20px;
- border-bottom:1px solid var(--border);
-}
-.logo-wrap{display:flex;align-items:center;gap:14px;}
-.sidebar-icon{
- width:44px;height:44px;
- background:var(--brand-gradient);
- border-radius:12px;
- display:flex;align-items:center;justify-content:center;
- font-size:22px;flex-shrink:0;
- color:#c8b090;
- box-shadow:0 4px 16px rgba(168,134,90,.16),inset 0 1px 0 rgba(255,255,255,0.2);
-}
-.sidebar-name{
- font-size:17px;font-weight:800;
- background:var(--brand-gradient);
- -webkit-background-clip:text;background-clip:text;
- -webkit-text-fill-color:transparent;
- letter-spacing:-0.3px;
-}
-.sidebar-sub{font-size:10px;color:var(--text-3);margin-top:2px;letter-spacing:1.5px;text-transform:uppercase;}
-.sidebar-inst{
- font-size:11px;color:var(--brand-light);font-weight:600;
- margin-top:12px;padding:8px 12px;
- background:var(--brand-tint);
- border:1px solid var(--brand-border);
- border-radius:10px;cursor:pointer;
- transition:all 0.2s var(--ease);
- display:flex;align-items:center;gap:6px;
-}
-.sidebar-inst:hover{background:rgba(168,134,90,.10);transform:translateY(-1px);}
+/* (أُزيلت أنماط شعار القائمة الجانبية القديمة — لم تعد موجودة في DOM بعد اعتماد القائمة المنبثقة) */
 
 .sidebar-nav{flex:1;min-height:0;padding:12px;overflow-y:auto;overflow-x:hidden;position:relative;z-index:51;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 .nav-section{
@@ -1046,12 +1015,14 @@ html[data-theme=light] .topic-row:hover{background:#ddd6ca;}
 /* ═══ COPYRIGHT ═══ */
 
 /* ═══ RESPONSIVE ═══ */
-@media(max-width:1100px){
+@media(max-width:768px){
  .sidebar{transform:translateX(100%);width:280px;position:fixed;top:0;right:0;height:100vh;}
  .sidebar.open{transform:translateX(0);box-shadow:var(--shadow-xl);}
  .sidebar-overlay.open{display:block;}
  .main-wrap{margin-right:0;}
  .hamburger{display:flex;}
+}
+@media(max-width:1100px){
  .content{padding:20px;padding-bottom:60px;}
  .stats-grid{grid-template-columns:1fr 1fr;gap:12px;}
  .fee-summary{grid-template-columns:1fr 1fr;}
@@ -1321,11 +1292,11 @@ html[data-theme=light] .toast{
 /* ── activation screen ── */
 html[data-theme=light] #activation-screen{background:#e8e2d9 !important;}
 html[data-theme=light] #activation-screen > div > div:last-child{background:#ede7dd !important;border:1px solid rgba(90,70,40,.14) !important;}
-@media(max-width:1100px){.sidebar{width:min(280px,86vw);position:fixed;top:0;right:0;height:100dvh;transform:translateX(100%);overflow:hidden;display:flex;flex-direction:column;}.sidebar.open{transform:translateX(0);box-shadow:var(--shadow-xl);}.sidebar-logo{padding:18px 16px;}.logo-wrap{align-items:center;}.sidebar-inst{max-width:100%;white-space:normal;line-height:1.5;}.main-wrap{margin-right:0;width:100%;}.content{padding:18px}.topbar{padding:14px 18px}.cards-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}#dash-quick,#page-dashboard>div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}.modal{padding:24px}}
+@media(max-width:768px){.sidebar{width:min(280px,86vw);position:fixed;top:0;right:0;height:100dvh;transform:translateX(100%);overflow:hidden;display:flex;flex-direction:column;}.sidebar.open{transform:translateX(0);box-shadow:var(--shadow-xl);}.main-wrap{margin-right:0;width:100%;}.topbar{padding:14px 18px}}@media(max-width:1100px){.content{padding:18px}.cards-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}#dash-quick,#page-dashboard>div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}.modal{padding:24px}}
 @media(max-width:520px){.stats-grid,.fee-summary{grid-template-columns:1fr}.btn{width:100%;justify-content:center;min-width:0}.sec-actions,.modal-footer{width:100%;flex-direction:column}.tab-btn{flex:1;min-width:0}.content{padding:12px;padding-bottom:50px!important}.topbar-title{font-size:clamp(14px,4vw,17px);max-width:52vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#dash-date-bar{padding:14px;border-radius:18px}.stat-value{font-size:clamp(22px,6vw,30px)}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.modal{padding:16px!important;margin:8px!important}.cards-grid,.stats-grid{gap:10px}}
 
-/* إصلاح ظهور القائمة الجانبية داخل المعاينة أو الشاشات المتوسطة */
-@media(max-width:1100px){
+/* قائمة/درج الموبايل فقط (≤768) — الحاسوب/التابلت يستخدمان Navigation Popover */
+@media(max-width:768px){
  #app{display:block;}
  .sidebar{
  right:0!important;left:auto!important;
@@ -2443,7 +2414,7 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
 </div>
 
 <!-- SIDEBAR OVERLAY -->
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeNavPopover()"></div>
 
 <div id="app" style="display:none">
 <!-- SIDEBAR -->
@@ -2501,7 +2472,7 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
 
   <!-- ▸ الهوية + مُشغّل التنقّل (يسار الشريط على الحاسوب/التابلت بعد العكس؛ مخفية على الهاتف) -->
   <div class="rz-zone rz-zone-brand">
-   <button type="button" class="rz-launcher" onclick="rzOpenNav(event)" aria-label="فتح قائمة التنقّل" title="القائمة">
+   <button type="button" class="rz-launcher" onclick="toggleNavPopover(event)" aria-label="فتح قائمة التنقّل" title="القائمة">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
    </button>
    <span class="rz-divider" aria-hidden="true"></span>
@@ -12001,32 +11972,6 @@ checkSession();
  color:var(--brand-light);
 }
 
-/* إصلاح.sidebar{
- right:0!important;left:auto!important;
- transform:translateX(100%)!important;
- max-width:86vw!important;
- height:100dvh!important;
- overflow:hidden!important;overscroll-behavior:contain;display:flex!important;flex-direction:column!important;}overflow-y:auto!important;overscroll-behavior:contain;}max-width:86vw!important;
- height:100dvh!important;
- }
- .sidebar.open{transform:translateX(0)!important;}
- .sidebar-overlay{
- position:fixed;inset:0;
- background:rgba(0,0,0,.45);
- backdrop-filter:blur(6px);
- z-index:49;display:none;
- }
- .sidebar-overlay.open{display:block!important;}
- .main-wrap{width:100%!important;min-width:0!important;}
-}
-@media(max-width:520px){
- .sidebar{width:min(280px,88vw)!important;}
- .sidebar-logo{padding:16px 14px!important;}
- .sidebar-name{font-size:15px;}
- .sidebar-sub{font-size:9px;}
-}
-
-
 /* ══════════════════════════════════════════════
    RESPONSIVE IMPROVEMENTS — تحسينات التوافق
    جميع أحجام الهواتف (320px → tablet)
@@ -13877,28 +13822,7 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
     try{ if(typeof fn==='function') fn(); }catch(e){ console.error('rzRun',e); }
   };
   /* فتح قائمة التنقّل المنبثقة وتثبيتها تحت الزر (حاسوب/تابلت فقط) — يعيد استخدام openSidebar */
-  window.rzOpenNav=function(ev){
-    try{
-      var sb=document.getElementById('sidebar');
-      if(sb && window.innerWidth>=769 && ev && ev.currentTarget){
-        var r=ev.currentTarget.getBoundingClientRect();
-        var left=Math.min(Math.max(12,r.left), window.innerWidth-308);
-        sb.style.setProperty('--rz-nav-left', left+'px');
-        sb.style.setProperty('--rz-nav-top', (r.bottom+8)+'px');
-      }
-    }catch(e){}
-    if(typeof openSidebar==='function') openSidebar();
-    /* إغلاق القائمة المنبثقة تلقائياً عند التمرير — حاسوب/تابلت فقط، بلا تكرار */
-    if(window.innerWidth>=769){
-      window.removeEventListener('scroll', rzNavScrollClose, true);
-      window.addEventListener('scroll', rzNavScrollClose, {passive:true, capture:true});
-    }
-  };
-  function rzNavScrollClose(){
-    window.removeEventListener('scroll', rzNavScrollClose, true);
-    var sb=document.getElementById('sidebar');
-    if(sb && sb.classList.contains('open') && typeof closeSidebar==='function') closeSidebar();
-  }
+  /* (نُقل نظام القائمة المنبثقة إلى وحدة مستقلة: openNavPopover/closeNavPopover/toggleNavPopover) */
   /* إغلاق عند النقر خارج القوائم */
   document.addEventListener('click',function(e){
     var n=e.target;
@@ -13928,7 +13852,7 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
 <style id="rasid-sidebar-nologo-2026">
 /* القائمة الجانبية بلا شعار: مسافة علوية مريحة للعنصر الأول */
 .sidebar > .sidebar-nav:first-child{padding-top:max(18px,env(safe-area-inset-top,0px));}
-@media(max-width:1100px){.sidebar > .sidebar-nav:first-child{padding-top:max(16px,env(safe-area-inset-top,0px));}}
+@media(max-width:768px){.sidebar > .sidebar-nav:first-child{padding-top:max(16px,env(safe-area-inset-top,0px));}}
 </style>
 <style id="rasid-unify-2026">
 /* RASID — Unified Cards & Quiet System (UI فقط)
@@ -14043,6 +13967,77 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   #sidebar .sidebar-footer{border-top:1px solid var(--border);margin-top:6px!important;padding-top:8px!important;}
 }
 </style>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   RASID — Navigation Popover (نظام مستقل · حاسوب/تابلت ≥769px فقط)
+   مسؤول وحده عن: الفتح/الإغلاق/التبديل + الطبقة الخلفية + التمرير + لوحة المفاتيح + تغيير الحجم.
+   يعمل على عنصر #sidebar نفسه (مكان عناصر التنقّل وصلاحيات الأدوار) بلا تغيير أي منطق.
+   إدارة المستمعين عبر MutationObserver لمنع التكرار/التسرّب مهما كان مصدر الإغلاق
+   (نقر خارجي · ESC · اختيار قسم · تمرير · انتقال · تغيير حجم · تحوّل للهاتف).
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  function sb(){ return document.getElementById('sidebar'); }
+  function ov(){ return document.getElementById('sidebar-overlay'); }
+  function isWide(){ return window.innerWidth>=769; }
+
+  function position(ev){
+    var s=sb(); if(!s) return;
+    var btn=(ev && ev.currentTarget)?ev.currentTarget:document.querySelector('.rz-launcher');
+    if(!btn) return;
+    var r=btn.getBoundingClientRect();
+    var left=Math.min(Math.max(12,r.left), window.innerWidth-316);
+    s.style.setProperty('--rz-nav-left', left+'px');
+    s.style.setProperty('--rz-nav-top', (r.bottom+10)+'px');
+  }
+
+  window.openNavPopover=function(ev){
+    var s=sb(); if(!s) return;
+    if(isWide()) position(ev);
+    s.classList.add('open');
+    var o=ov(); if(o) o.classList.add('open');
+  };
+  window.closeNavPopover=function(){
+    var s=sb(); if(s) s.classList.remove('open');
+    var o=ov(); if(o) o.classList.remove('open');
+  };
+  window.toggleNavPopover=function(ev){
+    var s=sb(); if(!s) return;
+    if(s.classList.contains('open')) window.closeNavPopover();
+    else window.openNavPopover(ev);
+  };
+
+  /* إدارة المستمعين بلا تسرّب — مربوطة بحالة .open عبر مراقب التغييرات */
+  var bound=false;
+  function onScroll(){ window.closeNavPopover(); }
+  function onKey(e){ if(e.key==='Escape') window.closeNavPopover(); }
+  function onResize(){ window.closeNavPopover(); }
+  function bind(){
+    if(bound) return; bound=true;
+    window.addEventListener('scroll', onScroll, {passive:true, capture:true});
+    document.addEventListener('keydown', onKey, true);
+    window.addEventListener('resize', onResize, {passive:true});
+  }
+  function unbind(){
+    if(!bound) return; bound=false;
+    window.removeEventListener('scroll', onScroll, true);
+    document.removeEventListener('keydown', onKey, true);
+    window.removeEventListener('resize', onResize);
+  }
+  function sync(){
+    var s=sb();
+    if(s && s.classList.contains('open') && isWide()) bind(); else unbind();
+  }
+  function init(){
+    var s=sb();
+    if(s && window.MutationObserver){
+      new MutationObserver(sync).observe(s, {attributes:true, attributeFilter:['class']});
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
 
 </body>
 </html>
