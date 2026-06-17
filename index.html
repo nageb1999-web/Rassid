@@ -912,6 +912,195 @@ html[data-theme=light] .topic-row:hover{background:#ddd6ca;}
  letter-spacing:1px;text-transform:uppercase;
 }
 
+/* ═══ STUDENT 360 — Tabs ═══ */
+.s360-tabs{
+ display:flex;gap:4px;flex-wrap:wrap;
+ background:var(--surface);
+ border:1px solid var(--border);
+ border-radius:14px;
+ padding:5px;
+ margin-bottom:18px;
+ overflow-x:auto;
+ -webkit-overflow-scrolling:touch;
+ scrollbar-width:none;
+}
+.s360-tabs::-webkit-scrollbar{display:none;}
+.s360-tab{
+ flex-shrink:0;
+ padding:8px 14px;
+ border-radius:10px;
+ border:none;
+ background:transparent;
+ color:var(--text-3);
+ font-family:var(--font);
+ font-size:12px;
+ font-weight:600;
+ cursor:pointer;
+ transition:all .15s;
+ display:flex;align-items:center;gap:5px;
+ white-space:nowrap;
+}
+.s360-tab:hover{background:var(--surface-hover);color:var(--text);}
+.s360-tab.active{
+ background:var(--brand-tint);
+ color:var(--brand-light);
+ box-shadow:0 1px 4px rgba(0,0,0,.18);
+}
+.s360-tab svg{opacity:.75;}
+.s360-tab.active svg{opacity:1;}
+.s360-pane{display:none;}
+.s360-pane.active{display:block;animation:pageIn .25s var(--ease,ease);}
+
+/* ═══ STUDENT 360 — KPI Summary Bar ═══ */
+.s360-summary{
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+ gap:8px;
+ margin-bottom:16px;
+}
+.s360-kpi{
+ background:var(--surface);
+ border:1px solid var(--border);
+ border-radius:12px;
+ padding:10px 12px;
+ display:flex;flex-direction:column;gap:3px;
+ transition:border-color .15s;
+}
+.s360-kpi:hover{border-color:var(--brand-border);}
+.s360-kpi-val{font-size:18px;font-weight:800;line-height:1;}
+.s360-kpi-lbl{font-size:10px;color:var(--text-3);font-weight:600;}
+.s360-kpi-sub{font-size:9px;color:var(--text-3);margin-top:1px;}
+
+/* ═══ STUDENT 360 — Unified Timeline ═══ */
+.s360-timeline{
+ display:flex;flex-direction:column;gap:0;
+ position:relative;
+}
+.s360-timeline::before{
+ content:'';
+ position:absolute;
+ right:15px;top:0;bottom:0;
+ width:2px;
+ background:var(--border);
+ opacity:.5;
+}
+.s360-tl-item{
+ display:flex;gap:14px;
+ padding:8px 0;
+ position:relative;
+}
+.s360-tl-dot{
+ width:30px;height:30px;
+ border-radius:50%;
+ display:flex;align-items:center;justify-content:center;
+ flex-shrink:0;
+ z-index:1;
+ font-size:12px;
+ border:2px solid var(--bg);
+}
+.s360-tl-body{
+ flex:1;min-width:0;
+ background:var(--surface);
+ border:1px solid var(--border);
+ border-radius:10px;
+ padding:9px 11px;
+ margin-bottom:6px;
+}
+.s360-tl-title{font-size:12px;font-weight:700;color:var(--text);}
+.s360-tl-meta{font-size:10px;color:var(--text-3);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;}
+.s360-tl-badge{
+ display:inline-flex;align-items:center;gap:3px;
+ font-size:9px;font-weight:700;
+ padding:2px 7px;border-radius:6px;
+}
+
+/* ═══ STUDENT 360 — Follow-up Alert Card ═══ */
+.s360-alert{
+ background:rgba(248,113,113,.06);
+ border:1px solid rgba(248,113,113,.22);
+ border-radius:12px;
+ padding:12px 14px;
+ margin-bottom:14px;
+}
+.s360-alert-title{
+ font-size:11px;font-weight:800;color:var(--danger);
+ display:flex;align-items:center;gap:6px;margin-bottom:8px;
+}
+.s360-alert-item{
+ display:flex;align-items:center;gap:8px;
+ padding:6px 0;
+ border-bottom:1px solid rgba(248,113,113,.1);
+ font-size:11px;color:var(--text-2);
+}
+.s360-alert-item:last-child{border-bottom:none;}
+.s360-alert-item svg{color:var(--danger);flex-shrink:0;}
+
+/* ═══ STUDENT 360 — Print Report ═══ */
+@media print {
+ /* Hide everything except the print report */
+ body > *:not(#s360-print-root) { display:none !important; }
+ #s360-print-root { display:block !important; }
+ * { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+}
+#s360-print-root{display:none;direction:rtl;font-family:'Tajawal',sans-serif;}
+.s360-print-page{
+ width:210mm;min-height:297mm;
+ padding:18mm 14mm 14mm;
+ background:#fff;color:#1a1a2e;
+ box-sizing:border-box;
+}
+.s360-print-header{
+ display:flex;align-items:center;justify-content:space-between;
+ border-bottom:2px solid #c9a84c;
+ padding-bottom:12px;margin-bottom:18px;
+}
+.s360-ph-inst{font-size:20px;font-weight:900;color:#1a1a2e;}
+.s360-ph-title{font-size:13px;color:#555;margin-top:2px;}
+.s360-ph-date{font-size:10px;color:#888;text-align:left;}
+.s360-print-student{
+ display:flex;align-items:center;gap:16px;
+ background:#f9f5ee;border:1px solid #e8d9b0;
+ border-radius:10px;padding:14px 16px;margin-bottom:18px;
+}
+.s360-ps-avatar{
+ width:52px;height:52px;border-radius:12px;
+ background:linear-gradient(135deg,#c9a84c,#8b6914);
+ display:flex;align-items:center;justify-content:center;
+ font-size:22px;font-weight:900;color:#fff;flex-shrink:0;
+}
+.s360-ps-name{font-size:18px;font-weight:900;color:#1a1a2e;}
+.s360-ps-meta{font-size:11px;color:#555;margin-top:4px;}
+.s360-print-section{margin-bottom:16px;}
+.s360-print-section-title{
+ font-size:12px;font-weight:800;color:#c9a84c;
+ border-bottom:1px solid #e8d9b0;
+ padding-bottom:5px;margin-bottom:10px;
+ letter-spacing:.5px;text-transform:uppercase;
+}
+.s360-print-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.s360-print-kpi{
+ background:#f9f5ee;border:1px solid #e8d9b0;
+ border-radius:8px;padding:9px 11px;text-align:center;
+}
+.s360-print-kpi-val{font-size:18px;font-weight:800;color:#1a1a2e;}
+.s360-print-kpi-lbl{font-size:9px;color:#666;margin-top:2px;}
+.s360-print-table{width:100%;border-collapse:collapse;font-size:11px;}
+.s360-print-table th{background:#f0e8d0;padding:6px 9px;text-align:right;font-weight:700;border:1px solid #e8d9b0;}
+.s360-print-table td{padding:6px 9px;border:1px solid #e8d9b0;}
+.s360-print-table tr:nth-child(even) td{background:#faf7f0;}
+.s360-print-footer{
+ margin-top:auto;padding-top:14px;
+ border-top:1px solid #e8d9b0;
+ display:flex;justify-content:space-between;
+ font-size:10px;color:#999;
+}
+.s360-print-stamp{
+ display:flex;align-items:center;justify-content:center;
+ width:80px;height:80px;
+ border:2px dashed #c9a84c;border-radius:50%;
+ font-size:9px;color:#c9a84c;font-weight:700;text-align:center;
+}
+
 /* ═══ WA ═══ */
 .wa-card{
  background:var(--wa-bg);
@@ -2714,67 +2903,70 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
 
  <!-- بطاقة ترحيب المستخدم الجديد -->
  <div id="dash-welcome" style="display:none;margin-bottom:20px">
- <div style="background:var(--surface);border:1px solid var(--brand-border);border-radius:20px;padding:28px 24px;text-align:center;position:relative;overflow:hidden">
- <div style="position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,var(--brand),var(--brand-light),transparent)"></div>
- <div style="width:56px;height:56px;background:rgba(168,134,90,.08);border:1px solid var(--brand-border);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
- <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+ <div style="background:var(--surface);border:1px solid var(--brand-border);border-radius:20px;padding:0;overflow:hidden;position:relative">
+  <div style="position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,var(--brand),var(--brand-light),transparent)"></div>
+  <!-- Header -->
+  <div style="padding:24px 20px 16px;text-align:center;border-bottom:1px solid var(--border)">
+   <div style="width:52px;height:52px;background:rgba(168,134,90,.08);border:1px solid var(--brand-border);border-radius:15px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brand-light)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+   </div>
+   <div style="font-size:17px;font-weight:800;color:var(--brand-light);margin-bottom:5px">مرحباً بك في راصد</div>
+   <div style="font-size:11px;color:var(--text-3);line-height:1.7">أربع خطوات بسيطة وتطبيقك جاهز للعمل</div>
+  </div>
+  <!-- 4-step onboarding cards -->
+  <div style="padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
+   <!-- Step 1: Settings -->
+   <div class="onb-card" onclick="showPage('settings')" style="background:var(--surface-2);border:1px solid var(--border);border-radius:13px;padding:14px;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='var(--brand-border)'" onmouseleave="this.style.borderColor='var(--border)'">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+     <div style="width:34px;height:34px;background:rgba(168,134,90,.1);border:1px solid var(--brand-border);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand-light)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+     </div>
+     <div style="font-size:9px;font-weight:800;color:var(--brand);letter-spacing:1px">الخطوة 1</div>
+    </div>
+    <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px">إعداد المعهد</div>
+    <div style="font-size:10px;color:var(--text-3);line-height:1.5">أضف اسم المعهد ومعلوماته الأساسية</div>
+    <div style="margin-top:10px"><span style="font-size:10px;font-weight:700;color:var(--brand-light);background:var(--brand-tint);padding:4px 10px;border-radius:7px">فتح الإعدادات ←</span></div>
+   </div>
+   <!-- Step 2: Add Student -->
+   <div class="onb-card" onclick="openModal('add-student')" style="background:var(--surface-2);border:1px solid var(--border);border-radius:13px;padding:14px;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='rgba(99,179,237,.4)'" onmouseleave="this.style.borderColor='var(--border)'">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+     <div style="width:34px;height:34px;background:rgba(99,179,237,.1);border:1px solid rgba(99,179,237,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#63b3ed" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+     </div>
+     <div style="font-size:9px;font-weight:800;color:#63b3ed;letter-spacing:1px">الخطوة 2</div>
+    </div>
+    <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px">أضف أول طالب</div>
+    <div style="font-size:10px;color:var(--text-3);line-height:1.5">سجّل بيانات طلابك ومعلوماتهم</div>
+    <div style="margin-top:10px"><span style="font-size:10px;font-weight:700;color:#63b3ed;background:rgba(99,179,237,.1);padding:4px 10px;border-radius:7px">إضافة طالب ←</span></div>
+   </div>
+   <!-- Step 3: Add Course -->
+   <div class="onb-card" onclick="showPage('courses')" style="background:var(--surface-2);border:1px solid var(--border);border-radius:13px;padding:14px;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='rgba(159,122,234,.4)'" onmouseleave="this.style.borderColor='var(--border)'">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+     <div style="width:34px;height:34px;background:rgba(159,122,234,.1);border:1px solid rgba(159,122,234,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9f7aea" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+     </div>
+     <div style="font-size:9px;font-weight:800;color:#9f7aea;letter-spacing:1px">الخطوة 3</div>
+    </div>
+    <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px">أضف دورة أو مدرساً</div>
+    <div style="font-size:10px;color:var(--text-3);line-height:1.5">أنشئ أول دورة وربطها بمدرس</div>
+    <div style="margin-top:10px"><span style="font-size:10px;font-weight:700;color:#9f7aea;background:rgba(159,122,234,.1);padding:4px 10px;border-radius:7px">الدورات ←</span></div>
+   </div>
+   <!-- Step 4: Attendance -->
+   <div class="onb-card" onclick="showPage('attendance')" style="background:var(--surface-2);border:1px solid var(--border);border-radius:13px;padding:14px;cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='rgba(52,211,153,.4)'" onmouseleave="this.style.borderColor='var(--border)'">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+     <div style="width:34px;height:34px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+     </div>
+     <div style="font-size:9px;font-weight:800;color:#34d399;letter-spacing:1px">الخطوة 4</div>
+    </div>
+    <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px">سجّل أول حضور</div>
+    <div style="font-size:10px;color:var(--text-3);line-height:1.5">ابدأ بتسجيل حضور الطلبة اليومي</div>
+    <div style="margin-top:10px"><span style="font-size:10px;font-weight:700;color:#34d399;background:rgba(52,211,153,.1);padding:4px 10px;border-radius:7px">تسجيل الحضور ←</span></div>
+   </div>
+  </div>
+  <div style="padding:12px 20px;border-top:1px solid var(--border);font-size:10px;color:var(--text-3);text-align:center">كل البيانات تُحفظ تلقائياً على جهازك — يعمل بدون إنترنت</div>
  </div>
- <div style="font-size:18px;font-weight:800;color:var(--brand-light);margin-bottom:8px">مرحباً بك في راصد</div>
- <div style="font-size:12px;color:var(--text-3);line-height:1.8;margin-bottom:20px">التطبيق جاهز — ابدأ بإضافة بياناتك الآن<br>كل شيء يُحفظ تلقائياً على جهازك</div>
- <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
-
- <button onclick="showPage('settings')" style="display:inline-flex;align-items:center;gap:6px;padding:10px 16px;background:var(--surface-2);color:var(--text-2);border:1px solid var(--border);border-radius:12px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">
- <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
- إعداد المعهد
- </button>
- </div>
- <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border)">
- <div style="font-size:9px;color:var(--text-3);text-align:center;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase">خطوات البداية</div>
- <div style="display:flex;flex-direction:column;gap:8px;max-width:280px;margin:0 auto">
- <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface-2);border-radius:10px;cursor:pointer" onclick="showPage('settings')">
- <div style="width:22px;height:22px;background:rgba(168,134,90,.12);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
- <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
- </div>
- <div style="text-align:right;flex:1">
- <div style="font-size:11px;font-weight:700;color:var(--text)">أضف اسم المعهد</div>
- <div style="font-size:9px;color:var(--text-3)">من صفحة الإعدادات</div>
- </div>
- <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
- </div>
- <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface-2);border-radius:10px;cursor:pointer" onclick="openModal('add-student')">
- <div style="width:22px;height:22px;background:rgba(99,179,237,0.12);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
- <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#63b3ed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
- </div>
- <div style="text-align:right;flex:1">
- <div style="font-size:11px;font-weight:700;color:var(--text)">أضف الطلبة</div>
- <div style="font-size:9px;color:var(--text-3)">سجل بيانات طلابك</div>
- </div>
- <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
- </div>
- <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface-2);border-radius:10px;cursor:pointer" onclick="showPage('teachers')">
- <div style="width:22px;height:22px;background:rgba(159,122,234,0.12);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
- <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9f7aea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
- </div>
- <div style="text-align:right;flex:1">
- <div style="font-size:11px;font-weight:700;color:var(--text)">أضف المدرسين</div>
- <div style="font-size:9px;color:var(--text-3)">سجل بيانات هيئة التدريس</div>
- </div>
- <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
- </div>
- <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface-2);border-radius:10px;cursor:pointer" onclick="showPage('attendance')">
- <div style="width:22px;height:22px;background:rgba(52,211,153,0.12);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
- <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
- </div>
- <div style="text-align:right;flex:1">
- <div style="font-size:11px;font-weight:700;color:var(--text)">سجل الحضور</div>
- <div style="font-size:9px;color:var(--text-3)">ابدأ بتسجيل حضور اليوم</div>
- </div>
- <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
- </div>
- </div>
- </div>
- </div>
- </div>
+</div>
 
  <!-- تنبيه الاشتراكات -->
  <div id="sub-expiry-banner" style="display:none"></div>
@@ -4110,6 +4302,24 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
  </div>
 </div>
 
+<!-- Modal: Attendance Parent Notify -->
+<div class="modal-overlay" id="modal-att-notify">
+ <div class="modal">
+ <h3><span style="display:inline-flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> إبلاغ ولي الأمر</span></h3>
+ <div id="att-notify-student" style="font-size:13px;font-weight:700;color:var(--brand-light);margin-bottom:4px"></div>
+ <div id="att-notify-phone" style="font-size:11px;color:var(--text-3);margin-bottom:14px"></div>
+ <div class="form-group">
+ <label>نص الرسالة</label>
+ <textarea id="att-notify-msg" rows="7" style="font-size:12px;line-height:1.7"></textarea>
+ </div>
+ <div class="modal-footer" style="flex-wrap:wrap">
+ <button class="btn btn-outline" onclick="closeModal('att-notify')">إغلاق</button>
+ <button class="btn btn-info" onclick="copyAttNotifMsg()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> نسخ</button>
+ <button class="btn btn-wa" id="att-notify-wa-btn" onclick="sendAttNotifWA()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> فتح واتساب</button>
+ </div>
+ </div>
+</div>
+
 <!-- Modal: Violation Detail -->
 <div class="modal-overlay" id="modal-viol-detail">
  <div class="modal">
@@ -4586,6 +4796,24 @@ function normalizeLocalPhone(phone){
  else if(d.indexOf('7')===0 && d.length===10)d='0'+d;
  return d;
 }
+// ══ Empty State Helper ══
+function emptyState(opts){
+ // opts: {icon (SVG string), emoji, title, desc, btnLabel, btnAction}
+ var iconHtml = opts.icon
+  ? '<div class="empty-icon">'+opts.icon+'</div>'
+  : (opts.emoji ? '<div style="font-size:32px;margin-bottom:8px">'+opts.emoji+'</div>' : '');
+ var btnHtml = opts.btnLabel
+  ? '<button class="btn btn-gold btn-sm" style="margin-top:12px" onclick="'+opts.btnAction+'">'+opts.btnLabel+'</button>'
+  : '';
+ var descHtml = opts.desc ? '<div style="font-size:10px;color:var(--text-3);margin-top:4px;line-height:1.6">'+opts.desc+'</div>' : '';
+ return '<div class="empty" style="padding:32px 20px">'
+  + iconHtml
+  + '<p style="margin:0 0 4px;font-size:13px;font-weight:700;color:var(--text-2)">'+(opts.title||'لا توجد بيانات')+'</p>'
+  + descHtml
+  + btnHtml
+  + '</div>';
+}
+
 function waPhone(phone){
  var d=normalizeLocalPhone(phone);
  if(d.indexOf('0')===0)d='964'+d.slice(1);
@@ -6555,7 +6783,7 @@ function renderStudents(){
  var statsEl=document.getElementById('student-filter-stats');
  if(statsEl){var hasF=q||stageF||feesF||attF;statsEl.textContent=hasF?'يُعرض '+list.length+' من أصل '+data.students.length+' طالب':'';}
  var el=document.getElementById('students-cards');
- if(!list.length){var msg=q||stageF||feesF||attF?'لا توجد نتائج مطابقة':'لا يوجد طلبة حتى الآن';el.innerHTML=`<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><p>${msg}</p></div>`;return;}
+ if(!list.length){var msg=q||stageF||feesF||attF?'لا توجد نتائج مطابقة':'لا يوجد طلبة حتى الآن';var desc=q||stageF||feesF||attF?'جرّب تغيير خيارات البحث أو الفلتر':'ابدأ بإضافة أول طالب لمتابعة حضوره ودرجاته ومدفوعاته';el.innerHTML=emptyState({emoji:'🎓',title:msg,desc:desc,btnLabel:(q||stageF||feesF||attF)?null:'إضافة طالب',btnAction:"openModal('add-student')"});return;}
  el.innerHTML=list.map(s=>{
  var rate=attRate(s.id),avg=avgGrade(s.id);
  var _fs=feeStats(s.id);var total=_fs.total;var paid=_fs.paid;var remaining=_fs.remaining;
@@ -6676,105 +6904,436 @@ function delStudent(id){
 // ══════════════════════════════════════════════
 // STUDENT PROFILE
 // ══════════════════════════════════════════════
+// ══ Student 360 — Tab switcher ══
+function s360Tab(tab, sid) {
+ var panes = document.querySelectorAll('.s360-pane');
+ var tabs = document.querySelectorAll('.s360-tab');
+ for (var i = 0; i < panes.length; i++) panes[i].classList.remove('active');
+ for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+ var pane = document.getElementById('s360-pane-' + tab);
+ var tabEl = document.getElementById('s360-tab-' + tab);
+ if (pane) pane.classList.add('active');
+ if (tabEl) tabEl.classList.add('active');
+ // Lazy render tabs
+ if (tab === 'timeline') { s360RenderTimeline(sid); }
+ if (tab === 'comm') { s360RenderComm(sid); }
+}
+
+// ══ Student 360 — Build unified timeline ══
+function s360BuildEvents(sid) {
+ var events = [];
+ // Attendance
+ var attRecs = (data.attendance || []).filter(function(a) { return a.studentId === sid; });
+ attRecs.forEach(function(a) {
+  var icon = a.status === 'present' ? '✓' : a.status === 'absent' ? '✗' : a.status === 'late' ? '⏰' : '~';
+  var color = a.status === 'present' ? '#34d399' : a.status === 'absent' ? '#f87171' : a.status === 'late' ? '#f59e0b' : '#94a3b8';
+  var label = a.status === 'present' ? 'حضور' : a.status === 'absent' ? 'غياب' : a.status === 'late' ? 'تأخر' : 'غياب بعلم';
+  events.push({ date: a.date, type: 'att', label: label, sub: '', icon: icon, color: color, ts: a.id || 0 });
+ });
+ // Results
+ (data.results || []).filter(function(r) { return r.studentId === sid; }).forEach(function(r) {
+  var pct = r.max > 0 ? Math.round(r.grade / r.max * 100) : 0;
+  events.push({ date: r.date || '', type: 'result', label: 'نتيجة: ' + r.subject, sub: r.grade + '/' + r.max + ' — ' + pct + '%', icon: '📝', color: '#60a5fa', ts: r.id || 0 });
+ });
+ // Payments
+ (data.payments || []).filter(function(p) { return p.studentId === sid; }).forEach(function(p) {
+  events.push({ date: p.date || '', type: 'payment', label: 'دفعة: ' + fmt(p.amount), sub: p.note || '', icon: '💳', color: '#34d399', ts: p.id || 0 });
+ });
+ // Slips
+ (data.slips || []).filter(function(sl) { return sl.studentId === sid; }).forEach(function(sl) {
+  events.push({ date: sl.date || '', type: 'slip', label: 'قصاصة', sub: sl.note || '', icon: '📄', color: '#f59e0b', ts: sl.id || 0 });
+ });
+ // Behaviors / violations
+ (data.violationRecords || []).filter(function(v) { return v.studentId === sid; }).forEach(function(v) {
+  events.push({ date: v.date || '', type: 'violation', label: 'مخالفة: ' + v.type, sub: v.description || '', icon: '⚠', color: '#f87171', ts: v.id || 0 });
+ });
+ // WA log
+ (data.waLog || []).filter(function(w) { return w.studentId === sid; }).forEach(function(w) {
+  events.push({ date: w.date || '', type: 'wa', label: 'إشعار واتساب: ' + w.type, sub: '', icon: '📱', color: '#25d366', ts: w.id || 0 });
+ });
+ // Sort descending
+ events.sort(function(a, b) { if (b.date > a.date) return 1; if (b.date < a.date) return -1; return b.ts - a.ts; });
+ return events;
+}
+
+function s360RenderTimeline(sid) {
+ var el = document.getElementById('s360-timeline-body');
+ if (!el) return;
+ var events = s360BuildEvents(sid);
+ if (!events.length) {
+  el.innerHTML = '<div style="text-align:center;padding:28px;color:var(--text-3);font-size:12px">لا توجد أحداث مسجلة لهذا الطالب بعد</div>';
+  return;
+ }
+ var html = '<div class="s360-timeline">';
+ events.slice(0, 40).forEach(function(ev) {
+  html += '<div class="s360-tl-item">';
+  html += '<div class="s360-tl-dot" style="background:' + ev.color + '22;color:' + ev.color + ';font-size:12px;border:2px solid ' + ev.color + '44">' + ev.icon + '</div>';
+  html += '<div class="s360-tl-body">';
+  html += '<div class="s360-tl-title">' + ev.label + '</div>';
+  if (ev.sub) html += '<div style="font-size:10px;color:var(--text-3);margin-top:2px">' + ev.sub + '</div>';
+  html += '<div class="s360-tl-meta"><span>' + (ev.date || '—') + '</span></div>';
+  html += '</div></div>';
+ });
+ html += '</div>';
+ el.innerHTML = html;
+}
+
+function s360RenderComm(sid) {
+ var el = document.getElementById('s360-comm-body');
+ if (!el) return;
+ var s = gS(sid);
+ var waLogs = (data.waLog || []).filter(function(w) { return w.studentId === sid; }).slice().reverse();
+ var html = '';
+ if (s && s.parentPhone) {
+  html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">';
+  html += '<button class="btn btn-wa btn-sm" onclick="sendCustomWAStudent(' + sid + ')">إرسال رسالة مخصصة</button>';
+  if (feeStats(sid).remaining > 0) html += '<button class="btn btn-wa btn-sm" onclick="sendFeeWA(' + sid + ')">تذكير بالأقساط</button>';
+  html += '</div>';
+ }
+ html += '<div style="font-size:11px;font-weight:700;color:var(--text-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">سجل التواصل</div>';
+ if (!waLogs.length) {
+  html += '<div style="text-align:center;padding:24px;color:var(--text-3);font-size:12px"><div style="font-size:24px;margin-bottom:8px">📭</div>لم يتم إرسال أي رسائل لهذا الطالب بعد<br><span style="font-size:10px;opacity:.7">استخدم أزرار الإرسال أعلاه لبدء التواصل</span></div>';
+ } else {
+  html += '<div class="table-wrap"><table><thead><tr><th>النوع</th><th>التاريخ</th><th>الحالة</th></tr></thead><tbody>';
+  waLogs.forEach(function(w) {
+   html += '<tr><td><span class="badge" style="background:rgba(37,211,102,.12);color:var(--wa)">' + w.type + '</span></td>';
+   html += '<td>' + w.date + '</td>';
+   html += '<td><span style="font-size:10px;color:var(--success)">تم فتح واتساب</span></td></tr>';
+  });
+  html += '</tbody></table></div>';
+ }
+ el.innerHTML = html;
+}
+
+// ══ Student 360 — Follow-up alerts ══
+function s360BuildAlerts(sid) {
+ var s = gS(sid); if (!s) return [];
+ var alerts = [];
+ var cm = today().substring(0, 7);
+ // Absence this month
+ var absMonth = (data.attendance || []).filter(function(a) { return a.studentId === sid && a.status === 'absent' && (a.date || '').startsWith(cm); }).length;
+ if (absMonth >= 3) alerts.push({ icon: '⚠', text: absMonth + ' غيابات هذا الشهر', color: '#f87171' });
+ // Unpaid fees
+ var fs = feeStats(sid);
+ if (fs.remaining > 0) alerts.push({ icon: '💰', text: 'متبقي ' + fmt(fs.remaining) + ' من الرسوم', color: '#f59e0b' });
+ // Slips this month
+ var slipsMonth = (data.slips || []).filter(function(sl) { return sl.studentId === sid && (sl.date || '').startsWith(cm); }).length;
+ if (slipsMonth >= 2) alerts.push({ icon: '📄', text: slipsMonth + ' قصاصات هذا الشهر', color: '#f59e0b' });
+ // Violations
+ var viols = (data.violationRecords || []).filter(function(v) { return v.studentId === sid; }).length;
+ if (viols >= 3) alerts.push({ icon: '🚨', text: viols + ' مخالفات مسجلة', color: '#f87171' });
+ // Course progress
+ var enrolled = (data.courses || []).filter(function(c) { return (c.studentIds || []).indexOf(sid) !== -1; });
+ enrolled.forEach(function(c) {
+  var st = courseStats(c.id);
+  if (c.status === 'جارية' && st.pct < 30) alerts.push({ icon: '📚', text: 'تأخر في دورة: ' + c.name + ' (' + st.pct + '%)', color: '#94a3b8' });
+ });
+ // No WA contact recently
+ var lastWA = (data.waLog || []).filter(function(w) { return w.studentId === sid; });
+ if (!lastWA.length && (s.parentPhone)) alerts.push({ icon: '📵', text: 'لم يتم التواصل مع ولي الأمر بعد', color: '#94a3b8' });
+ return alerts;
+}
+
+// ══ Student 360 — Print report ══
+function s360PrintReport(sid) {
+ var s = gS(sid); if (!s) return;
+ var rate = attRate(s.id);
+ var avg = avgGrade(s.id);
+ var fs = feeStats(s.id);
+ var present = (data.attendance || []).filter(function(a) { return a.studentId === sid && a.status === 'present'; }).length;
+ var absent = (data.attendance || []).filter(function(a) { return a.studentId === sid && a.status === 'absent'; }).length;
+ var sResults = (data.results || []).filter(function(r) { return r.studentId === sid; });
+ var viols = (data.violationRecords || []).filter(function(v) { return v.studentId === sid; });
+ var slips = (data.slips || []).filter(function(sl) { return sl.studentId === sid; });
+ var instName = (data.settings && data.settings.instName) ? data.settings.instName : 'راصد';
+ var now = new Date();
+ var dateStr = now.getFullYear() + '-' + (now.getMonth()+1) + '-' + now.getDate();
+
+ var html = '<div class="s360-print-page">';
+ // Header
+ html += '<div class="s360-print-header">';
+ html += '<div><div class="s360-ph-inst">' + instName + '</div><div class="s360-ph-title">كشف الطالب الرسمي</div></div>';
+ html += '<div class="s360-ph-date">تاريخ الإصدار: ' + dateStr + '</div>';
+ html += '</div>';
+ // Student info
+ html += '<div class="s360-print-student">';
+ html += '<div class="s360-ps-avatar">' + s.fname[0] + '</div>';
+ html += '<div><div class="s360-ps-name">' + s.fname + ' ' + s.lname + '</div>';
+ html += '<div class="s360-ps-meta">المرحلة: ' + (s.stage || '—') + ' | الهاتف: ' + (s.phone || '—') + ' | ولي الأمر: ' + (s.parentPhone || '—') + '</div>';
+ html += '<div class="s360-ps-meta">الاشتراك: ' + (s.subStart || '—') + ' ← ' + (s.subEnd || '—') + '</div>';
+ html += '</div></div>';
+ // Attendance summary
+ html += '<div class="s360-print-section"><div class="s360-print-section-title">ملخص الحضور</div>';
+ html += '<div class="s360-print-grid">';
+ html += '<div class="s360-print-kpi"><div class="s360-print-kpi-val" style="color:#16a34a">' + present + '</div><div class="s360-print-kpi-lbl">أيام حضور</div></div>';
+ html += '<div class="s360-print-kpi"><div class="s360-print-kpi-val" style="color:#dc2626">' + absent + '</div><div class="s360-print-kpi-lbl">أيام غياب</div></div>';
+ html += '<div class="s360-print-kpi"><div class="s360-print-kpi-val">' + (rate !== null ? rate + '%' : '—') + '</div><div class="s360-print-kpi-lbl">نسبة الحضور</div></div>';
+ html += '</div></div>';
+ // Results
+ if (sResults.length) {
+  html += '<div class="s360-print-section"><div class="s360-print-section-title">ملخص النتائج</div>';
+  html += '<table class="s360-print-table"><thead><tr><th>المادة</th><th>النوع</th><th>الدرجة</th><th>النسبة</th><th>التاريخ</th></tr></thead><tbody>';
+  sResults.forEach(function(r) {
+   var pct = r.max > 0 ? Math.round(r.grade/r.max*100) : 0;
+   html += '<tr><td>' + r.subject + '</td><td>' + r.type + '</td><td>' + r.grade + '/' + r.max + '</td><td>' + pct + '%</td><td>' + (r.date || '—') + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  html += '<div style="margin-top:8px;font-size:11px;color:#555">المتوسط العام: <strong>' + (avg !== null ? avg + '%' : '—') + '</strong></div>';
+  html += '</div>';
+ }
+ // Financial
+ html += '<div class="s360-print-section"><div class="s360-print-section-title">الوضع المالي</div>';
+ html += '<div class="s360-print-grid">';
+ html += '<div class="s360-print-kpi"><div class="s360-print-kpi-val">' + fmt(fs.total) + '</div><div class="s360-print-kpi-lbl">إجمالي الرسوم</div></div>';
+ html += '<div class="s360-print-kpi"><div class="s360-print-kpi-val" style="color:#16a34a">' + fmt(fs.paid) + '</div><div class="s360-print-kpi-lbl">المسدد</div></div>';
+ html += '<div class="s360-print-kpi"><div class="s360-print-kpi-val" style="color:' + (fs.remaining > 0 ? '#dc2626' : '#16a34a') + '">' + fmt(fs.remaining) + '</div><div class="s360-print-kpi-lbl">' + (fs.remaining > 0 ? 'المتبقي' : 'مكتمل') + '</div></div>';
+ html += '</div></div>';
+ // Behavior notes
+ if (viols.length || slips.length) {
+  html += '<div class="s360-print-section"><div class="s360-print-section-title">ملاحظات السلوك والانضباط</div>';
+  if (viols.length) {
+   html += '<table class="s360-print-table"><thead><tr><th>نوع المخالفة</th><th>الوصف</th><th>التاريخ</th><th>الدرجة</th></tr></thead><tbody>';
+   viols.slice(0, 5).forEach(function(v) {
+    html += '<tr><td>' + v.type + '</td><td>' + (v.description || '—') + '</td><td>' + (v.date || '—') + '</td><td>' + (v.severity || '—') + '</td></tr>';
+   });
+   html += '</tbody></table>';
+  }
+  if (slips.length) {
+   html += '<div style="margin-top:8px;font-size:11px;color:#555">القصاصات: <strong>' + slips.length + '</strong></div>';
+  }
+  html += '</div>';
+ }
+ // Admin notes
+ html += '<div class="s360-print-section"><div class="s360-print-section-title">ملاحظات الإدارة</div>';
+ html += '<div style="min-height:60px;border:1px solid #e8d9b0;border-radius:6px;padding:10px;font-size:11px;color:#999">_______________________________________________________________________________________________________________</div>';
+ html += '</div>';
+ // Footer
+ html += '<div class="s360-print-footer">';
+ html += '<div>' + instName + ' — راصد لإدارة المعاهد</div>';
+ html += '<div style="display:flex;gap:30px"><div>توقيع الإدارة: _______________</div><div>التاريخ: ' + dateStr + '</div></div>';
+ html += '</div>';
+ html += '</div>';
+
+ var root = document.getElementById('s360-print-root');
+ if (!root) { root = document.createElement('div'); root.id = 's360-print-root'; document.body.appendChild(root); }
+ root.innerHTML = html;
+ root.style.display = 'block';
+ setTimeout(function() {
+  window.print();
+  setTimeout(function() { root.style.display = 'none'; }, 1000);
+ }, 200);
+}
+
 function openStudentProfile(id){
  var s=gS(id);if(!s)return;
  var rate=attRate(s.id),avg=avgGrade(s.id);
  var _fs=feeStats(s.id);var total=_fs.total;var paid=_fs.paid;var remaining=_fs.remaining;
  var beh=getBeh(s.id);
  var behStatus=getBehaviorStatus(s.id);
- var sResults=data.results.filter(r=>r.studentId===id);
+ var sResults=data.results.filter(function(r){return r.studentId===id;});
  var subDays=s.subEnd?daysDiff(s.subEnd):null;
  var subBadge=s.subEnd?getSubBadge(s.subEnd):'<span style="color:var(--muted);font-size:9px">لم يحدد</span>';
- var present=data.attendance.filter(a=>a.studentId===id&&a.status==='present').length;
- var absent=data.attendance.filter(a=>a.studentId===id&&a.status==='absent').length;
- var excusedCnt=data.attendance.filter(a=>a.studentId===id&&a.status==='excused').length;
- var lateCnt=data.attendance.filter(a=>a.studentId===id&&a.status==='late').length;
- var attempts=sResults.filter(r=>r.type==='إعادة').length;
-
- // build attempt progress chart data
- var subjects=[...new Set(sResults.map(r=>r.subject))];
+ var present=data.attendance.filter(function(a){return a.studentId===id&&a.status==='present';}).length;
+ var absent=data.attendance.filter(function(a){return a.studentId===id&&a.status==='absent';}).length;
+ var excusedCnt=data.attendance.filter(function(a){return a.studentId===id&&a.status==='excused';}).length;
+ var lateCnt=data.attendance.filter(function(a){return a.studentId===id&&a.status==='late';}).length;
+ var attempts=sResults.filter(function(r){return r.type==='إعادة';}).length;
+ var subjects=[];
+ sResults.forEach(function(r){if(subjects.indexOf(r.subject)===-1)subjects.push(r.subject);});
  var violCount=getViolations(id).length;
 
- var profileHtml=`
- <div class="profile-header">
- <div class="profile-avatar">${s.fname[0]}</div>
- <div>
- <div class="profile-name">${s.fname} ${s.lname}</div>
- <div class="profile-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ${s.stage||'—'} | ${s.phone||'—'} ${s.parentPhone?`| <a href="https://wa.me/${s.parentPhone.replace(/\\D/g,'')}" style="color:var(--wa)">${s.parentPhone}</a>`:''}</div>
- ${beh?`<div style="margin-top:6px;font-size:14px">${starsHtml(beh.stars)} <span style="font-size:10px;color:var(--muted)">${beh.note||''}</span></div>`:''}
- <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
- <span class="beh-indicator ${behStatus.cls}" style="font-size:9px">${behStatus.label}</span>
- ${violCount>0?`<span style="font-size:9px;color:var(--danger);font-weight:600">${violCount} مخالفة</span>`:''}
- </div>
- <div style="margin-top:4px;font-size:10px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> الاشتراك: ${s.subStart||'—'} ← ${s.subEnd||'—'} ${subBadge}</div>
- </div>
- <div style="margin-right:auto;display:flex;gap:7px;flex-wrap:wrap">
- <button class="btn btn-info btn-sm" onclick="openEditStudent(${id})"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> تعديل</button>
- <button class="btn btn-gold btn-sm" onclick="openAddViolationModal(${id})" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg> مخالفة</button>
- <button class="btn btn-purple btn-sm" onclick="openBehModal(${id})" style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> تقييم</button>
- ${s.parentPhone?`<button class="btn btn-wa btn-sm" onclick="sendCustomWAStudent(${id})"> واتساب</button>`:''}
- </div>
- </div>
- <div class="profile-grid">
- <div class="profile-section">
- <div class="profile-sec-title"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> ملخص الأداء</div>
- <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
- <div class="item-stat" style="display:flex;justify-content:center;align-items:center">${radialProgress(rate,{size:66,stroke:11,label:'نسبة الحضور'})}</div>
- <div class="item-stat" style="display:flex;justify-content:center;align-items:center">${radialProgress(avg,{size:66,stroke:11,label:'متوسط الدرجات'})}</div>
- <div class="item-stat"><div class="item-stat-val" style="color:var(--success)">${present}</div><div class="item-stat-lbl">أيام حضور</div></div>
- <div class="item-stat"><div class="item-stat-val" style="color:var(--danger)">${absent}</div><div class="item-stat-lbl">أيام غياب</div></div>
- <div class="item-stat"><div class="item-stat-val" style="color:#d4a017">${excusedCnt||0}</div><div class="item-stat-lbl">غياب بعلم ولي الأمر</div></div>
- <div class="item-stat"><div class="item-stat-val" style="color:var(--purple)">${lateCnt||0}</div><div class="item-stat-lbl">أيام تأخر</div></div>
- <div class="item-stat"><div class="item-stat-val">${sResults.length}</div><div class="item-stat-lbl">إجمالي النتائج</div></div>
- <div class="item-stat"><div class="item-stat-val" style="color:${attempts>0?'var(--warning)':'var(--muted)'}">${attempts}</div><div class="item-stat-lbl">إعادة اختبار</div></div>
- </div>
- </div>
- <div class="profile-section" id="profile-fees-section">
- <div class="profile-sec-title"> الرسوم والاشتراك</div>
- ${(s.subPrice>0)?`<div style="background:rgba(240,192,96,0.06);border:1px solid var(--border);border-radius:9px;padding:10px;margin-bottom:10px">
- <div style="font-size:9px;color:var(--gold);font-weight:700;margin-bottom:8px"> اشتراك المعهد</div>
- <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center">
- <div style="background:var(--card2);border-radius:7px;padding:6px"><div style="font-weight:700;color:var(--gold);font-size:11px">${fmt(s.subPrice)}</div><div style="font-size:8px;color:var(--muted)">سعر الاشتراك</div></div>
- <div style="background:var(--card2);border-radius:7px;padding:6px"><div style="font-weight:700;color:var(--success);font-size:11px">${fmt(s.subPaid||0)}</div><div style="font-size:8px;color:var(--muted)">المسدد</div></div>
- <div style="background:var(--card2);border-radius:7px;padding:6px"><div style="font-weight:700;color:${(s.subPrice-(s.subPaid||0))>0?'var(--danger)':'var(--success)'};font-size:11px">${fmt(s.subPrice-(s.subPaid||0))}</div><div style="font-size:8px;color:var(--muted)">${(s.subPrice-(s.subPaid||0))>0?'متبقي':' مكتمل'}</div></div>
- </div>
- </div>`:''}
- ${total>0?`
- <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
- <div class="item-stat"><div class="item-stat-val" style="color:var(--gold);font-size:11px">${fmt(total)}</div><div class="item-stat-lbl">الإجمالي</div></div>
- <div class="item-stat"><div class="item-stat-val" style="color:var(--success);font-size:11px">${fmt(paid)}</div><div class="item-stat-lbl">المسدد</div></div>
- <div class="item-stat"><div class="item-stat-val" style="color:${remaining>0?'var(--danger)':'var(--success)'};font-size:11px">${fmt(remaining)}</div><div class="item-stat-lbl">المتبقي</div></div>
- </div>
- ${s.parentPhone&&remaining>0?`<button class="btn btn-wa btn-sm" onclick="sendFeeWA(${id})"> تذكير بالأقساط</button>`:''}
- `:`<div style="color:var(--muted);font-size:11px">لا توجد رسوم مسجلة</div>`}
- </div>`;
+ // ── Build alerts for this student ──
+ var alerts = s360BuildAlerts(id);
 
- // results per subject with progress
- if(subjects.length){
- profileHtml+=`<div class="profile-section" style="grid-column:1/-1">
- <div class="profile-sec-title"> تقدم الطالب حسب المادة</div>`;
- subjects.forEach(sub=>{
- var subResults=sResults.filter(r=>r.subject===sub).sort((a,b)=>a.id-b.id);
- profileHtml+=`<div style="margin-bottom:12px">
- <div style="font-size:11px;font-weight:700;margin-bottom:6px">${sub}</div>
- <div style="display:flex;gap:6px;flex-wrap:wrap">
- ${subResults.map((r,i)=>{var pct=Math.round(r.grade/r.max*100);const[lbl,cls]=gradeLabel(pct);return`<div style="background:var(--card2);border-radius:8px;padding:7px 10px;text-align:center;min-width:70px">
- <div style="font-size:9px;color:var(--muted)">م${i+1} (${r.type})</div>
- <div style="font-size:14px;font-weight:700;color:var(--${cls})">${pct}%</div>
- <div style="font-size:8px;color:var(--muted)">${r.grade}/${r.max}</div>
- <div style="font-size:8px"><span class="badge badge-${cls}">${lbl}</span></div>
- </div>`;}).join('')}
- </div>
- </div>`;
- });
- profileHtml+=`</div>`;
+ // ── Monthly counts ──
+ var cm = today().substring(0,7);
+ var absMonth = data.attendance.filter(function(a){return a.studentId===id&&a.status==='absent'&&(a.date||'').startsWith(cm);}).length;
+ var slipsMonth = (data.slips||[]).filter(function(sl){return sl.studentId===id&&(sl.date||'').startsWith(cm);}).length;
+
+ // ── Last payment ──
+ var lastPay = (data.payments||[]).filter(function(p){return p.studentId===id;}).slice(-1)[0];
+ var lastPayTxt = lastPay ? fmt(lastPay.amount)+' — '+lastPay.date : '—';
+
+ // ── Course progress ──
+ var enrolledCourses = (data.courses||[]).filter(function(c){return (c.studentIds||[]).indexOf(id)!==-1;});
+ var bestCourse = null, bestPct = 0;
+ enrolledCourses.forEach(function(c){ var st=courseStats(c.id); if(st.pct>bestPct){bestPct=st.pct;bestCourse=c;} });
+
+ // ── Last result ──
+ var lastResult = sResults.length ? sResults[sResults.length-1] : null;
+ var lastResultTxt = lastResult ? lastResult.subject+' '+lastResult.grade+'/'+lastResult.max : '—';
+
+ var _finView = (typeof Perms==='undefined')||Perms.canFinance();
+
+ // ── Build profile HTML ──
+ var profileHtml = '';
+
+ // Profile header
+ profileHtml += '<div class="profile-header">';
+ profileHtml += '<div class="profile-avatar">'+s.fname[0]+'</div>';
+ profileHtml += '<div>';
+ profileHtml += '<div class="profile-name">'+s.fname+' '+s.lname+'</div>';
+ profileHtml += '<div class="profile-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> '+(s.stage||'—')+' | '+(s.phone||'—')+(s.parentPhone?' | <a href="https://wa.me/'+s.parentPhone.replace(/\D/g,'')+'" style="color:var(--wa)">'+s.parentPhone+'</a>':'')+'</div>';
+ if(beh) profileHtml += '<div style="margin-top:6px;font-size:14px">'+starsHtml(beh.stars)+' <span style="font-size:10px;color:var(--muted)">'+(beh.note||'')+'</span></div>';
+ profileHtml += '<div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">';
+ profileHtml += '<span class="beh-indicator '+behStatus.cls+'" style="font-size:9px">'+behStatus.label+'</span>';
+ if(violCount>0) profileHtml += '<span style="font-size:9px;color:var(--danger);font-weight:600">'+violCount+' مخالفة</span>';
+ profileHtml += '</div>';
+ profileHtml += '<div style="margin-top:4px;font-size:10px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> الاشتراك: '+(s.subStart||'—')+' ← '+(s.subEnd||'—')+' '+subBadge+'</div>';
+ profileHtml += '</div>';
+ profileHtml += '<div style="margin-right:auto;display:flex;gap:7px;flex-wrap:wrap">';
+ profileHtml += '<button class="btn btn-info btn-sm" onclick="openEditStudent('+id+')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> تعديل</button>';
+ profileHtml += '<button class="btn btn-gold btn-sm" onclick="openAddViolationModal('+id+')" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg> مخالفة</button>';
+ profileHtml += '<button class="btn btn-purple btn-sm" onclick="openBehModal('+id+')" style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> تقييم</button>';
+ if(s.parentPhone) profileHtml += '<button class="btn btn-wa btn-sm" onclick="sendCustomWAStudent('+id+')"> واتساب</button>';
+ profileHtml += '<button class="btn btn-outline btn-sm" onclick="s360PrintReport('+id+')" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> طباعة الكشف</button>';
+ profileHtml += '</div></div>';
+
+ // ── Alerts bar ──
+ if(alerts.length) {
+  profileHtml += '<div class="s360-alert"><div class="s360-alert-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> مؤشرات تحتاج متابعة</div>';
+  alerts.forEach(function(al){
+   profileHtml += '<div class="s360-alert-item"><span style="font-size:14px">'+al.icon+'</span><span>'+al.text+'</span></div>';
+  });
+  profileHtml += '</div>';
  }
 
- // Behavior Section
- profileHtml+=renderStudentCoursesSection(id);
- profileHtml+=renderProfileBehaviorSection(id);
+ // ── KPI Summary ──
+ profileHtml += '<div class="s360-summary">';
+ profileHtml += '<div class="s360-kpi"><div class="s360-kpi-val" style="color:'+(rate>=75?'var(--success)':rate>=50?'var(--warning)':'var(--danger)')+'">'+(rate!==null?rate+'%':'—')+'</div><div class="s360-kpi-lbl">نسبة الحضور</div></div>';
+ profileHtml += '<div class="s360-kpi"><div class="s360-kpi-val" style="color:var(--danger)">'+absMonth+'</div><div class="s360-kpi-lbl">غيابات الشهر</div></div>';
+ profileHtml += '<div class="s360-kpi"><div class="s360-kpi-val" style="color:'+(avg>=75?'var(--success)':avg>=50?'var(--warning)':'var(--danger)')+'">'+(avg!==null?avg+'%':'—')+'</div><div class="s360-kpi-lbl">المتوسط الدراسي</div></div>';
+ if(_finView) profileHtml += '<div class="s360-kpi"><div class="s360-kpi-val" style="color:'+(remaining>0?'var(--danger)':'var(--success)')+'">'+fmt(remaining)+'</div><div class="s360-kpi-lbl">الرسوم المتبقية</div></div>';
+ profileHtml += '<div class="s360-kpi"><div class="s360-kpi-val" style="color:var(--warning)">'+slipsMonth+'</div><div class="s360-kpi-lbl">قصاصات الشهر</div></div>';
+ if(bestCourse) profileHtml += '<div class="s360-kpi"><div class="s360-kpi-val" style="color:'+(bestPct>=70?'var(--success)':'var(--warning)')+'">'+bestPct+'%</div><div class="s360-kpi-lbl">تقدم الدورة</div><div class="s360-kpi-sub">'+bestCourse.name+'</div></div>';
+ profileHtml += '<div class="s360-kpi"><div class="s360-kpi-lbl" style="font-size:9px;margin-bottom:3px">آخر نتيجة</div><div style="font-size:10px;font-weight:700;color:var(--text)">'+lastResultTxt+'</div></div>';
+ if(_finView) profileHtml += '<div class="s360-kpi"><div class="s360-kpi-lbl" style="font-size:9px;margin-bottom:3px">آخر دفعة</div><div style="font-size:10px;font-weight:700;color:var(--success)">'+lastPayTxt+'</div></div>';
+ profileHtml += '</div>';
 
- profileHtml+=`</div>`;
+ // ── Tabs ──
+ profileHtml += '<div class="s360-tabs">';
+ profileHtml += '<button class="s360-tab active" id="s360-tab-overview" onclick="s360Tab(\'overview\','+id+')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> نظرة عامة</button>';
+ profileHtml += '<button class="s360-tab" id="s360-tab-attendance" onclick="s360Tab(\'attendance\','+id+')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> الحضور</button>';
+ profileHtml += '<button class="s360-tab" id="s360-tab-results" onclick="s360Tab(\'results\','+id+')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/></svg> النتائج</button>';
+ if(_finView) profileHtml += '<button class="s360-tab" id="s360-tab-fees" onclick="s360Tab(\'fees\','+id+')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> المدفوعات</button>';
+ profileHtml += '<button class="s360-tab" id="s360-tab-behavior" onclick="s360Tab(\'behavior\','+id+')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg> السلوك</button>';
+ profileHtml += '<button class="s360-tab" id="s360-tab-courses" onclick="s360Tab(\'courses\','+id+')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> الدورات</button>';
+ profileHtml += '<button class="s360-tab" id="s360-tab-timeline" onclick="s360Tab(\'timeline\','+id+')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> التاريخ</button>';
+ profileHtml += '<button class="s360-tab" id="s360-tab-comm" onclick="s360Tab(\'comm\','+id+')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> التواصل</button>';
+ profileHtml += '</div>';
+
+ // ── Pane: Overview ──
+ profileHtml += '<div class="s360-pane active" id="s360-pane-overview">';
+ profileHtml += '<div class="profile-grid">';
+ profileHtml += '<div class="profile-section">';
+ profileHtml += '<div class="profile-sec-title">ملخص الأداء</div>';
+ profileHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+ profileHtml += '<div class="item-stat" style="display:flex;justify-content:center;align-items:center">'+radialProgress(rate,{size:66,stroke:11,label:'نسبة الحضور'})+'</div>';
+ profileHtml += '<div class="item-stat" style="display:flex;justify-content:center;align-items:center">'+radialProgress(avg,{size:66,stroke:11,label:'متوسط الدرجات'})+'</div>';
+ profileHtml += '<div class="item-stat"><div class="item-stat-val" style="color:var(--success)">'+present+'</div><div class="item-stat-lbl">أيام حضور</div></div>';
+ profileHtml += '<div class="item-stat"><div class="item-stat-val" style="color:var(--danger)">'+absent+'</div><div class="item-stat-lbl">أيام غياب</div></div>';
+ profileHtml += '<div class="item-stat"><div class="item-stat-val" style="color:#d4a017">'+(excusedCnt||0)+'</div><div class="item-stat-lbl">غياب بعلم ولي الأمر</div></div>';
+ profileHtml += '<div class="item-stat"><div class="item-stat-val" style="color:var(--purple)">'+(lateCnt||0)+'</div><div class="item-stat-lbl">أيام تأخر</div></div>';
+ profileHtml += '<div class="item-stat"><div class="item-stat-val">'+sResults.length+'</div><div class="item-stat-lbl">إجمالي النتائج</div></div>';
+ profileHtml += '<div class="item-stat"><div class="item-stat-val" style="color:'+(attempts>0?'var(--warning)':'var(--muted)')+'">'+attempts+'</div><div class="item-stat-lbl">إعادة اختبار</div></div>';
+ profileHtml += '</div></div>';
+ profileHtml += '<div class="profile-section" id="profile-fees-section">';
+ profileHtml += '<div class="profile-sec-title">الرسوم والاشتراك</div>';
+ if(s.subPrice>0){
+  var srem=(s.subPrice||0)-(s.subPaid||0);
+  profileHtml += '<div style="background:rgba(240,192,96,0.06);border:1px solid var(--border);border-radius:9px;padding:10px;margin-bottom:10px">';
+  profileHtml += '<div style="font-size:9px;color:var(--gold);font-weight:700;margin-bottom:8px">اشتراك المعهد</div>';
+  profileHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center">';
+  profileHtml += '<div style="background:var(--card2);border-radius:7px;padding:6px"><div style="font-weight:700;color:var(--gold);font-size:11px">'+fmt(s.subPrice)+'</div><div style="font-size:8px;color:var(--muted)">سعر الاشتراك</div></div>';
+  profileHtml += '<div style="background:var(--card2);border-radius:7px;padding:6px"><div style="font-weight:700;color:var(--success);font-size:11px">'+fmt(s.subPaid||0)+'</div><div style="font-size:8px;color:var(--muted)">المسدد</div></div>';
+  profileHtml += '<div style="background:var(--card2);border-radius:7px;padding:6px"><div style="font-weight:700;color:'+(srem>0?'var(--danger)':'var(--success)')+';font-size:11px">'+fmt(srem)+'</div><div style="font-size:8px;color:var(--muted)">'+(srem>0?'متبقي':'مكتمل')+'</div></div>';
+  profileHtml += '</div></div>';
+ }
+ if(total>0){
+  profileHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">';
+  profileHtml += '<div class="item-stat"><div class="item-stat-val" style="color:var(--gold);font-size:11px">'+fmt(total)+'</div><div class="item-stat-lbl">الإجمالي</div></div>';
+  profileHtml += '<div class="item-stat"><div class="item-stat-val" style="color:var(--success);font-size:11px">'+fmt(paid)+'</div><div class="item-stat-lbl">المسدد</div></div>';
+  profileHtml += '<div class="item-stat"><div class="item-stat-val" style="color:'+(remaining>0?'var(--danger)':'var(--success)')+';font-size:11px">'+fmt(remaining)+'</div><div class="item-stat-lbl">المتبقي</div></div>';
+  profileHtml += '</div>';
+  if(s.parentPhone&&remaining>0) profileHtml += '<button class="btn btn-wa btn-sm" onclick="sendFeeWA('+id+')"> تذكير بالأقساط</button>';
+ } else {
+  profileHtml += '<div style="color:var(--muted);font-size:11px">لا توجد رسوم مسجلة</div>';
+ }
+ profileHtml += '</div>';
+ if(subjects.length){
+  profileHtml += '<div class="profile-section" style="grid-column:1/-1">';
+  profileHtml += '<div class="profile-sec-title">تقدم الطالب حسب المادة</div>';
+  subjects.forEach(function(sub){
+   var subResults=sResults.filter(function(r){return r.subject===sub;}).sort(function(a,b){return a.id-b.id;});
+   profileHtml += '<div style="margin-bottom:12px"><div style="font-size:11px;font-weight:700;margin-bottom:6px">'+sub+'</div><div style="display:flex;gap:6px;flex-wrap:wrap">';
+   subResults.forEach(function(r,i){
+    var pct=Math.round(r.grade/r.max*100);var gl=gradeLabel(pct);var lbl=gl[0];var cls=gl[1];
+    profileHtml += '<div style="background:var(--card2);border-radius:8px;padding:7px 10px;text-align:center;min-width:70px"><div style="font-size:9px;color:var(--muted)">م'+(i+1)+' ('+r.type+')</div><div style="font-size:14px;font-weight:700;color:var(--'+cls+')">'+pct+'%</div><div style="font-size:8px;color:var(--muted)">'+r.grade+'/'+r.max+'</div><div style="font-size:8px"><span class="badge badge-'+cls+'">'+lbl+'</span></div></div>';
+   });
+   profileHtml += '</div></div>';
+  });
+  profileHtml += '</div>';
+ }
+ profileHtml += '</div></div>';
+
+ // ── Pane: Attendance ──
+ profileHtml += '<div class="s360-pane" id="s360-pane-attendance"><div class="profile-section"><div class="profile-sec-title">سجل الحضور</div>';
+ var attRecs=data.attendance.filter(function(a){return a.studentId===id;}).sort(function(a,b){return b.id-a.id;});
+ if(attRecs.length){
+  profileHtml += '<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>الحالة</th></tr></thead><tbody>';
+  attRecs.slice(0,30).forEach(function(a){
+   var color=a.status==='present'?'var(--success)':a.status==='absent'?'var(--danger)':a.status==='late'?'var(--warning)':'var(--info)';
+   var lbl=a.status==='present'?'حضور':a.status==='absent'?'غياب':a.status==='late'?'تأخر':'غياب بعلم ولي الأمر';
+   profileHtml += '<tr><td>'+a.date+'</td><td><span style="color:'+color+';font-weight:700">'+lbl+'</span></td></tr>';
+  });
+  profileHtml += '</tbody></table></div>';
+ } else {
+  profileHtml += '<div style="text-align:center;padding:28px;color:var(--text-3);font-size:12px"><div style="font-size:28px;margin-bottom:8px">📅</div>لا توجد سجلات حضور بعد<br><span style="font-size:10px;opacity:.7">سجّل الحضور من صفحة الحضور</span></div>';
+ }
+ profileHtml += '</div></div>';
+
+ // ── Pane: Results ──
+ profileHtml += '<div class="s360-pane" id="s360-pane-results"><div class="profile-section"><div class="profile-sec-title">النتائج والدرجات</div>';
+ if(sResults.length){
+  profileHtml += '<div class="table-wrap"><table><thead><tr><th>المادة</th><th>النوع</th><th>الدرجة</th><th>النسبة</th><th>التاريخ</th></tr></thead><tbody>';
+  sResults.slice().reverse().forEach(function(r){
+   var pct=r.max>0?Math.round(r.grade/r.max*100):0;var gl=gradeLabel(pct);var lbl=gl[0];var cls=gl[1];
+   profileHtml += '<tr><td>'+r.subject+'</td><td>'+r.type+'</td><td>'+r.grade+'/'+r.max+'</td><td><span class="badge badge-'+cls+'">'+pct+'%</span></td><td>'+(r.date||'—')+'</td></tr>';
+  });
+  profileHtml += '</tbody></table></div>';
+ } else {
+  profileHtml += '<div style="text-align:center;padding:28px;color:var(--text-3);font-size:12px"><div style="font-size:28px;margin-bottom:8px">📝</div>لا توجد نتائج مسجلة بعد<br><button class="btn btn-gold btn-sm" style="margin-top:10px" onclick="showPage(\'results\')">إضافة نتيجة</button></div>';
+ }
+ profileHtml += '</div></div>';
+
+ // ── Pane: Fees ──
+ if(_finView){
+  profileHtml += '<div class="s360-pane" id="s360-pane-fees"><div class="profile-section"><div class="profile-sec-title">سجل المدفوعات</div>';
+  var payRecs=(data.payments||[]).filter(function(p){return p.studentId===id;}).slice().reverse();
+  if(payRecs.length){
+   profileHtml += '<div class="table-wrap"><table><thead><tr><th>المبلغ</th><th>التاريخ</th><th>ملاحظة</th></tr></thead><tbody>';
+   payRecs.forEach(function(p){
+    profileHtml += '<tr><td style="color:var(--success);font-weight:700">'+fmt(p.amount)+'</td><td>'+p.date+'</td><td>'+(p.note||'—')+'</td></tr>';
+   });
+   profileHtml += '</tbody></table></div>';
+  } else {
+   profileHtml += '<div style="text-align:center;padding:28px;color:var(--text-3);font-size:12px"><div style="font-size:28px;margin-bottom:8px">💳</div>لا توجد مدفوعات بعد<br><button class="btn btn-gold btn-sm" style="margin-top:10px" onclick="showPage(\'fees\')">إضافة دفعة</button></div>';
+  }
+  profileHtml += '</div></div>';
+ }
+
+ // ── Pane: Behavior ──
+ profileHtml += '<div class="s360-pane" id="s360-pane-behavior">'+renderProfileBehaviorSection(id)+'</div>';
+
+ // ── Pane: Courses ──
+ profileHtml += '<div class="s360-pane" id="s360-pane-courses">'+renderStudentCoursesSection(id)+'</div>';
+
+ // ── Pane: Timeline (lazy) ──
+ profileHtml += '<div class="s360-pane" id="s360-pane-timeline"><div class="profile-section"><div class="profile-sec-title">التاريخ الزمني الموحد</div><div id="s360-timeline-body"><div style="text-align:center;padding:20px;color:var(--text-3)">اضغط على تبويب التاريخ لعرض الأحداث</div></div></div></div>';
+
+ // ── Pane: Communication ──
+ profileHtml += '<div class="s360-pane" id="s360-pane-comm"><div class="profile-section"><div class="profile-sec-title">التواصل</div><div id="s360-comm-body"><div style="text-align:center;padding:20px;color:var(--text-3)">جارٍ التحميل...</div></div></div></div>';
+
  document.getElementById('student-profile-content').innerHTML=profileHtml;
  if(typeof Perms!=='undefined' && !Perms.canFinance()){ var _pf=document.getElementById('profile-fees-section'); if(_pf) _pf.style.display='none'; }
  showPage('student-profile');
@@ -7569,7 +8128,7 @@ function tAttDateChanged(){
 function renderTAttGrid(){
  var dv=document.getElementById('tatt-date').value||today();
  var g=document.getElementById('tatt-grid');
- if(!data.teachers.length){g.innerHTML=`<div class="empty"><div class="empty-icon"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/><polyline points=\"16 11 18 13 22 9\"/></svg></div><p>لا يوجد مدرسون حتى الآن</p></div>`;return;}
+ if(!data.teachers.length){g.innerHTML=emptyState({emoji:'👨‍🏫',title:'لا يوجد مدرسون حتى الآن',desc:'أضف مدرسين لربطهم بالدورات والجداول',btnLabel:'إضافة مدرس',btnAction:"openModal('add-teacher')"});return;}
  data.teachers.forEach(t=>{
  if(tattState[t.id]===undefined){
  var ex=data.teacherAttendance.find(a=>a.teacherId===t.id&&a.date===dv);
@@ -7874,7 +8433,7 @@ function renderResults(){
  var q=gVal('result-search').toLowerCase();
  var list=data.results.filter(r=>{var s=gS(r.studentId);return s?`${s.fname} ${s.lname} ${r.subject}`.toLowerCase().includes(q):false;});
  var tbody=document.getElementById('results-table');
- if(!list.length){tbody.innerHTML=`<tr><td colspan="4"><div class="empty"><div class="empty-icon"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/><line x1=\"8\" y1=\"13\" x2=\"16\" y2=\"13\"/><line x1=\"8\" y1=\"17\" x2=\"13\" y2=\"17\"/></svg></div><p>لا يوجد نتائج</p></div></td></tr>`;return;}
+ if(!list.length){tbody.innerHTML=`<tr><td colspan="4">${emptyState({emoji:'📝',title:'لا توجد نتائج مسجلة بعد',desc:'أضف نتيجة للطالب من زر إضافة نتيجة',btnLabel:'إضافة نتيجة',btnAction:"openModal('add-result')"})}</td></tr>`;return;}
  var attemptMap={};
  data.results.slice().sort((a,b)=>a.id-b.id).forEach(r=>{var k=`${r.studentId}_${r.subject}_${r.type}`;attemptMap[r.id]=(attemptMap[k]=(attemptMap[k]||0)+1);});
  tbody.innerHTML=list.slice().reverse().map(r=>{
@@ -8240,7 +8799,7 @@ function renderCourses(){
   return true;
  });
  if(!list.length){
-  el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><p>'+(q||_courseFilter!=='all'?'لا توجد نتائج مطابقة':'لا توجد دورات — أضف أول دورة')+'</p></div>';
+  el.innerHTML='<div class="empty">'+emptyState({emoji:'📚',title:q||_courseFilter!=='all'?'لا توجد دورات مطابقة':'لا توجد دورات بعد',desc:q||_courseFilter!=='all'?'جرّب تغيير البحث أو الفلتر':'أنشئ أول دورة وأضف فصولها ومواضيعها',btnLabel:(q||_courseFilter!=='all')?null:'إضافة دورة',btnAction:"openCourseModal(null)"})+'</div>';
   return;
  }
  el.innerHTML=list.map(function(c){
@@ -8963,7 +9522,14 @@ function renderCoursesCompareChart(){
 // WHATSAPP
 // ══════════════════════════════════════════════
 function waLink(phone,msg){return`https://wa.me/${waPhone(phone)}?text=${encodeURIComponent(msg)}`;}
-function logWA(sid,type,msg){data.waLog.push({id:data.nextId.waLog++,studentId:sid,type,msg,date:today()});save();}
+function logWA(sid,type,msg,phone){
+ var activeUser = (typeof Perms!=='undefined' && data.appUsers) ? (data.appUsers.filter(function(u){return u.id===data.activeProfileId;})[0]) : null;
+ var sentBy = activeUser ? activeUser.name : 'المالك';
+ var entry = {id:data.nextId.waLog++, studentId:sid, type:type, msg:msg, date:today(), sentAt:new Date().toISOString(), sentBy:sentBy};
+ if(phone) entry.phone = phone;
+ data.waLog.push(entry);
+ save();
+}
 
 function buildResultMsg(r){
  var s=gS(r.studentId);var pct=Math.round(r.grade/r.max*100);const[lbl]=gradeLabel(pct);
@@ -8987,12 +9553,11 @@ function sendResultWA(rid){
  toast('فتح واتساب...');
 }
 function sendAbsentWA(sid){
- var s=gS(sid);if(!s||!s.parentPhone){toast('لا يوجد رقم ولي أمر');return;}
+ var s=gS(sid);if(!s){toast('طالب غير موجود');return;}
  var rate=attRate(sid);
  var tmpl=(data.settings&&data.settings.templates?data.settings.templates.absent:'');
- var msg=tmpl?tmpl.replace('{اسم}',`${s.fname} ${s.lname}`).replace('{تاريخ}',today()):`السلام عليكم ولي أمر الطالب ${s.fname} ${s.lname} \n\n غائب اليوم ${today()}\n${rate!==null?` نسبة الحضور: ${rate}%\n`:''}\nنرجو التواصل معنا.\nمع تحيات ${data.settings.instName||'راصد'} `;
- window.open(waLink(s.parentPhone,msg),'_blank');
- logWA(sid,'غياب',msg);toast('فتح واتساب...');
+ var msg=tmpl?tmpl.replace('{اسم}',s.fname+' '+s.lname).replace('{تاريخ}',today()):'السلام عليكم ولي أمر الطالب '+s.fname+' '+s.lname+'\n\nغائب اليوم '+today()+'\n'+(rate!==null?'نسبة الحضور: '+rate+'%\n':'')+'\nنرجو التواصل معنا.\nمع تحيات '+(data.settings.instName||'راصد')+' ';
+ openAttNotifyModal(sid, 'غياب', msg);
 }
 function sendFeeWA(sid){
  if((typeof Perms!=='undefined') && !Perms.canFinance()){ try{ rbacToast('ليس لديك صلاحية للأمور المالية','err'); }catch(e){} return; }
@@ -9141,10 +9706,59 @@ function renderWaTab(tab){
  }
  else if(tab==='log'){
  var el=document.getElementById('wa-tab-log');
- var logs=data.waLog.slice().reverse().slice(0,30);
- el.innerHTML=logs.length?`<div class="table-wrap"><table><thead><tr><th>الطالب</th><th>النوع</th><th>التاريخ</th></tr></thead><tbody>${logs.map(l=>`<tr><td>${sName(l.studentId)}</td><td><span class="badge badge-wa" style="background:rgba(37,211,102,0.12);color:var(--wa)">${l.type}</span></td><td>${l.date}</td></tr>`).join('')}</tbody></table></div>`:`<div class="empty"><div class="empty-icon"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><line x1=\"8\" y1=\"6\" x2=\"21\" y2=\"6\"/><line x1=\"8\" y1=\"12\" x2=\"21\" y2=\"12\"/><line x1=\"8\" y1=\"18\" x2=\"21\" y2=\"18\"/></svg></div><p>لا يوجد سجل رسائل بعد</p></div>`;
+ var logs=data.waLog.slice().reverse();
+ var td=today();
+ var todayLogs=logs.filter(function(l){return l.date===td;});
+ var html='';
+ // Today summary bar
+ if(todayLogs.length){
+  html+='<div style="background:rgba(37,211,102,0.07);border:1px solid rgba(37,211,102,0.18);border-radius:11px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px">';
+  html+='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--wa)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+  html+='<span style="font-size:12px;font-weight:700;color:var(--text)">تم فتح واتساب اليوم: <strong style="color:var(--wa)">'+todayLogs.length+' رسالة</strong></span>';
+  html+='</div>';
+ }
+ if(logs.length){
+  // Filter by today/all toggle
+  html+='<div style="display:flex;gap:6px;margin-bottom:10px">';
+  html+='<button onclick="this.classList.add(\'active\');this.nextSibling.classList.remove(\'active\');document.getElementById(\'wa-log-table\').setAttribute(\'data-filter\',\'today\');renderWALogTable()" class="btn btn-sm active" id="wa-log-btn-today" style="font-size:10px">اليوم ('+todayLogs.length+')</button>';
+  html+='<button onclick="this.classList.add(\'active\');this.previousSibling.classList.remove(\'active\');document.getElementById(\'wa-log-table\').setAttribute(\'data-filter\',\'all\');renderWALogTable()" class="btn btn-outline btn-sm" id="wa-log-btn-all" style="font-size:10px">الكل ('+logs.length+')</button>';
+  html+='</div>';
+  html+='<div id="wa-log-table" data-filter="today"></div>';
+  el.innerHTML=html;
+  renderWALogTable();
+ } else {
+  el.innerHTML='<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><p>لا يوجد سجل رسائل بعد</p><span style="font-size:11px;color:var(--text-3)">كل رسالة تُرسل عبر الواتساب ستظهر هنا</span></div>';
+ }
  }
 }
+function renderWALogTable(){
+ var el=document.getElementById('wa-log-table');
+ if(!el) return;
+ var filter=el.getAttribute('data-filter')||'today';
+ var td=today();
+ var logs=data.waLog.slice().reverse();
+ if(filter==='today') logs=logs.filter(function(l){return l.date===td;});
+ logs=logs.slice(0,50);
+ if(!logs.length){
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-3);font-size:12px">لا توجد رسائل '+(filter==='today'?'اليوم':'مسجلة')+'</div>';
+  return;
+ }
+ var html='<div class="table-wrap"><table><thead><tr><th>الطالب</th><th>النوع</th><th>التاريخ</th><th>بواسطة</th><th>الحالة</th></tr></thead><tbody>';
+ logs.forEach(function(l){
+  var time='';
+  if(l.sentAt){try{var d=new Date(l.sentAt);time=d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes();}catch(e){}}
+  html+='<tr>';
+  html+='<td style="font-weight:600">'+sName(l.studentId)+'</td>';
+  html+='<td><span style="background:rgba(37,211,102,0.12);color:var(--wa);font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px">'+l.type+'</span></td>';
+  html+='<td style="font-size:10px">'+l.date+(time?' — '+time:'')+'</td>';
+  html+='<td style="font-size:10px;color:var(--text-3)">'+(l.sentBy||'—')+'</td>';
+  html+='<td><span style="font-size:10px;color:var(--success);font-weight:600">✓ تم فتح واتساب</span></td>';
+  html+='</tr>';
+ });
+ html+='</tbody></table></div>';
+ el.innerHTML=html;
+}
+
 function sendBulkOne(sid){
  var s=gS(sid);if(!s||!s.parentPhone)return;
  var msg=gVal('bulk-msg').trim();
@@ -9847,9 +10461,49 @@ function renderAttGrid(){
 }
 
 // ══ إشعارات الحضور والانصراف ══
+// ══ مودال إبلاغ ولي الأمر (الحضور) ══
+var _attNotifSid = null;
+var _attNotifType = null;
+
+function openAttNotifyModal(sid, type, msg){
+ var s = gS(sid);
+ if(!s){ toast('طالب غير موجود'); return; }
+ _attNotifSid = sid;
+ _attNotifType = type;
+ var nameEl = document.getElementById('att-notify-student');
+ var phoneEl = document.getElementById('att-notify-phone');
+ var msgEl = document.getElementById('att-notify-msg');
+ var waBtn = document.getElementById('att-notify-wa-btn');
+ if(nameEl) nameEl.textContent = s.fname + ' ' + s.lname;
+ if(phoneEl) phoneEl.textContent = s.parentPhone ? 'رقم ولي الأمر: ' + s.parentPhone : 'لا يوجد رقم مسجل';
+ if(msgEl) msgEl.value = msg;
+ if(waBtn) waBtn.disabled = !s.parentPhone;
+ openModal('att-notify');
+}
+
+function sendAttNotifWA(){
+ if(!_attNotifSid) return;
+ var s = gS(_attNotifSid);
+ if(!s || !s.parentPhone){ toast('لا يوجد رقم ولي أمر'); return; }
+ var msg = document.getElementById('att-notify-msg').value;
+ var phone = waPhone(s.parentPhone);
+ window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
+ logWA(_attNotifSid, _attNotifType||'إشعار حضور', msg);
+ closeModal('att-notify');
+ toast('جاري فتح واتساب...');
+}
+
+function copyAttNotifMsg(){
+ var ta = document.getElementById('att-notify-msg');
+ if(!ta) return;
+ ta.select(); ta.setSelectionRange(0,99999);
+ try{ document.execCommand('copy'); toast('تم نسخ الرسالة'); }
+ catch(e){ toast('اضغط مطولاً واختر نسخ الكل'); }
+}
+
 function sendAttendanceWA(sid, type){
  var s = gS(sid);
- if(!s || !s.parentPhone){ return; }
+ if(!s){ return; }
  var timeNow = currentTime24();
  var nl = '\n';
  var msg = '';
@@ -9879,9 +10533,7 @@ function sendAttendanceWA(sid, type){
  renderAttGrid();
  }
 
- var phone = waPhone(s.parentPhone);
- window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
- toast(type==='arrival' ? 'إشعار وصول ' + s.fname : 'إشعار انصراف ' + s.fname);
+ openAttNotifyModal(sid, type === 'arrival' ? 'وصول' : 'انصراف', msg);
 }
 
 function notifyArrival(sid){
@@ -9894,30 +10546,25 @@ function notifyDeparture(sid){
 
 function notifyExcused(sid){
  var s=gS(sid);
- if(!s||!s.parentPhone){toast('لا يوجد رقم ولي أمر');return;}
+ if(!s){ toast('طالب غير موجود'); return; }
  var nl='\n';
  var msg='السلام عليكم ولي أمر الطالب '+s.fname+' '+s.lname+nl;
  msg+=nl+'نُعلمكم بأن غياب ابنكم اليوم '+today()+' قد تم تسجيله بعلمكم.'+nl;
  msg+='نسبة الحضور الإجمالية: '+(attRate(s.id)!==null?attRate(s.id)+'%':'—')+nl;
  msg+=nl+'مع تحيات '+(data.settings.instName||'راصد');
- var phone=waPhone(s.parentPhone);
- window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
- logWA(sid,'غياب بعلم',msg);
- toast('إشعار غياب بعلم ولي الأمر — '+s.fname);
+ openAttNotifyModal(sid, 'غياب بعلم', msg);
 }
 
 function notifyLate(sid){
  var s=gS(sid);
- if(!s||!s.parentPhone){toast('لا يوجد رقم ولي أمر');return;}
+ if(!s){ toast('طالب غير موجود'); return; }
  var nl='\n';
  var msg='السلام عليكم ولي أمر الطالب '+s.fname+' '+s.lname+nl;
  msg+=nl+'نُعلمكم بأن ابنكم حضر متأخراً اليوم '+today()+'.'+nl;
  msg+='نسبة الحضور الإجمالية: '+(attRate(s.id)!==null?attRate(s.id)+'%':'—')+nl;
  msg+=nl+'نرجو الحرص على الحضور في الوقت المحدد.'+nl;
  msg+='مع تحيات '+(data.settings.instName||'راصد');
- window.open(waLink(s.parentPhone,msg),'_blank');
- logWA(sid,'تأخر',msg);
- toast('إشعار تأخر — '+s.fname);
+ openAttNotifyModal(sid, 'تأخر', msg);
 }
 
 // زر إرسال إشعار وصول/انصراف للكل دفعة واحدة
@@ -11251,76 +11898,130 @@ function saveWithIndicator(){
 // ════════════════════════════════════════════════
 // GLOBAL SEARCH — بحث عالمي
 // ════════════════════════════════════════════════
+// ── Color map for search result types ──
+var _searchTypeColors = {
+  'طالب':   {bg:'rgba(99,179,237,.15)',  color:'#63b3ed'},
+  'مدرس':   {bg:'rgba(159,122,234,.15)', color:'#9f7aea'},
+  'دورة':   {bg:'rgba(212,166,90,.15)',  color:'#d4a65a'},
+  'صفحة':   {bg:'rgba(52,211,153,.15)',  color:'#34d399'},
+  'نتيجة':  {bg:'rgba(56,189,248,.15)',  color:'#38bdf8'},
+  'قصاصة':  {bg:'rgba(251,191,36,.15)', color:'#fbbf24'}
+};
+
 function globalSearch(q) {
   var resultsEl = document.getElementById('global-search-results');
   if (!resultsEl) return;
   q = (q || '').trim().toLowerCase();
   if (q.length < 2) { resultsEl.classList.remove('open'); return; }
 
-  var results = [];
+  var groups = { 'طالب': [], 'مدرس': [], 'دورة': [], 'صفحة': [], 'نتيجة': [] };
 
-  // بحث في الطلبة
+  // ── الطلبة ──
   (data.students || []).forEach(function(s) {
-    var name = (s.fname + ' ' + s.lname).toLowerCase();
-    if (name.includes(q)) {
-      results.push({ type: 'طالب', label: s.fname + ' ' + s.lname, sub: s.stage || '', action: function(id) { return function() { showPage('students'); setTimeout(function() { openStudentProfile(id); }, 100); }; }(s.id) });
+    var name = ((s.fname || '') + ' ' + (s.lname || '')).toLowerCase();
+    var phone = ((s.phone || '') + ' ' + (s.parentPhone || '')).toLowerCase();
+    if (name.includes(q) || phone.includes(q) || ((s.stage||'').toLowerCase().includes(q))) {
+      groups['طالب'].push({ type:'طالب', label: s.fname+' '+s.lname, sub: (s.stage||'') + (s.phone?' | '+s.phone:''), action: (function(id){ return function(){ showPage('students'); setTimeout(function(){ openStudentProfile(id); },100); }; }(s.id)) });
     }
   });
 
-  // بحث في المدرسين
+  // ── المدرسون ──
   (data.teachers || []).forEach(function(t) {
-    var name = (t.fname + ' ' + t.lname + ' ' + (t.subject || '')).toLowerCase();
+    var name = ((t.fname||'') + ' ' + (t.lname||'') + ' ' + (t.subject||'')).toLowerCase();
     if (name.includes(q)) {
-      results.push({ type: 'مدرس', label: t.fname + ' ' + t.lname, sub: t.subject || '', action: function() { showPage('teachers'); } });
+      groups['مدرس'].push({ type:'مدرس', label: t.fname+' '+t.lname, sub: t.subject||'', action: function(){ showPage('teachers'); } });
     }
   });
 
-  // بحث في النتائج
+  // ── الدورات ──
+  _searchCourses(q, groups['دورة']);
+
+  // ── النتائج (مرتبطة بطالب) ──
+  var _seenResultStudents = {};
   (data.results || []).forEach(function(r) {
-    var s = gS(r.studentId);
-    if (!s) return;
-    var txt = ((s.fname + ' ' + s.lname) + ' ' + r.subject).toLowerCase();
+    if (_seenResultStudents[r.studentId]) return;
+    var s = gS(r.studentId); if (!s) return;
+    var txt = ((s.fname+' '+s.lname)+' '+r.subject).toLowerCase();
     if (txt.includes(q)) {
-      results.push({ type: 'نتيجة', label: s.fname + ' ' + s.lname, sub: r.subject + ' — ' + r.grade + '/' + r.max, action: function() { showPage('results'); } });
+      _seenResultStudents[r.studentId] = true;
+      groups['نتيجة'].push({ type:'نتيجة', label: s.fname+' '+s.lname, sub: r.subject+' — '+r.grade+'/'+r.max, action: function(){ showPage('results'); } });
     }
   });
 
-  // بحث في القصاصات
-  (data.slips || []).forEach(function(sl) {
-    var s = gS(sl.studentId);
-    if (!s) return;
-    var txt = ((s.fname + ' ' + s.lname) + ' ' + (sl.note || '')).toLowerCase();
-    if (txt.includes(q)) {
-      results.push({ type: 'قصاصة', label: s.fname + ' ' + s.lname, sub: sl.note ? sl.note.substring(0, 40) : '', action: function() { showPage('slips'); } });
+  // ── الصفحات ──
+  var _pages = [
+    {ar:'لوحة التحكم',   page:'dashboard',   hint:'الرئيسية'},
+    {ar:'الطلبة',        page:'students',    hint:'قائمة الطلبة'},
+    {ar:'الحضور',        page:'attendance',  hint:'تسجيل الحضور'},
+    {ar:'النتائج',       page:'results',     hint:'الدرجات والتقييمات'},
+    {ar:'المدرسون',      page:'teachers',    hint:'الهيئة التدريسية'},
+    {ar:'الاشتراكات',    page:'fees',        hint:'المدفوعات والرسوم'},
+    {ar:'المصروفات',     page:'expenses',    hint:'الأرباح والمصروفات'},
+    {ar:'القصاصات',      page:'slips',       hint:'طباعة القصاصات'},
+    {ar:'الدورات',       page:'courses',     hint:'إدارة المحتوى'},
+    {ar:'الجداول',       page:'schedules',   hint:'الجداول الدراسية'},
+    {ar:'واتساب',        page:'whatsapp',    hint:'إشعارات واتساب'},
+    {ar:'التقارير',      page:'reports',     hint:'الإحصاءات والتقارير'},
+    {ar:'الإعدادات',     page:'settings',    hint:'إعدادات النظام'},
+    {ar:'السلوك',        page:'discipline',  hint:'السلوك والانضباط'},
+    {ar:'الصلاحيات',     page:'settings',    hint:'إدارة المستخدمين'}
+  ];
+  _pages.forEach(function(pg) {
+    if (pg.ar.includes(q) || pg.hint.toLowerCase().includes(q)) {
+      groups['صفحة'].push({ type:'صفحة', label: pg.ar, sub: pg.hint, action: (function(p){ return function(){ showPage(p); }; }(pg.page)) });
     }
   });
 
-  // بحث في الدورات
-  _searchCourses(q, results);
+  // ── Build grouped HTML ──
+  var allResults = [];
+  var html = '';
+  var typeOrder = ['طالب','مدرس','دورة','صفحة','نتيجة'];
+  var typeIcons = {
+    'طالب':  '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>',
+    'مدرس':  '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>',
+    'دورة':  '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg>',
+    'صفحة':  '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+    'نتيجة': '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
+  };
 
-  if (!results.length) {
-    resultsEl.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:12px">لا توجد نتائج</div>';
+  var totalShown = 0;
+  typeOrder.forEach(function(type) {
+    var grp = groups[type];
+    if (!grp || !grp.length) return;
+    var tc = _searchTypeColors[type] || {bg:'rgba(255,255,255,.08)', color:'var(--text-3)'};
+    html += '<div style="padding:6px 12px 3px;font-size:9px;font-weight:800;color:var(--text-3);letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:5px">';
+    html += '<span style="color:'+tc.color+'">'+typeIcons[type]+'</span>'+type+'s';
+    html += '</div>';
+    grp.slice(0, 4).forEach(function(r) {
+      var idx = allResults.length;
+      allResults.push(r);
+      var tc2 = _searchTypeColors[r.type] || {bg:'rgba(255,255,255,.08)', color:'var(--text-3)'};
+      html += '<div class="search-result-item" data-idx="'+idx+'" style="border-right:2px solid '+tc2.color+'">' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-weight:600;font-size:12px">'+r.label+'</div>' +
+          (r.sub ? '<div style="font-size:10px;color:var(--text-3);margin-top:1px">'+r.sub+'</div>' : '') +
+        '</div>' +
+        '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>' +
+      '</div>';
+      totalShown++;
+    });
+  });
+
+  if (!totalShown) {
+    resultsEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-3);font-size:12px"><div style="font-size:22px;margin-bottom:6px">🔍</div>لا توجد نتائج لـ "<strong>'+q+'</strong>"</div>';
     resultsEl.classList.add('open');
     return;
   }
 
-  resultsEl.innerHTML = results.slice(0, 8).map(function(r, i) {
-    return '<div class="search-result-item" data-idx="' + i + '">' +
-      '<span class="search-result-type">' + r.type + '</span>' +
-      '<div style="flex:1;min-width:0">' +
-        '<div style="font-weight:600;font-size:13px">' + r.label + '</div>' +
-        (r.sub ? '<div style="font-size:11px;color:var(--text-3)">' + r.sub + '</div>' : '') +
-      '</div>' +
-      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>' +
-    '</div>';
-  }).join('');
+  resultsEl.innerHTML = html;
 
-  results.slice(0, 8).forEach(function(r, i) {
-    var el = resultsEl.querySelector('[data-idx="' + i + '"]');
+  allResults.forEach(function(r, i) {
+    var el = resultsEl.querySelector('[data-idx="'+i+'"]');
     if (el) el.addEventListener('mousedown', function(e) {
       e.preventDefault();
       closeGlobalSearch();
-      document.getElementById('global-search-input').value = '';
+      var inp = document.getElementById('global-search-input');
+      if (inp) inp.value = '';
       r.action();
     });
   });
@@ -11532,7 +12233,7 @@ function renderSchedules(){
  });
 
  if(!list.length){
-  el.innerHTML = '<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><p>لا توجد جداول — أضف أول جدول دراسي</p></div>';
+  el.innerHTML = emptyState({emoji:'📅',title:'لا توجد جداول دراسية بعد',desc:'أضف أول جدول لتنظيم المحاضرات والمدرسين',btnLabel:'إضافة جدول',btnAction:"openScheduleModal(null)"});
   return;
  }
 
@@ -11589,41 +12290,76 @@ function renderSchedulesDayView(el, list){
 }
 
 function renderSchedulesWeekView(el, list){
- var html = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:600px">';
- html += '<thead><tr style="background:var(--brand-tint)">';
- html += '<th style="padding:8px;border:1px solid var(--border2);font-size:11px;text-align:center;color:var(--brand-light)">الوقت</th>';
+ // ── Detect conflicts ──
+ function hasConflict(s){
+  return list.some(function(other){
+   if(other.id===s.id) return false;
+   if(other.day!==s.day) return false;
+   if(!other.startTime||!other.endTime||!s.startTime||!s.endTime) return false;
+   // overlap: s starts before other ends AND s ends after other starts
+   return s.startTime < other.endTime && s.endTime > other.startTime;
+  });
+ }
+
+ // ── Active day (today) ──
+ var daysAr = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+ var todayDay = daysAr[new Date().getDay()];
+
+ var html = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch">';
+ html += '<table style="width:100%;border-collapse:separate;border-spacing:0;min-width:640px">';
+
+ // Header row
+ html += '<thead><tr>';
+ html += '<th style="width:64px;padding:8px 6px;background:var(--surface);border-bottom:2px solid var(--border);font-size:10px;color:var(--text-3);text-align:center;position:sticky;right:0;z-index:2">الوقت</th>';
  DAYS_ORDER.forEach(function(d){
   var count = list.filter(function(s){return s.day===d;}).length;
-  html += '<th style="padding:8px;border:1px solid var(--border2);font-size:11px;text-align:center;color:'+(count>0?'var(--brand-light)':'var(--muted)')+'">'
-   +d+(count>0?'<br><span style="font-size:9px;color:var(--muted)">('+count+')</span>':'')+'</th>';
+  var isToday = d===todayDay;
+  html += '<th style="padding:8px 4px;background:'+(isToday?'var(--brand-tint)':'var(--surface)')+';border-bottom:2px solid '+(isToday?'var(--brand)':'var(--border)')+';font-size:11px;font-weight:'+(isToday?'800':'600')+';color:'+(isToday?'var(--brand-light)':'var(--text-2)')+';text-align:center;min-width:100px">';
+  html += d;
+  if(isToday) html += '<span style="display:block;font-size:8px;color:var(--brand);font-weight:700;margin-top:1px">اليوم</span>';
+  else if(count>0) html += '<span style="display:block;font-size:8px;color:var(--text-3)">'+count+' حصة</span>';
+  html += '</th>';
  });
- html += '</tr></thead><tbody>';
+ html += '</tr></thead>';
 
- // collect all unique times
+ // Body
+ html += '<tbody>';
+
+ // collect unique time slots
  var timeSlots = [];
- list.forEach(function(s){
-  if(timeSlots.indexOf(s.startTime)===-1) timeSlots.push(s.startTime);
- });
+ list.forEach(function(s){ if(s.startTime && timeSlots.indexOf(s.startTime)===-1) timeSlots.push(s.startTime); });
  timeSlots.sort();
 
- timeSlots.forEach(function(slot){
+ if(!timeSlots.length){
+  html += '<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--text-3);font-size:12px">لا توجد محاضرات في الجداول الحالية</td></tr>';
+ }
+
+ timeSlots.forEach(function(slot, si){
+  var rowBg = si%2===0 ? 'var(--surface)' : 'transparent';
   html += '<tr>';
-  html += '<td style="padding:7px;border:1px solid var(--border2);font-size:11px;text-align:center;color:var(--gold);white-space:nowrap;font-weight:700">'+formatTime12H(slot)+'</td>';
+  // Time cell
+  html += '<td style="padding:6px 4px;background:'+rowBg+';border-bottom:1px solid var(--border);font-size:11px;text-align:center;color:var(--gold);white-space:nowrap;font-weight:700;position:sticky;right:0;z-index:1">'+formatTime12H(slot)+'</td>';
+
   DAYS_ORDER.forEach(function(d){
    var items = list.filter(function(s){return s.day===d && s.startTime===slot;});
+   var isToday = d===todayDay;
    if(!items.length){
-    html += '<td style="padding:6px;border:1px solid var(--border2);background:var(--surface)"></td>';
+    html += '<td style="padding:5px;background:'+(isToday?'rgba(212,166,90,.04)':rowBg)+';border-bottom:1px solid var(--border);border-right:1px solid var(--border)"></td>';
    } else {
-    html += '<td style="padding:5px;border:1px solid var(--border2);vertical-align:top">';
+    html += '<td style="padding:4px;background:'+(isToday?'rgba(212,166,90,.04)':rowBg)+';border-bottom:1px solid var(--border);border-right:1px solid var(--border);vertical-align:top">';
     items.forEach(function(s){
      var sColor = getSubjectColor(s.subject);
      var t = gT(s.teacherId);
-     html += '<div style="background:var(--card);border-right:3px solid '+sColor+';border-radius:7px;padding:5px 7px;margin-bottom:4px;cursor:pointer" onclick="openScheduleModal('+s.id+')">';
-     html += '<div style="font-size:10px;font-weight:700">'+s.name+'</div>';
-     if(s.subject) html += '<div style="font-size:9px;color:'+sColor+'">'+s.subject+'</div>';
-     if(t) html += '<div style="font-size:9px;color:var(--muted)">'+t.fname+' '+t.lname+'</div>';
-     if(s.room) html += '<div style="font-size:9px;color:var(--muted)">'+s.room+'</div>';
-     html += '<div style="font-size:9px;color:var(--text-3)">'+formatTime12H(s.startTime)+' — '+formatTime12H(s.endTime)+'</div>';
+     var conflict = hasConflict(s);
+     var cardBg = conflict ? 'rgba(248,113,113,.08)' : 'var(--card)';
+     var borderColor = conflict ? 'var(--danger)' : sColor;
+     html += '<div style="background:'+cardBg+';border-right:3px solid '+borderColor+';border-radius:8px;padding:6px 8px;margin-bottom:3px;cursor:pointer;transition:opacity .15s" onclick="openScheduleModal('+s.id+')" onmouseenter="this.style.opacity=\'.8\'" onmouseleave="this.style.opacity=\'1\'">';
+     if(conflict) html += '<div style="font-size:8px;color:var(--danger);font-weight:700;margin-bottom:3px">⚠ تعارض</div>';
+     html += '<div style="font-size:10px;font-weight:800;color:var(--text);line-height:1.3">'+s.name+'</div>';
+     if(s.subject) html += '<div style="font-size:9px;color:'+sColor+';margin-top:1px">'+s.subject+'</div>';
+     if(t) html += '<div style="font-size:9px;color:var(--text-3)">'+t.fname+' '+t.lname+'</div>';
+     if(s.room) html += '<div style="font-size:9px;color:var(--text-3)">'+s.room+'</div>';
+     html += '<div style="font-size:8px;color:var(--text-3);margin-top:2px;font-weight:600">'+formatTime12H(s.startTime)+' — '+formatTime12H(s.endTime)+'</div>';
      html += '</div>';
     });
     html += '</td>';
@@ -11633,6 +12369,13 @@ function renderSchedulesWeekView(el, list){
  });
 
  html += '</tbody></table></div>';
+
+ // Conflict legend
+ var hasAnyConflict = list.some(function(s){return hasConflict(s);});
+ if(hasAnyConflict){
+  html += '<div style="margin-top:10px;padding:8px 12px;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);border-radius:9px;font-size:10px;color:var(--danger);display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> يوجد تعارض في الجداول — راجع الحصص الحمراء</div>';
+ }
+
  el.innerHTML = html;
 }
 
@@ -13213,6 +13956,22 @@ body {
             '</div>' +
             '<span class="mobile-more-btn-label">الإعدادات</span>' +
             '<span class="mobile-more-btn-sub">التطبيق</span>' +
+          '</button>' +
+          // الجداول
+          '<button class="mobile-more-btn" onclick="mbnMoreNav(\'schedules\')">' +
+            '<div class="mobile-more-btn-icon">' +
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' +
+            '</div>' +
+            '<span class="mobile-more-btn-label">الجداول</span>' +
+            '<span class="mobile-more-btn-sub">أسبوعي</span>' +
+          '</button>' +
+          // سجل التواصل
+          '<button class="mobile-more-btn" onclick="mbnMoreNav(\'whatsapp\')">' +
+            '<div class="mobile-more-btn-icon" style="background:rgba(37,211,102,.12)">' +
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' +
+            '</div>' +
+            '<span class="mobile-more-btn-label">سجل التواصل</span>' +
+            '<span class="mobile-more-btn-sub">واتساب</span>' +
           '</button>' +
           // النسخ الاحتياطي
           '<button class="mobile-more-btn" onclick="mbnMoreBackup()">' +
