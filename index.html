@@ -2448,6 +2448,13 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
 <div id="app" style="display:none">
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
+ <div class="rz-navpop-head" aria-hidden="true">
+  <span class="rz-navpop-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
+  <span class="rz-navpop-text">
+   <span class="rz-navpop-name">راصد</span>
+   <span class="rz-navpop-sub">نظام إدارة المراكز التعليمية</span>
+  </span>
+ </div>
  <nav class="sidebar-nav">
  <div class="nav-section">الرئيسية</div>
  <div class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span> لوحة التحكم</div>
@@ -13881,7 +13888,17 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
       }
     }catch(e){}
     if(typeof openSidebar==='function') openSidebar();
+    /* إغلاق القائمة المنبثقة تلقائياً عند التمرير — حاسوب/تابلت فقط، بلا تكرار */
+    if(window.innerWidth>=769){
+      window.removeEventListener('scroll', rzNavScrollClose, true);
+      window.addEventListener('scroll', rzNavScrollClose, {passive:true, capture:true});
+    }
   };
+  function rzNavScrollClose(){
+    window.removeEventListener('scroll', rzNavScrollClose, true);
+    var sb=document.getElementById('sidebar');
+    if(sb && sb.classList.contains('open') && typeof closeSidebar==='function') closeSidebar();
+  }
   /* إغلاق عند النقر خارج القوائم */
   document.addEventListener('click',function(e){
     var n=e.target;
@@ -13939,6 +13956,9 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
 .rz-zone-brand{display:none;gap:11px;flex-shrink:0;}
 .rz-divider{width:1px;height:26px;background:var(--border-strong);margin:0 2px;}
 
+/* ترويسة القائمة المنبثقة: مخفية على الهاتف (بلا تغيير للموبايل) */
+.rz-navpop-head{display:none;}
+
 /* ════════ حاسوب + تابلت فقط (≥769px) ════════ */
 @media (min-width:769px){
   .rz-launcher{display:flex;}
@@ -13952,6 +13972,34 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   /* الشريط الجانبي → قائمة منبثقة عائمة (Popover) قرب زر القائمة */
   .sidebar{position:fixed!important;top:var(--rz-nav-top,64px);left:var(--rz-nav-left,16px);right:auto!important;height:auto!important;max-height:min(72vh,560px);width:300px!important;border:1px solid var(--border-strong)!important;border-radius:18px;z-index:1400!important;box-shadow:none;display:flex!important;flex-direction:column;overflow-y:auto;padding-bottom:8px;opacity:0;visibility:hidden;transform:scale(.96) translateY(-10px);transform-origin:top left;transition:opacity .18s var(--ease),transform .2s cubic-bezier(.34,1.3,.64,1),visibility .2s!important;}
   .sidebar.open{opacity:1;visibility:visible;transform:none!important;box-shadow:var(--shadow-xl);}
+
+  /* ── زجاج فاخر + حدّ ذهبي شفاف + ظل عميق (Navigation Popover) ── */
+  html:not([data-theme=light]) #sidebar{
+    background:rgba(22,25,30,.90)!important;
+    backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);
+    border:1px solid rgba(212,166,90,.20)!important;
+    box-shadow:0 24px 64px -14px rgba(0,0,0,.66), 0 0 0 1px rgba(255,255,255,.02) inset!important;
+  }
+  html[data-theme=light] #sidebar{
+    background:rgba(252,250,246,.92)!important;
+    backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);
+    border:1px solid rgba(184,142,72,.30)!important;
+    box-shadow:0 24px 60px -16px rgba(80,60,28,.30), 0 0 0 1px rgba(255,255,255,.5) inset!important;
+  }
+
+  /* ── ترويسة داخل القائمة (ثابتة أعلى عند التمرير) ── */
+  .rz-navpop-head{display:flex;align-items:center;gap:11px;position:sticky;top:0;z-index:2;padding:14px 14px 12px;margin-bottom:4px;border-bottom:1px solid var(--border);background:var(--bg-elevated);}
+  .rz-navpop-mark{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--brand-soft-gradient);border:1px solid var(--brand-border);color:var(--brand-light);flex-shrink:0;}
+  .rz-navpop-text{display:flex;flex-direction:column;line-height:1.2;min-width:0;}
+  .rz-navpop-name{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.2px;}
+  .rz-navpop-sub{font-size:10px;color:var(--text-3);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* ── حالة نشطة واضحة + Hover ناعم داخل القائمة ── */
+  #sidebar .nav-item{position:relative;transition:background .15s var(--ease),color .15s var(--ease);}
+  #sidebar .nav-item:hover{background:var(--surface-hover);}
+  #sidebar .nav-item.active{background:var(--brand-tint)!important;color:var(--brand-light)!important;font-weight:700;}
+  #sidebar .nav-item.active::before{content:"";position:absolute;inset-inline-start:3px;top:50%;transform:translateY(-50%);width:3px;height:18px;border-radius:3px;background:var(--brand);}
+  #sidebar .nav-item.active .nav-icon{color:var(--brand-light);}
 
   /* جعل المحتوى داخل القائمة المنبثقة مدمجاً كقائمة اختيار (وليس لوحة جانبية) */
   .sidebar .sidebar-nav{padding:7px!important;gap:0;}
@@ -13971,6 +14019,28 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   /* الطبقة الخلفية (إغلاق بالنقر خارجاً) */
   .sidebar-overlay{display:none;position:fixed;inset:0;background:transparent;z-index:1390;}
   .sidebar-overlay.open{display:block!important;}
+}
+</style>
+
+<style id="rasid-navpop-refine-2026">
+/* RASID — Navigation Popover refinements (حاسوب/تابلت فقط؛ الهاتف بلا تغيير) */
+@media (min-width:769px){
+  /* الأيقونات تتبع لون العنصر → تتحوّل ذهبية بوضوح عند التنشيط، وأهدأ افتراضياً */
+  #sidebar .nav-item .nav-icon{color:var(--text-3)!important;transition:color .15s var(--ease);}
+  #sidebar .nav-item .nav-icon svg{stroke:currentColor!important;}
+  #sidebar .nav-item:hover .nav-icon{color:var(--text)!important;}
+  #sidebar .nav-item.active .nav-icon{color:var(--brand-light)!important;}
+
+  /* ترويسة زجاجية متناسقة مع زجاج القائمة (بدل خلفية صلبة) */
+  html:not([data-theme=light]) .rz-navpop-head{background:rgba(20,23,28,.55)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,166,90,.14)!important;}
+  html[data-theme=light] .rz-navpop-head{background:rgba(250,248,243,.60)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(184,142,72,.18)!important;}
+
+  /* مجموعات أوضح عبر المسافات (هدوء بصري بلا خطوط زائدة) */
+  #sidebar .nav-section{margin-top:10px!important;}
+  #sidebar .sidebar-nav > .nav-section:first-child{margin-top:0!important;}
+
+  /* تذييل (الإبلاغ/الخروج) مفصول بلطف */
+  #sidebar .sidebar-footer{border-top:1px solid var(--border);margin-top:6px!important;padding-top:8px!important;}
 }
 </style>
 
