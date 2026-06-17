@@ -14009,7 +14009,13 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
 
   /* إدارة المستمعين بلا تسرّب — مربوطة بحالة .open عبر مراقب التغييرات */
   var bound=false;
-  function onScroll(){ window.closeNavPopover(); }
+  function onScroll(e){
+    var s=sb();
+    var t=e?e.target:null;
+    /* تجاهل التمرير داخل القائمة نفسها (حتى لا تُغلق عند تصفّحها) */
+    if(s && t && t.nodeType===1 && (t===s || s.contains(t))) return;
+    window.closeNavPopover();
+  }
   function onKey(e){ if(e.key==='Escape') window.closeNavPopover(); }
   function onResize(){ window.closeNavPopover(); }
   function bind(){
