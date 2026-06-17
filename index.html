@@ -2419,46 +2419,53 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
 <div id="app" style="display:none">
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
- <!-- RASID Command Center — desktop/tablet only; mobile keeps the original sidebar/bottom navigation untouched -->
+ <!-- RASID Command Center V2 — desktop/tablet only; mobile keeps the original sidebar/bottom navigation untouched -->
  <div class="rz-cc-desktop" id="rz-command-center" role="dialog" aria-label="مركز قيادة راصد" aria-modal="false" tabindex="-1">
-  <section class="rz-cc-identity" aria-label="هوية المعهد">
+  <header class="rz-cc-top" aria-label="هوية المعهد">
    <div class="rz-cc-logo" aria-hidden="true">
-    <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
    </div>
-   <div class="rz-cc-identity-text">
-    <span class="rz-cc-kicker">Rasid Command Center</span>
+   <div class="rz-cc-titlebox">
+    <span class="rz-cc-kicker">Rasid Control Hub</span>
     <strong class="rz-cc-inst" id="rz-cc-inst-name">راصد</strong>
     <span class="rz-cc-user" id="rz-cc-user-name">حساب المعهد</span>
    </div>
-   <div class="rz-cc-license">
+   <div class="rz-cc-license" aria-label="حالة الاشتراك">
     <span class="rz-cc-status" id="rz-cc-sub-status">جاري التحقق</span>
     <span class="rz-cc-plan" id="rz-cc-plan-badge">Standard</span>
    </div>
-  </section>
+  </header>
 
   <div class="rz-cc-body">
-   <section class="rz-cc-stats" aria-label="إحصاءات سريعة">
-    <button type="button" class="rz-cc-stat" onclick="rzCCRun(function(){showPage('students')})">
-     <span class="rz-cc-stat-label">الطلبة</span>
-     <strong id="rz-cc-stat-students">0</strong>
-    </button>
-    <button type="button" class="rz-cc-stat" onclick="rzCCRun(function(){showPage('attendance')})">
-     <span class="rz-cc-stat-label">حضور اليوم</span>
-     <strong id="rz-cc-stat-attendance">—</strong>
-    </button>
-    <button type="button" class="rz-cc-stat" onclick="rzCCRun(function(){showPage('fees')})" data-cc-perm-page="fees">
-     <span class="rz-cc-stat-label">المستحقات</span>
-     <strong id="rz-cc-stat-payments">0</strong>
-    </button>
-    <button type="button" class="rz-cc-stat" onclick="rzCCRun(function(){showPage('courses')})">
-     <span class="rz-cc-stat-label">الدورات الفعالة</span>
-     <strong id="rz-cc-stat-courses">0</strong>
-    </button>
-   </section>
+   <section class="rz-cc-left" aria-label="ملخص سريع">
+    <div class="rz-cc-minihead">
+     <span>نبض المعهد</span>
+     <i aria-hidden="true"></i>
+    </div>
+    <div class="rz-cc-stats" aria-label="إحصاءات سريعة">
+     <button type="button" class="rz-cc-stat" onclick="rzCCRun(function(){showPage('students')})">
+      <span class="rz-cc-stat-label">الطلبة</span>
+      <strong id="rz-cc-stat-students">0</strong>
+     </button>
+     <button type="button" class="rz-cc-stat" onclick="rzCCRun(function(){showPage('attendance')})">
+      <span class="rz-cc-stat-label">حضور اليوم</span>
+      <strong id="rz-cc-stat-attendance">—</strong>
+     </button>
+     <button type="button" class="rz-cc-stat" onclick="rzCCRun(function(){showPage('fees')})" data-cc-perm-page="fees">
+      <span class="rz-cc-stat-label">المستحقات</span>
+      <strong id="rz-cc-stat-payments">0</strong>
+     </button>
+     <button type="button" class="rz-cc-stat" onclick="rzCCRun(function(){showPage('courses')})">
+      <span class="rz-cc-stat-label">الدورات</span>
+      <strong id="rz-cc-stat-courses">0</strong>
+     </button>
+    </div>
 
-   <section class="rz-cc-actions" aria-label="إجراءات سريعة">
-    <div class="rz-cc-section-title">إجراءات سريعة</div>
-    <div class="rz-cc-action-grid">
+    <div class="rz-cc-minihead rz-cc-action-head">
+     <span>إجراءات فورية</span>
+     <i aria-hidden="true"></i>
+    </div>
+    <div class="rz-cc-action-grid" aria-label="إجراءات سريعة">
      <button type="button" class="rz-cc-action" onclick="rzCCRun(function(){openModal('add-student')})" data-cc-perm-page="students">
       <span class="rz-cc-action-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg></span>
       <span>إضافة طالب</span>
@@ -2473,51 +2480,57 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
      </button>
      <button type="button" class="rz-cc-action" onclick="rzCCRun(function(){showPage('whatsapp')})" data-cc-perm-page="whatsapp">
       <span class="rz-cc-action-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h8M8 14h5"/></svg></span>
-      <span>إشعار واتساب</span>
+      <span>واتساب</span>
      </button>
     </div>
    </section>
 
-   <nav class="sidebar-nav rz-cc-nav" aria-label="أقسام راصد">
-    <div class="rz-cc-nav-group">
-     <div class="nav-section">Academic</div>
-     <div class="nav-item" data-page="students" onclick="showPage('students')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>الطلبة</span></div>
-     <div class="nav-item" data-page="attendance" onclick="showPage('attendance')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span>الحضور</span></div>
-     <div class="nav-item" data-page="results" onclick="showPage('results')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></span><span>النتائج</span></div>
-     <div class="nav-item" data-page="courses" onclick="showPage('courses')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span><span>الدورات</span></div>
+   <section class="rz-cc-right" aria-label="أقسام راصد">
+    <div class="rz-cc-minihead rz-cc-nav-title">
+     <span>مركز التنقل</span>
+     <i aria-hidden="true"></i>
     </div>
-    <div class="rz-cc-nav-group">
-     <div class="nav-section">Administration</div>
-     <div class="nav-item" data-page="dashboard" onclick="showPage('dashboard')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span>لوحة التحكم</span></div>
-     <div class="nav-item" data-page="teachers" onclick="showPage('teachers')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></span><span>المدرسون</span></div>
-     <div class="nav-item" data-page="schedules" onclick="showPage('schedules')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span>الجداول</span></div>
-     <div class="nav-item" data-page="reports" onclick="showPage('reports')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span>التقارير</span></div>
-    </div>
-    <div class="rz-cc-nav-group">
-     <div class="nav-section">Communication</div>
-     <div class="nav-item" data-page="whatsapp" onclick="showPage('whatsapp')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span>تواصل أولياء الأمور</span></div>
-     <div class="nav-item" data-page="discipline" onclick="showPage('discipline')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span>التنبيهات والسلوك</span></div>
-    </div>
-    <div class="rz-cc-nav-group" id="rz-cc-finance-group">
-     <div class="nav-section">Financial</div>
-     <div class="nav-item" data-page="fees" onclick="showPage('fees')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><circle cx="16" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg></span><span>الاشتراكات والدفعات</span></div>
-     <div class="nav-item" data-page="expenses" onclick="showPage('expenses')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg></span><span>المصروفات والأرباح</span></div>
-    </div>
-    <div class="rz-cc-nav-group">
-     <div class="nav-section">System</div>
-     <div class="nav-item" data-page="slips" onclick="showPage('slips')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></span><span>القصاصات</span></div>
-     <div class="nav-item" data-page="settings" onclick="showPage('settings')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span>الإعدادات</span></div>
-    </div>
-   </nav>
+    <nav class="rz-cc-nav" aria-label="أقسام راصد">
+     <div class="rz-cc-nav-group">
+      <div class="nav-section">Academic</div>
+      <button type="button" class="nav-item" data-page="students" onclick="showPage('students')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>الطلبة</span></button>
+      <button type="button" class="nav-item" data-page="attendance" onclick="showPage('attendance')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span>الحضور</span></button>
+      <button type="button" class="nav-item" data-page="results" onclick="showPage('results')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></span><span>النتائج</span></button>
+      <button type="button" class="nav-item" data-page="courses" onclick="showPage('courses')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span><span>الدورات</span></button>
+     </div>
+     <div class="rz-cc-nav-group">
+      <div class="nav-section">Administration</div>
+      <button type="button" class="nav-item" data-page="dashboard" onclick="showPage('dashboard')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span>لوحة التحكم</span></button>
+      <button type="button" class="nav-item" data-page="teachers" onclick="showPage('teachers')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></span><span>المدرسون</span></button>
+      <button type="button" class="nav-item" data-page="schedules" onclick="showPage('schedules')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span>الجداول</span></button>
+      <button type="button" class="nav-item" data-page="reports" onclick="showPage('reports')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span>التقارير</span></button>
+     </div>
+     <div class="rz-cc-nav-group">
+      <div class="nav-section">Communication</div>
+      <button type="button" class="nav-item" data-page="whatsapp" onclick="showPage('whatsapp')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span>تواصل أولياء الأمور</span></button>
+      <button type="button" class="nav-item" data-page="discipline" onclick="showPage('discipline')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span>التنبيهات والسلوك</span></button>
+     </div>
+     <div class="rz-cc-nav-group" id="rz-cc-finance-group">
+      <div class="nav-section">Financial</div>
+      <button type="button" class="nav-item" data-page="fees" onclick="showPage('fees')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><circle cx="16" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg></span><span>الاشتراكات والدفعات</span></button>
+      <button type="button" class="nav-item" data-page="expenses" onclick="showPage('expenses')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg></span><span>المصروفات والأرباح</span></button>
+     </div>
+     <div class="rz-cc-nav-group rz-cc-nav-group-wide">
+      <div class="nav-section">System</div>
+      <button type="button" class="nav-item" data-page="slips" onclick="showPage('slips')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg></span><span>القصاصات</span></button>
+      <button type="button" class="nav-item" data-page="settings" onclick="showPage('settings')"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span>الإعدادات</span></button>
+     </div>
+    </nav>
+   </section>
   </div>
 
   <footer class="rz-cc-footer" aria-label="إجراءات النظام">
-   <button type="button" class="rz-cc-footer-btn" onclick="rzCCRun(function(){openModal('backup')})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> النسخ</button>
-   <button type="button" class="rz-cc-footer-btn" onclick="rzCCRun(function(){reportBug()})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> مشكلة</button>
-   <button type="button" class="rz-cc-footer-btn rz-cc-logout" onclick="doLogout()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> خروج</button>
+   <button type="button" class="rz-cc-footer-btn" onclick="rzCCRun(function(){openModal('backup')})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>النسخ</span></button>
+   <button type="button" class="rz-cc-footer-btn rz-cc-theme" id="rz-cc-theme-btn" onclick="rzCCToggleTheme()"><span id="rz-cc-theme-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/></svg></span><span id="rz-cc-theme-label">المظهر</span></button>
+   <button type="button" class="rz-cc-footer-btn" onclick="rzCCRun(function(){reportBug()})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>مشكلة</span></button>
+   <button type="button" class="rz-cc-footer-btn rz-cc-logout" onclick="doLogout()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>خروج</span></button>
   </footer>
  </div>
-
 
  <div class="rz-navpop-head" aria-hidden="true">
   <span class="rz-navpop-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
@@ -13895,367 +13908,159 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   }
 })();
 </script>
-<script>
-/* ═══════════════════════════════════════════════════════════════
-   RASID — Top Navigation interactions (UI فقط)
-   فتح/إغلاق قوائم الشريط العلوي + اختصار Ctrl/Cmd+K للبحث.
-   لا يمسّ أي منطق أو بيانات. متوافق مع WebView القديم (var، بدون أسهم).
-   ═══════════════════════════════════════════════════════════════ */
-(function(){
-  function rzCloseAllMenus(except){
-    var menus=document.querySelectorAll('.rz-menu');
-    for(var i=0;i<menus.length;i++){
-      if(menus[i]!==except) menus[i].classList.remove('open');
-    }
-  }
-  window.rzToggleMenu=function(id,ev){
-    if(ev){ ev.stopPropagation(); ev.preventDefault(); }
-    var el=document.getElementById(id);
-    if(!el) return;
-    var isOpen=el.classList.contains('open');
-    rzCloseAllMenus(el);
-    if(isOpen){ el.classList.remove('open'); }
-    else{ el.classList.add('open'); }
-  };
-  window.rzRun=function(fn){
-    rzCloseAllMenus(null);
-    try{ if(typeof fn==='function') fn(); }catch(e){ console.error('rzRun',e); }
-  };
-  /* فتح قائمة التنقّل المنبثقة وتثبيتها تحت الزر (حاسوب/تابلت فقط) — يعيد استخدام openSidebar */
-  /* (نُقل نظام القائمة المنبثقة إلى وحدة مستقلة: openNavPopover/closeNavPopover/toggleNavPopover) */
-  /* إغلاق عند النقر خارج القوائم */
-  document.addEventListener('click',function(e){
-    var n=e.target;
-    while(n){
-      if(n.classList && n.classList.contains('rz-menu')) return;
-      n=n.parentNode;
-    }
-    rzCloseAllMenus(null);
-  });
-  /* اختصارات لوحة المفاتيح: Esc للإغلاق، Ctrl/Cmd+K للبحث */
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){
-      var _sb=document.getElementById('sidebar');
-      if(_sb && _sb.classList.contains('open') && window.innerWidth>=769){ if(typeof closeSidebar==='function') closeSidebar(); }
-      rzCloseAllMenus(null); return;
-    }
-    var k=(e.key||'').toLowerCase();
-    if((e.ctrlKey||e.metaKey) && k==='k'){
-      e.preventDefault();
-      var inp=document.getElementById('global-search-input');
-      if(inp){ inp.focus(); inp.select(); }
-    }
-  });
-})();
-</script>
-
-<style id="rasid-sidebar-nologo-2026">
-/* القائمة الجانبية بلا شعار: مسافة علوية مريحة للعنصر الأول */
-.sidebar > .sidebar-nav:first-child{padding-top:max(18px,env(safe-area-inset-top,0px));}
-@media(max-width:768px){.sidebar > .sidebar-nav:first-child{padding-top:max(16px,env(safe-area-inset-top,0px));}}
-</style>
-<style id="rasid-unify-2026">
-/* RASID — Unified Cards & Quiet System (UI فقط)
-   توحيد أرقام البطاقات + تهدئة الضوضاء + شبكة 8pt على لوحة التحكم.
-   لا يمسّ منطقاً أو بيانات. */
-.stat-value{color:var(--text);font-weight:800;letter-spacing:-.5px;}
-.stat-label{color:var(--text-3);font-weight:700;letter-spacing:.1px;}
-.stats-grid{gap:16px;}
-#dash-quick{gap:16px;}
-.stat-card{transition:transform .18s var(--ease),border-color .18s var(--ease),box-shadow .18s var(--ease);}
-.stat-card:hover{transform:translateY(-2px);}
-</style>
-
-<style id="rasid-launcher-2026">
-/* ═══════════════════════════════════════════════════════════════
-   RASID — Nav Launcher + Floating Panel (حاسوب + تابلت فقط)
-   الهاتف (≤768px) بلا أي تغيير — كل القواعد ضمن @media(min-width:769px).
-   يعيد استخدام openSidebar/closeSidebar/showPage بالكامل (بلا تغيير منطق).
-   ═══════════════════════════════════════════════════════════════ */
-
-/* مُشغّل التنقّل + الهوية: مخفيان افتراضياً (الهاتف لا يراهما) */
-.rz-launcher{display:none;width:40px;height:40px;border-radius:11px;align-items:center;justify-content:center;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);cursor:pointer;flex-shrink:0;transition:background .16s var(--ease),color .16s var(--ease),border-color .16s var(--ease),transform .12s var(--ease);}
-.rz-launcher:hover{background:var(--surface-hover);color:var(--text);border-color:var(--border-strong);}
-.rz-launcher:active{transform:scale(.94);}
-.rz-zone-brand{display:none;gap:11px;flex-shrink:0;}
-.rz-divider{width:1px;height:26px;background:var(--border-strong);margin:0 2px;}
-
-/* ترويسة القائمة المنبثقة: مخفية على الهاتف (بلا تغيير للموبايل) */
-.rz-navpop-head{display:none;}
-
-/* ════════ حاسوب + تابلت فقط (≥769px) ════════ */
-@media (min-width:769px){
-  .rz-launcher{display:flex;}
-  .rz-zone-brand{display:flex;}
-
-  /* عكس الشريط: الهوية يسار، المستخدم/الإجراءات يمين (البحث يبقى وسطاً) */
-  .rz-topbar{flex-direction:row-reverse;}
-  .rz-pop{right:0;left:auto;}
-
-  /* الشريط الجانبي → لوحة عائمة تنزلق من جهة البداية */
-  /* الشريط الجانبي → قائمة منبثقة عائمة (Popover) قرب زر القائمة */
-  .sidebar{position:fixed!important;top:var(--rz-nav-top,64px);left:var(--rz-nav-left,16px);right:auto!important;height:auto!important;max-height:min(72vh,560px);width:300px!important;border:1px solid var(--border-strong)!important;border-radius:18px;z-index:1400!important;box-shadow:none;display:flex!important;flex-direction:column;overflow-y:auto;padding-bottom:8px;opacity:0;visibility:hidden;transform:scale(.96) translateY(-10px);transform-origin:top left;transition:opacity .18s var(--ease),transform .2s cubic-bezier(.34,1.3,.64,1),visibility .2s!important;}
-  .sidebar.open{opacity:1;visibility:visible;transform:none!important;box-shadow:var(--shadow-xl);}
-
-  /* ── زجاج فاخر + حدّ ذهبي شفاف + ظل عميق (Navigation Popover) ── */
-  html:not([data-theme=light]) #sidebar{
-    background:rgba(22,25,30,.90)!important;
-    backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);
-    border:1px solid rgba(212,166,90,.20)!important;
-    box-shadow:0 24px 64px -14px rgba(0,0,0,.66), 0 0 0 1px rgba(255,255,255,.02) inset!important;
-  }
-  html[data-theme=light] #sidebar{
-    background:rgba(252,250,246,.92)!important;
-    backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);
-    border:1px solid rgba(184,142,72,.30)!important;
-    box-shadow:0 24px 60px -16px rgba(80,60,28,.30), 0 0 0 1px rgba(255,255,255,.5) inset!important;
-  }
-
-  /* ── ترويسة داخل القائمة (ثابتة أعلى عند التمرير) ── */
-  .rz-navpop-head{display:flex;align-items:center;gap:11px;position:sticky;top:0;z-index:2;padding:14px 14px 12px;margin-bottom:4px;border-bottom:1px solid var(--border);background:var(--bg-elevated);}
-  .rz-navpop-mark{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--brand-soft-gradient);border:1px solid var(--brand-border);color:var(--brand-light);flex-shrink:0;}
-  .rz-navpop-text{display:flex;flex-direction:column;line-height:1.2;min-width:0;}
-  .rz-navpop-name{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.2px;}
-  .rz-navpop-sub{font-size:10px;color:var(--text-3);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-
-  /* ── حالة نشطة واضحة + Hover ناعم داخل القائمة ── */
-  #sidebar .nav-item{position:relative;transition:background .15s var(--ease),color .15s var(--ease);}
-  #sidebar .nav-item:hover{background:var(--surface-hover);}
-  #sidebar .nav-item.active{background:var(--brand-tint)!important;color:var(--brand-light)!important;font-weight:700;}
-  #sidebar .nav-item.active::before{content:"";position:absolute;inset-inline-start:3px;top:50%;transform:translateY(-50%);width:3px;height:18px;border-radius:3px;background:var(--brand);}
-  #sidebar .nav-item.active .nav-icon{color:var(--brand-light);}
-
-  /* جعل المحتوى داخل القائمة المنبثقة مدمجاً كقائمة اختيار (وليس لوحة جانبية) */
-  .sidebar .sidebar-nav{padding:7px!important;gap:0;}
-  .sidebar .nav-section{font-size:9.5px!important;letter-spacing:.4px;padding:9px 10px 4px!important;opacity:.65;margin:0!important;}
-  .sidebar .nav-section:first-child{padding-top:2px!important;}
-  .sidebar .nav-item{padding:9px 11px!important;margin:1px 0!important;border-radius:10px!important;font-size:13px!important;}
-  .sidebar .nav-item .nav-icon{transform:scale(.92);}
-  .sidebar .sidebar-footer{padding:7px!important;margin-top:4px!important;}
-  /* شريط تمرير نحيف وأنيق */
-  .sidebar::-webkit-scrollbar{width:8px;}
-  .sidebar::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px;border:2px solid transparent;background-clip:content-box;}
-
-  /* المحتوى يأخذ كامل العرض + تنفّس أكبر */
-  .main-wrap{margin-right:0!important;width:100%!important;min-width:0!important;}
-  .content{padding-left:clamp(28px,3vw,44px);padding-right:clamp(28px,3vw,44px);}
-
-  /* الطبقة الخلفية (إغلاق بالنقر خارجاً) */
-  .sidebar-overlay{display:none;position:fixed;inset:0;background:transparent;z-index:1390;}
-  .sidebar-overlay.open{display:block!important;}
-}
-</style>
-
-<style id="rasid-navpop-refine-2026">
-/* RASID — Navigation Popover refinements (حاسوب/تابلت فقط؛ الهاتف بلا تغيير) */
-@media (min-width:769px){
-  /* الأيقونات تتبع لون العنصر → تتحوّل ذهبية بوضوح عند التنشيط، وأهدأ افتراضياً */
-  #sidebar .nav-item .nav-icon{color:var(--text-3)!important;transition:color .15s var(--ease);}
-  #sidebar .nav-item .nav-icon svg{stroke:currentColor!important;}
-  #sidebar .nav-item:hover .nav-icon{color:var(--text)!important;}
-  #sidebar .nav-item.active .nav-icon{color:var(--brand-light)!important;}
-
-  /* ترويسة زجاجية متناسقة مع زجاج القائمة (بدل خلفية صلبة) */
-  html:not([data-theme=light]) .rz-navpop-head{background:rgba(20,23,28,.55)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,166,90,.14)!important;}
-  html[data-theme=light] .rz-navpop-head{background:rgba(250,248,243,.60)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(184,142,72,.18)!important;}
-
-  /* مجموعات أوضح عبر المسافات (هدوء بصري بلا خطوط زائدة) */
-  #sidebar .nav-section{margin-top:10px!important;}
-  #sidebar .sidebar-nav > .nav-section:first-child{margin-top:0!important;}
-
-  /* تذييل (الإبلاغ/الخروج) مفصول بلطف */
-  #sidebar .sidebar-footer{border-top:1px solid var(--border);margin-top:6px!important;padding-top:8px!important;}
-}
-</style>
-
-<script>
-/* ═══════════════════════════════════════════════════════════════
-   RASID — Navigation Popover (نظام مستقل · حاسوب/تابلت ≥769px فقط)
-   مسؤول وحده عن: الفتح/الإغلاق/التبديل + الطبقة الخلفية + التمرير + لوحة المفاتيح + تغيير الحجم.
-   يعمل على عنصر #sidebar نفسه (مكان عناصر التنقّل وصلاحيات الأدوار) بلا تغيير أي منطق.
-   إدارة المستمعين عبر MutationObserver لمنع التكرار/التسرّب مهما كان مصدر الإغلاق
-   (نقر خارجي · ESC · اختيار قسم · تمرير · انتقال · تغيير حجم · تحوّل للهاتف).
-   ═══════════════════════════════════════════════════════════════ */
-(function(){
-  function sb(){ return document.getElementById('sidebar'); }
-  function ov(){ return document.getElementById('sidebar-overlay'); }
-  function isWide(){ return window.innerWidth>=769; }
-
-  function position(ev){
-    var s=sb(); if(!s) return;
-    var btn=(ev && ev.currentTarget)?ev.currentTarget:document.querySelector('.rz-launcher');
-    if(!btn) return;
-    var r=btn.getBoundingClientRect();
-    var left=Math.min(Math.max(12,r.left), window.innerWidth-316);
-    s.style.setProperty('--rz-nav-left', left+'px');
-    s.style.setProperty('--rz-nav-top', (r.bottom+10)+'px');
-  }
-
-  window.openNavPopover=function(ev){
-    var s=sb(); if(!s) return;
-    if(isWide()) position(ev);
-    s.classList.add('open');
-    var o=ov(); if(o) o.classList.add('open');
-  };
-  window.closeNavPopover=function(){
-    var s=sb(); if(s) s.classList.remove('open');
-    var o=ov(); if(o) o.classList.remove('open');
-  };
-  window.toggleNavPopover=function(ev){
-    var s=sb(); if(!s) return;
-    if(s.classList.contains('open')) window.closeNavPopover();
-    else window.openNavPopover(ev);
-  };
-
-  /* إدارة المستمعين بلا تسرّب — مربوطة بحالة .open عبر مراقب التغييرات */
-  var bound=false;
-  function onScroll(e){
-    var s=sb();
-    var t=e?e.target:null;
-    /* تجاهل التمرير داخل القائمة نفسها (حتى لا تُغلق عند تصفّحها) */
-    if(s && t && t.nodeType===1 && (t===s || s.contains(t))) return;
-    window.closeNavPopover();
-  }
-  function onKey(e){ if(e.key==='Escape') window.closeNavPopover(); }
-  function onResize(){ window.closeNavPopover(); }
-  function bind(){
-    if(bound) return; bound=true;
-    window.addEventListener('scroll', onScroll, {passive:true, capture:true});
-    document.addEventListener('keydown', onKey, true);
-    window.addEventListener('resize', onResize, {passive:true});
-  }
-  function unbind(){
-    if(!bound) return; bound=false;
-    window.removeEventListener('scroll', onScroll, true);
-    document.removeEventListener('keydown', onKey, true);
-    window.removeEventListener('resize', onResize);
-  }
-  function sync(){
-    var s=sb();
-    if(s && s.classList.contains('open') && isWide()) bind(); else unbind();
-  }
-  function init(){
-    var s=sb();
-    if(s && window.MutationObserver){
-      new MutationObserver(sync).observe(s, {attributes:true, attributeFilter:['class']});
-    }
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-})();
-</script>
+<!-- RASID Navigation Popover V1 script removed: superseded by Command Center V2 behavior. -->
 
 
-
-<style id="rasid-command-center-redesign-2026">
-/* ═══════════════════════════════════════════════════════════════
-   RASID Command Center Redesign — desktop/tablet only
-   Preserves the original mobile sidebar and bottom navigation.
-   ═══════════════════════════════════════════════════════════════ */
+<style id="rasid-command-center-v2-2026">
+/* RASID Command Center V2 — desktop/tablet only. Mobile sidebar and bottom navigation remain untouched. */
 .rz-cc-desktop{display:none;}
 @media (min-width:769px){
   #sidebar.rz-cc-ready,
-  #sidebar{
-    width:min(420px,calc(100vw - 24px))!important;
-    max-width:420px!important;
-    min-width:360px;
-    max-height:75vh!important;
+  #sidebar.rz-cc-ready.open{
+    --rz-cc-w:clamp(620px,58vw,760px);
+    --cc-gold:#D4A65A;
+    --cc-gold-2:#F1C77D;
+    --cc-success:#57D28D;
+    --cc-danger:#FF8D8D;
+    --cc-warning:#F4BA64;
+    --cc-bg:rgba(15,17,21,.86);
+    --cc-bg-2:rgba(22,25,31,.78);
+    --cc-card:rgba(255,255,255,.055);
+    --cc-card-2:rgba(255,255,255,.035);
+    --cc-line:rgba(255,255,255,.095);
+    --cc-line-soft:rgba(255,255,255,.06);
+    --cc-text:#F2F0EA;
+    --cc-text-2:#C8C1B6;
+    --cc-muted:#8B8378;
+    position:fixed!important;
+    top:var(--rz-nav-top,64px)!important;
+    left:var(--rz-nav-left,16px)!important;
+    right:auto!important;
+    width:min(var(--rz-cc-w),calc(100vw - 28px))!important;
+    min-width:0!important;
     height:auto!important;
-    overflow:hidden!important;
+    max-height:min(74vh,620px)!important;
     padding:0!important;
+    overflow:hidden!important;
     border-radius:24px!important;
-    transform-origin:top left!important;
-    transition:opacity .18s var(--ease), transform .24s cubic-bezier(.16,1,.3,1), visibility .18s!important;
-  }
-  #sidebar:not(.open){transform:translateY(10px) scale(.96)!important;}
-  #sidebar.open{transform:translateY(0) scale(1)!important;}
-  #sidebar > :not(.rz-cc-desktop){display:none!important;}
-  #sidebar .rz-cc-desktop{display:flex!important;flex-direction:column;max-height:75vh;min-height:0;outline:none;}
-
-  html:not([data-theme=light]) #sidebar{
-    background:linear-gradient(145deg,rgba(22,25,31,.94),rgba(14,16,22,.92))!important;
     border:1px solid rgba(212,166,90,.22)!important;
-    box-shadow:0 28px 78px -18px rgba(0,0,0,.72),0 0 0 1px rgba(255,255,255,.035) inset!important;
-    backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%);
+    background:linear-gradient(145deg,rgba(17,19,24,.94),rgba(12,14,18,.88))!important;
+    box-shadow:0 28px 90px rgba(0,0,0,.62),0 0 0 1px rgba(255,255,255,.035) inset,0 0 80px rgba(212,166,90,.055)!important;
+    backdrop-filter:blur(24px) saturate(160%)!important;
+    -webkit-backdrop-filter:blur(24px) saturate(160%)!important;
+    opacity:0;visibility:hidden;
+    transform:translateY(-10px) scale(.96)!important;
+    transform-origin:top left!important;
+    transition:opacity .18s var(--ease),transform .22s cubic-bezier(.16,1,.3,1),visibility .18s!important;
+    z-index:1400!important;
   }
-  html[data-theme=light] #sidebar{
-    background:linear-gradient(145deg,rgba(255,252,246,.96),rgba(244,238,228,.94))!important;
-    border:1px solid rgba(138,109,42,.22)!important;
-    box-shadow:0 28px 74px -20px rgba(74,52,20,.28),0 0 0 1px rgba(255,255,255,.62) inset!important;
-    backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%);
+  html[data-theme=light] #sidebar.rz-cc-ready,
+  html[data-theme=light] #sidebar.rz-cc-ready.open{
+    --cc-bg:rgba(249,245,237,.91);
+    --cc-bg-2:rgba(255,252,246,.78);
+    --cc-card:rgba(255,255,255,.66);
+    --cc-card-2:rgba(255,255,255,.44);
+    --cc-line:rgba(92,68,28,.14);
+    --cc-line-soft:rgba(92,68,28,.08);
+    --cc-text:#2C2417;
+    --cc-text-2:#5E5140;
+    --cc-muted:#938474;
+    background:linear-gradient(145deg,rgba(252,249,243,.94),rgba(237,231,221,.88))!important;
+    border-color:rgba(138,109,42,.24)!important;
+    box-shadow:0 26px 76px rgba(75,54,24,.24),0 0 0 1px rgba(255,255,255,.72) inset!important;
   }
-  #sidebar::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:radial-gradient(circle at 16% 0%,rgba(212,166,90,.18),transparent 34%),radial-gradient(circle at 86% 10%,rgba(99,179,237,.08),transparent 32%);opacity:.85;}
-  #sidebar .rz-cc-desktop{position:relative;z-index:1;}
+  #sidebar.rz-cc-ready.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)!important;}
+  #sidebar.rz-cc-ready::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 12% 0%,rgba(212,166,90,.18),transparent 34%),radial-gradient(circle at 85% 100%,rgba(255,255,255,.06),transparent 36%);opacity:.95;}
+  html[data-theme=light] #sidebar.rz-cc-ready::before{background:radial-gradient(circle at 12% 0%,rgba(138,109,42,.13),transparent 34%),radial-gradient(circle at 90% 100%,rgba(255,255,255,.52),transparent 40%);}
+  #sidebar.rz-cc-ready > :not(.rz-cc-desktop){display:none!important;}
+  #sidebar.rz-cc-ready .rz-cc-desktop{display:flex!important;position:relative;z-index:1;max-height:min(74vh,620px);min-height:0;flex-direction:column;outline:none;color:var(--cc-text);}
 
-  .rz-cc-identity{margin:12px 12px 8px;padding:13px;border-radius:19px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;position:relative;overflow:hidden;}
-  html:not([data-theme=light]) .rz-cc-identity{background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border:1px solid rgba(255,255,255,.10);box-shadow:0 14px 36px rgba(0,0,0,.25),0 0 0 1px rgba(212,166,90,.055) inset;}
-  html[data-theme=light] .rz-cc-identity{background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(248,241,231,.62));border:1px solid rgba(126,98,48,.13);box-shadow:0 12px 28px rgba(84,59,23,.10),0 0 0 1px rgba(255,255,255,.72) inset;}
-  .rz-cc-identity::before{content:"";position:absolute;inset:-1px;background:linear-gradient(90deg,transparent,rgba(212,166,90,.15),transparent);opacity:.7;pointer-events:none;}
-  .rz-cc-logo{width:43px;height:43px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#E7BD73;background:linear-gradient(160deg,rgba(212,166,90,.24),rgba(212,166,90,.08));border:1px solid rgba(212,166,90,.25);box-shadow:0 10px 24px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.08);}
-  .rz-cc-identity-text{min-width:0;display:flex;flex-direction:column;gap:2px;line-height:1.25;}
-  .rz-cc-kicker{font-size:9.5px;font-weight:800;letter-spacing:.42px;color:var(--brand-light);text-transform:uppercase;opacity:.9;direction:ltr;text-align:right;}
-  .rz-cc-inst{font-size:15px;font-weight:900;color:var(--text);letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .rz-cc-user{font-size:10.5px;font-weight:700;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px;}
-  .rz-cc-license{display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:82px;}
-  .rz-cc-status,.rz-cc-plan{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid var(--border);padding:4px 8px;font-size:9.5px;font-weight:900;white-space:nowrap;line-height:1;}
-  .rz-cc-status{color:var(--success);background:var(--success-bg);border-color:var(--success-border);}
-  .rz-cc-status.warn{color:var(--warning);background:var(--warning-bg);border-color:var(--warning-border);}
-  .rz-cc-status.danger{color:var(--danger);background:var(--danger-bg);border-color:var(--danger-border);}
-  .rz-cc-plan{color:var(--brand-light);background:rgba(212,166,90,.10);border-color:rgba(212,166,90,.20);}
+  .rz-cc-top{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:13px;align-items:center;padding:16px 16px 12px;border-bottom:1px solid var(--cc-line-soft);}
+  .rz-cc-logo{width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;color:var(--cc-gold-2);background:linear-gradient(145deg,rgba(212,166,90,.22),rgba(212,166,90,.07));border:1px solid rgba(212,166,90,.24);box-shadow:0 14px 34px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.07);}
+  html[data-theme=light] .rz-cc-logo{color:#74561E;background:linear-gradient(145deg,rgba(138,109,42,.16),rgba(255,255,255,.42));box-shadow:0 10px 24px rgba(70,45,15,.12),inset 0 1px 0 rgba(255,255,255,.70);}
+  .rz-cc-titlebox{min-width:0;display:flex;flex-direction:column;gap:2px;line-height:1.22;}
+  .rz-cc-kicker{font-size:10px;font-weight:950;letter-spacing:.48px;text-transform:uppercase;color:var(--cc-gold-2);direction:ltr;text-align:right;opacity:.96;}
+  html[data-theme=light] .rz-cc-kicker{color:#74561E;}
+  .rz-cc-inst{font-size:18px;font-weight:950;color:var(--cc-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.35px;}
+  .rz-cc-user{font-size:11px;font-weight:750;color:var(--cc-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rz-cc-license{display:flex;align-items:center;gap:7px;justify-content:flex-start;flex-wrap:wrap;}
+  .rz-cc-status,.rz-cc-plan{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:950;line-height:1;white-space:nowrap;border:1px solid var(--cc-line);background:var(--cc-card);color:var(--cc-text-2);}
+  .rz-cc-status{color:var(--cc-success);background:rgba(87,210,141,.10);border-color:rgba(87,210,141,.22);}
+  .rz-cc-status.warn{color:var(--cc-warning);background:rgba(244,186,100,.11);border-color:rgba(244,186,100,.24);}
+  .rz-cc-status.danger{color:var(--cc-danger);background:rgba(255,141,141,.10);border-color:rgba(255,141,141,.22);}
+  .rz-cc-plan{color:var(--cc-gold-2);background:rgba(212,166,90,.10);border-color:rgba(212,166,90,.22);}
+  html[data-theme=light] .rz-cc-plan{color:#74561E;}
 
-  .rz-cc-body{padding:0 12px 10px;overflow-y:auto;overflow-x:hidden;min-height:0;scrollbar-width:thin;overscroll-behavior:contain;}
-  .rz-cc-body::-webkit-scrollbar{width:8px;}.rz-cc-body::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:10px;border:2px solid transparent;background-clip:content-box;}
-  .rz-cc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px;}
-  .rz-cc-stat{appearance:none;border:1px solid var(--border);background:rgba(255,255,255,.035);border-radius:14px;padding:9px 6px 8px;min-width:0;text-align:center;font-family:inherit;cursor:pointer;color:var(--text);transition:transform .16s var(--ease),background .16s var(--ease),border-color .16s var(--ease),box-shadow .16s var(--ease);}
-  .rz-cc-stat:hover{transform:translateY(-2px);background:var(--surface-hover);border-color:rgba(212,166,90,.22);box-shadow:0 12px 24px rgba(0,0,0,.12);}
-  .rz-cc-stat-label{display:block;font-size:9.5px;font-weight:800;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
-  .rz-cc-stat strong{font-size:14px;font-weight:950;color:var(--text);letter-spacing:-.2px;white-space:nowrap;}
-  .rz-cc-section-title{font-size:10px;color:var(--text-3);font-weight:900;letter-spacing:.7px;text-transform:uppercase;margin:3px 4px 7px;}
-  .rz-cc-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
-  .rz-cc-action{appearance:none;border:1px solid var(--border);background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025));color:var(--text);min-height:54px;border-radius:16px;padding:10px;display:flex;align-items:center;gap:10px;font-family:inherit;font-size:12px;font-weight:900;cursor:pointer;text-align:right;transition:transform .16s var(--ease),border-color .16s var(--ease),background .16s var(--ease),box-shadow .16s var(--ease);}
-  .rz-cc-action:hover{transform:translateY(-2px);border-color:rgba(212,166,90,.28);background:linear-gradient(145deg,rgba(212,166,90,.10),rgba(255,255,255,.04));box-shadow:0 14px 28px rgba(0,0,0,.15);}
-  .rz-cc-action:active{transform:scale(.985);}
-  .rz-cc-action-icon{width:31px;height:31px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--brand-light);background:rgba(212,166,90,.11);border:1px solid rgba(212,166,90,.18);flex:0 0 auto;}
+  .rz-cc-body{display:grid;grid-template-columns:270px minmax(0,1fr);gap:14px;padding:14px 16px;overflow-y:auto;overflow-x:hidden;min-height:0;scrollbar-width:thin;}
+  .rz-cc-body::-webkit-scrollbar{width:8px}.rz-cc-body::-webkit-scrollbar-thumb{background:rgba(212,166,90,.20);border-radius:999px;border:2px solid transparent;background-clip:content-box;}
+  .rz-cc-left,.rz-cc-right{min-width:0;}
+  .rz-cc-left{display:flex;flex-direction:column;gap:9px;}
+  .rz-cc-right{display:flex;flex-direction:column;gap:9px;}
+  .rz-cc-minihead{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--cc-muted);font-size:10px;font-weight:950;letter-spacing:.42px;text-transform:uppercase;padding:0 2px;}
+  .rz-cc-minihead i{height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--cc-line),transparent);}
+  .rz-cc-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .rz-cc-stat{appearance:none;border:1px solid var(--cc-line-soft);background:var(--cc-card);color:var(--cc-text);border-radius:16px;padding:10px 10px 9px;text-align:right;font-family:inherit;cursor:pointer;min-width:0;transition:transform .16s var(--ease),background .16s var(--ease),border-color .16s var(--ease),box-shadow .16s var(--ease);}
+  .rz-cc-stat:hover{transform:translateY(-2px);border-color:rgba(212,166,90,.26);background:rgba(212,166,90,.075);box-shadow:0 16px 32px rgba(0,0,0,.15);}
+  html[data-theme=light] .rz-cc-stat:hover{box-shadow:0 14px 26px rgba(70,45,15,.10);}
+  .rz-cc-stat-label{display:block;color:var(--cc-muted);font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+  .rz-cc-stat strong{display:block;font-size:17px;font-weight:950;color:var(--cc-text);letter-spacing:-.25px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;}
+  .rz-cc-action-head{margin-top:3px;}
+  .rz-cc-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .rz-cc-action{appearance:none;border:1px solid var(--cc-line-soft);background:var(--cc-card-2);color:var(--cc-text);min-height:56px;border-radius:16px;padding:10px;display:flex;align-items:center;gap:10px;font-family:inherit;font-size:12px;font-weight:950;cursor:pointer;text-align:right;transition:transform .16s var(--ease),border-color .16s var(--ease),background .16s var(--ease),box-shadow .16s var(--ease);}
+  .rz-cc-action:hover{transform:translateY(-2px);border-color:rgba(212,166,90,.30);background:rgba(212,166,90,.085);box-shadow:0 16px 32px rgba(0,0,0,.14);}
+  .rz-cc-action-icon{width:32px;height:32px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;color:var(--cc-gold-2);background:rgba(212,166,90,.12);border:1px solid rgba(212,166,90,.20);}
+  html[data-theme=light] .rz-cc-action-icon{color:#74561E;background:rgba(138,109,42,.10);}
 
-  .rz-cc-nav{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important;padding:0!important;overflow:visible!important;}
-  .rz-cc-nav-group{border:1px solid var(--border);border-radius:16px;padding:8px;background:rgba(255,255,255,.028);min-width:0;}
-  html[data-theme=light] .rz-cc-nav-group,.rz-cc-stat,.rz-cc-action{background:rgba(255,255,255,.45);}
-  .rz-cc-nav .nav-section{padding:0 2px 7px!important;margin:0!important;font-size:9px!important;letter-spacing:.55px!important;color:var(--text-3)!important;opacity:.82!important;text-transform:uppercase;}
-  .rz-cc-nav .nav-item{min-height:35px!important;padding:7px 8px!important;margin:0 0 3px!important;border-radius:11px!important;display:flex!important;align-items:center!important;gap:8px!important;color:var(--text-2)!important;font-size:12px!important;font-weight:800!important;letter-spacing:-.15px!important;background:transparent!important;border:1px solid transparent!important;box-shadow:none!important;transition:transform .14s var(--ease),background .14s var(--ease),color .14s var(--ease),border-color .14s var(--ease)!important;}
+  .rz-cc-nav{display:grid!important;grid-template-columns:1fr 1fr;gap:9px!important;padding:0!important;margin:0!important;overflow:visible!important;}
+  .rz-cc-nav-group{min-width:0;border:1px solid var(--cc-line-soft);border-radius:17px;padding:9px;background:var(--cc-card-2);}
+  .rz-cc-nav-group-wide{grid-column:auto;}
+  .rz-cc-nav .nav-section{padding:0 2px 8px!important;margin:0!important;font-size:9px!important;letter-spacing:.55px!important;color:var(--cc-muted)!important;opacity:.92!important;text-transform:uppercase;}
+  .rz-cc-nav .nav-item{appearance:none;width:100%;min-height:34px!important;padding:7px 8px!important;margin:0 0 4px!important;border-radius:12px!important;display:flex!important;align-items:center!important;gap:8px!important;color:var(--cc-text-2)!important;font-family:inherit;font-size:12px!important;font-weight:850!important;letter-spacing:-.1px!important;background:transparent!important;border:1px solid transparent!important;box-shadow:none!important;cursor:pointer;text-align:right;position:relative;transition:transform .14s var(--ease),background .14s var(--ease),color .14s var(--ease),border-color .14s var(--ease)!important;}
   .rz-cc-nav .nav-item:last-child{margin-bottom:0!important;}
-  .rz-cc-nav .nav-item:hover{background:var(--surface-hover)!important;color:var(--text)!important;transform:translateY(-1px);border-color:var(--border)!important;}
-  .rz-cc-nav .nav-item.active{background:linear-gradient(135deg,rgba(212,166,90,.18),rgba(212,166,90,.07))!important;color:var(--brand-light)!important;border-color:rgba(212,166,90,.25)!important;box-shadow:inset 0 0 0 1px rgba(212,166,90,.05),0 10px 20px rgba(0,0,0,.10)!important;}
-  .rz-cc-nav .nav-item::before{display:none!important;}
-  .rz-cc-nav .nav-item.active::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--brand-light);box-shadow:0 0 0 4px rgba(212,166,90,.12);margin-inline-start:auto;}
-  .rz-cc-nav .nav-icon{width:27px!important;height:27px!important;border-radius:9px;display:flex!important;align-items:center!important;justify-content:center!important;background:rgba(255,255,255,.045);border:1px solid var(--border);color:var(--text-3)!important;flex:0 0 auto;transform:none!important;}
-  .rz-cc-nav .nav-item:hover .nav-icon{color:var(--text)!important;border-color:var(--border-strong);}
-  .rz-cc-nav .nav-item.active .nav-icon{color:var(--brand-light)!important;background:rgba(212,166,90,.14);border-color:rgba(212,166,90,.22);}
+  .rz-cc-nav .nav-item:hover{background:rgba(255,255,255,.055)!important;color:var(--cc-text)!important;transform:translateY(-1px);border-color:var(--cc-line-soft)!important;}
+  html[data-theme=light] .rz-cc-nav .nav-item:hover{background:rgba(138,109,42,.055)!important;}
+  .rz-cc-nav .nav-item.active{background:linear-gradient(135deg,rgba(212,166,90,.19),rgba(212,166,90,.07))!important;color:var(--cc-gold-2)!important;border-color:rgba(212,166,90,.27)!important;box-shadow:inset 0 0 0 1px rgba(212,166,90,.055),0 10px 18px rgba(0,0,0,.09)!important;}
+  html[data-theme=light] .rz-cc-nav .nav-item.active{color:#6E5420!important;background:linear-gradient(135deg,rgba(138,109,42,.14),rgba(255,255,255,.34))!important;}
+  .rz-cc-nav .nav-item.active::after{content:"";margin-inline-start:auto;width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 0 4px rgba(212,166,90,.13);}
+  .rz-cc-nav .nav-icon{width:27px!important;height:27px!important;border-radius:10px;display:flex!important;align-items:center!important;justify-content:center!important;background:rgba(255,255,255,.045);border:1px solid var(--cc-line-soft);color:var(--cc-muted)!important;flex:0 0 auto;transform:none!important;}
+  html[data-theme=light] .rz-cc-nav .nav-icon{background:rgba(138,109,42,.055);}
+  .rz-cc-nav .nav-item:hover .nav-icon{color:var(--cc-text)!important;border-color:var(--cc-line);}
+  .rz-cc-nav .nav-item.active .nav-icon{color:currentColor!important;background:rgba(212,166,90,.13);border-color:rgba(212,166,90,.24);}
   .rz-cc-nav .nav-icon svg{stroke:currentColor!important;}
 
-  .rz-cc-footer{padding:10px 12px 12px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.05));}
-  .rz-cc-footer-btn{height:38px;border-radius:13px;border:1px solid var(--border);background:rgba(255,255,255,.035);color:var(--text-2);font-family:inherit;font-size:11.5px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:transform .15s var(--ease),background .15s var(--ease),color .15s var(--ease),border-color .15s var(--ease);}
-  .rz-cc-footer-btn:hover{transform:translateY(-1px);background:var(--surface-hover);color:var(--text);border-color:var(--border-strong);}
-  .rz-cc-logout{color:#ff8e8e;border-color:rgba(255,80,80,.18);background:rgba(255,80,80,.065);}
-  .rz-cc-logout:hover{color:#ffaaaa;border-color:rgba(255,80,80,.28);background:rgba(255,80,80,.12);}
+  .rz-cc-footer{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 16px 16px;border-top:1px solid var(--cc-line-soft);background:linear-gradient(180deg,transparent,rgba(0,0,0,.07));}
+  html[data-theme=light] .rz-cc-footer{background:linear-gradient(180deg,transparent,rgba(92,68,28,.035));}
+  .rz-cc-footer-btn{height:38px;border-radius:14px;border:1px solid var(--cc-line-soft);background:var(--cc-card-2);color:var(--cc-text-2);font-family:inherit;font-size:11.5px;font-weight:950;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:transform .15s var(--ease),background .15s var(--ease),color .15s var(--ease),border-color .15s var(--ease);}
+  .rz-cc-footer-btn:hover{transform:translateY(-1px);background:rgba(212,166,90,.08);color:var(--cc-text);border-color:rgba(212,166,90,.25);}
+  .rz-cc-theme{color:var(--cc-gold-2);border-color:rgba(212,166,90,.18);}
+  html[data-theme=light] .rz-cc-theme{color:#74561E;}
+  .rz-cc-logout{color:#FF9A9A;border-color:rgba(255,80,80,.20);background:rgba(255,80,80,.07);}
+  .rz-cc-logout:hover{color:#FFD0D0;border-color:rgba(255,80,80,.34);background:rgba(255,80,80,.12);}
 
   .rz-cc-action:focus-visible,.rz-cc-stat:focus-visible,.rz-cc-footer-btn:focus-visible,.rz-cc-nav .nav-item:focus-visible,#rz-command-center:focus-visible{outline:2px solid rgba(212,166,90,.58);outline-offset:2px;}
 }
-@media (min-width:769px) and (max-width:900px){
-  #sidebar{width:min(400px,calc(100vw - 24px))!important;min-width:360px;}
+@media (min-width:769px) and (max-width:930px){
+  #sidebar.rz-cc-ready,#sidebar.rz-cc-ready.open{--rz-cc-w:calc(100vw - 28px);}
+  .rz-cc-body{grid-template-columns:1fr;max-height:calc(74vh - 116px);}
+  .rz-cc-left{display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:12px;}
+  .rz-cc-minihead{grid-column:1/-1;}
+}
+@media (min-width:769px) and (max-width:680px){
   .rz-cc-nav{grid-template-columns:1fr!important;}
+  .rz-cc-footer{grid-template-columns:1fr 1fr;}
 }
 @media (max-width:768px){
   #sidebar .rz-cc-desktop{display:none!important;}
 }
 </style>
 
-<script id="rasid-command-center-redesign-js-2026">
-/* RASID Command Center behavior — additive; no routing/data/auth rewrite. */
+<script id="rasid-command-center-v2-js-2026">
+/* RASID Command Center V2 behavior — additive; no Supabase/routing/auth changes. */
 (function(){
   function byId(id){return document.getElementById(id);}
-  function isWide(){return window.innerWidth>=769;}
   function sidebar(){return byId('sidebar');}
   function overlay(){return byId('sidebar-overlay');}
+  function isWide(){return window.innerWidth>=769;}
   function safeText(el,txt){if(el) el.textContent=(txt==null?'':String(txt));}
   function todayKey(){try{return today();}catch(e){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}}
   function money(n){try{return fmt(n);}catch(e){return Number(n||0).toLocaleString('ar-IQ')+' د.ع';}}
@@ -14270,9 +14075,9 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   }
   function applySubscription(sub){
     var st=byId('rz-cc-sub-status'), plan=byId('rz-cc-plan-badge');
-    var label='غير مفعل', cls='danger', planLabel='—';
+    var label='غير مفعل', cls='danger', planLabel='Standard';
     if(sub){
-      planLabel=sub.plan||'standard';
+      planLabel=sub.plan||sub.planName||'standard';
       try{
         var ev=(typeof evalSubscription==='function')?evalSubscription(sub):null;
         if(ev && (ev.status==='valid'||ev.status==='expiring')){
@@ -14280,11 +14085,11 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
           cls=ev.status==='expiring'?'warn':'';
         }else if(ev && ev.status==='expired'){
           label='منتهي'; cls='danger';
-        }
+        }else{label='اشتراك محفوظ'; cls='';}
       }catch(e){label='اشتراك محفوظ'; cls='';}
     }
     if(st){st.className='rz-cc-status '+cls;st.textContent=label;}
-    safeText(plan, planLabel.charAt(0).toUpperCase()+planLabel.slice(1));
+    safeText(plan, String(planLabel).charAt(0).toUpperCase()+String(planLabel).slice(1));
   }
   function updatePermissions(){
     try{
@@ -14297,40 +14102,6 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
       if(fg) fg.style.display=(typeof Perms==='undefined'||Perms.canFinance())?'':'none';
     }catch(e){}
   }
-  window.rzRefreshCommandCenter=function(){
-    try{
-      var root=byId('rz-command-center'); if(!root) return;
-      var d=(typeof data!=='undefined' && data)?data:{students:[],attendance:[],courses:[],settings:{}};
-      var settings=d.settings||{};
-      safeText(byId('rz-cc-inst-name'), settings.instName||'راصد');
-      var userTxt='حساب المعهد';
-      try{
-        var old=byId('sidebar-user-email');
-        if(old && old.textContent.trim()) userTxt=old.textContent.trim();
-        else if(typeof currentUser!=='undefined'&&currentUser&&currentUser.email) userTxt=currentUser.email.replace(/@.*/,'');
-      }catch(e){}
-      safeText(byId('rz-cc-user-name'), userTxt);
-
-      var students=d.students||[];
-      var atts=d.attendance||[];
-      var td=todayKey();
-      var todayAtt=atts.filter(function(a){return a.date===td;});
-      var present=todayAtt.filter(function(a){return a.status==='present';}).length;
-      var totalMarked=todayAtt.filter(function(a){return a.status==='present'||a.status==='absent'||a.status==='excused'||a.status==='late';}).length;
-      var attPct=totalMarked>0?Math.round(present/totalMarked*100)+'%':'—';
-      var outstanding=students.reduce(function(sum,s){var rest=Number(s.subPrice||0)-Number(s.subPaid||0);return sum+(rest>0?rest:0);},0);
-      var courses=d.courses||[];
-      var activeCourses=courses.filter(function(c){return c.status==='جارية'||c.status==='active'||(!c.status&&courses.length);}).length;
-      if(activeCourses===0 && courses.length>0) activeCourses=courses.length;
-      safeText(byId('rz-cc-stat-students'), students.length);
-      safeText(byId('rz-cc-stat-attendance'), attPct);
-      safeText(byId('rz-cc-stat-payments'), money(outstanding));
-      safeText(byId('rz-cc-stat-courses'), activeCourses);
-      applySubscription(currentPlanFromCache());
-      updatePermissions();
-      if(typeof currentPage!=='undefined') rzSetActiveCommandNav(currentPage);
-    }catch(e){try{console.warn('Command Center refresh',e);}catch(_e){}}
-  };
   window.rzSetActiveCommandNav=function(page){
     try{
       var p=page || (typeof currentPage!=='undefined'?currentPage:'dashboard');
@@ -14342,6 +14113,52 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
       }
     }catch(e){}
   };
+  window.rzCCUpdateThemeButton=function(){
+    try{
+      var icon=byId('rz-cc-theme-icon'), label=byId('rz-cc-theme-label');
+      var dark=!document.documentElement.hasAttribute('data-theme');
+      if(icon){icon.innerHTML=dark?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>':'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';}
+      if(label){label.textContent=dark?'نهاري':'ليلي';}
+    }catch(e){}
+  };
+  window.rzCCToggleTheme=function(){
+    try{ if(typeof toggleTheme==='function') toggleTheme(); }catch(e){}
+    setTimeout(function(){try{rzCCUpdateThemeButton();}catch(e){}},0);
+  };
+  window.rzRefreshCommandCenter=function(){
+    try{
+      var d=(typeof data!=='undefined' && data)?data:{students:[],attendance:[],courses:[],settings:{}};
+      var settings=d.settings||{};
+      safeText(byId('rz-cc-inst-name'), settings.instName||'راصد');
+      var userTxt='حساب المعهد';
+      try{
+        var old=byId('sidebar-user-email');
+        if(old && old.textContent.trim()) userTxt=old.textContent.trim();
+        else if(typeof currentUser!=='undefined'&&currentUser&&currentUser.email) userTxt=currentUser.email.replace(/@.*/, '');
+      }catch(e){}
+      safeText(byId('rz-cc-user-name'), userTxt);
+      var students=d.students||[];
+      var atts=d.attendance||[];
+      var td=todayKey();
+      var todayAtt=atts.filter(function(a){return a.date===td;});
+      var present=todayAtt.filter(function(a){return a.status==='present';}).length;
+      var totalMarked=todayAtt.filter(function(a){return a.status==='present'||a.status==='absent'||a.status==='excused'||a.status==='late';}).length;
+      var attPct=totalMarked>0?Math.round(present/totalMarked*100)+'%':'—';
+      var outstanding=0;
+      try{outstanding=students.reduce(function(sum,s){var fs=(typeof feeStats==='function')?feeStats(s.id):null;var rest=fs?Number(fs.remaining||0):(Number(s.subPrice||0)-Number(s.subPaid||0));return sum+(rest>0?rest:0);},0);}catch(e){outstanding=0;}
+      var courses=d.courses||[];
+      var activeCourses=courses.filter(function(c){return c.status==='جارية'||c.status==='active'||(!c.status&&courses.length);}).length;
+      if(activeCourses===0 && courses.length>0) activeCourses=courses.length;
+      safeText(byId('rz-cc-stat-students'), students.length);
+      safeText(byId('rz-cc-stat-attendance'), attPct);
+      safeText(byId('rz-cc-stat-payments'), money(outstanding));
+      safeText(byId('rz-cc-stat-courses'), activeCourses);
+      applySubscription(currentPlanFromCache());
+      updatePermissions();
+      rzCCUpdateThemeButton();
+      if(typeof currentPage!=='undefined') rzSetActiveCommandNav(currentPage);
+    }catch(e){try{console.warn('Command Center refresh',e);}catch(_e){}}
+  };
   window.rzCCRun=function(fn){
     try{ if(typeof closeNavPopover==='function') closeNavPopover(); else if(typeof closeSidebar==='function') closeSidebar(); }catch(e){}
     setTimeout(function(){try{ if(typeof fn==='function') fn(); }catch(err){console.error('rzCCRun',err);}},0);
@@ -14349,12 +14166,13 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   function position(ev){
     var s=sidebar(); if(!s) return;
     var btn=(ev&&ev.currentTarget)?ev.currentTarget:document.querySelector('.rz-launcher');
-    var w=Math.min(420, Math.max(360, Math.min(window.innerWidth-24,420)));
-    if(!btn){s.style.setProperty('--rz-nav-left','12px');s.style.setProperty('--rz-nav-top','64px');return;}
+    var w=Math.min(Math.max(620, Math.round(window.innerWidth*.58)), 760);
+    if(window.innerWidth<930) w=window.innerWidth-28;
+    if(!btn){s.style.setProperty('--rz-nav-left','14px');s.style.setProperty('--rz-nav-top','64px');return;}
     var r=btn.getBoundingClientRect();
-    var left=Math.min(Math.max(12,r.left), Math.max(12,window.innerWidth-w-12));
+    var left=Math.min(Math.max(14,r.left), Math.max(14,window.innerWidth-w-14));
     s.style.setProperty('--rz-nav-left',left+'px');
-    s.style.setProperty('--rz-nav-top',(r.bottom+10)+'px');
+    s.style.setProperty('--rz-nav-top',(r.bottom+12)+'px');
   }
   window.openNavPopover=function(ev){
     var s=sidebar(); if(!s) return;
@@ -14370,7 +14188,7 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
         var root=byId('rz-command-center');
         var focusable=root?root.querySelector('button,.nav-item,[tabindex]:not([tabindex="-1"])'):null;
         try{(focusable||root||s).focus({preventScroll:true});}catch(e){try{(focusable||root||s).focus();}catch(_e){}}
-      },20);
+      },25);
     }
   };
   window.closeNavPopover=function(){
@@ -14393,8 +14211,8 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
     var s=sidebar(); if(s) s.classList.remove('open'); var o=overlay(); if(o) o.classList.remove('open');
   };
   function patchShowPage(){
-    if(window.__rzCCShowPagePatched || typeof window.showPage!=='function') return;
-    window.__rzCCShowPagePatched=true;
+    if(window.__rzCCV2ShowPagePatched || typeof window.showPage!=='function') return;
+    window.__rzCCV2ShowPagePatched=true;
     var original=window.showPage;
     window.showPage=function(name){
       var res=original.apply(this,arguments);
@@ -14404,8 +14222,8 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
     };
   }
   function patchLicense(){
-    if(window.__rzCCLicensePatched || typeof window.updateLicenseBadge!=='function') return;
-    window.__rzCCLicensePatched=true;
+    if(window.__rzCCV2LicensePatched || typeof window.updateLicenseBadge!=='function') return;
+    window.__rzCCV2LicensePatched=true;
     var original=window.updateLicenseBadge;
     window.updateLicenseBadge=function(ev){
       var r=original.apply(this,arguments);
@@ -14423,15 +14241,22 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
       return r;
     };
   }
+  var bound=false;
+  function onScroll(e){
+    var s=sidebar(), t=e?e.target:null;
+    if(s && t && t.nodeType===1 && (t===s || s.contains(t))) return;
+    closeNavPopover();
+  }
+  function onKey(e){ if(e.key==='Escape') closeNavPopover(); }
+  function onResize(){ var s=sidebar(); closeNavPopover(); if(s && !isWide()) s.classList.remove('rz-cc-ready'); }
+  function bind(){ if(bound) return; bound=true; window.addEventListener('scroll',onScroll,{passive:true,capture:true}); document.addEventListener('keydown',onKey,true); window.addEventListener('resize',onResize,{passive:true}); }
+  function unbind(){ if(!bound) return; bound=false; window.removeEventListener('scroll',onScroll,true); document.removeEventListener('keydown',onKey,true); window.removeEventListener('resize',onResize); }
+  function sync(){ var s=sidebar(); if(s && s.classList.contains('open') && isWide()) bind(); else unbind(); }
   function init(){
-    try{var s=sidebar(); if(s) s.setAttribute('tabindex','-1');}catch(e){}
+    try{var s=sidebar(); if(s){s.setAttribute('tabindex','-1'); if(window.MutationObserver){new MutationObserver(sync).observe(s,{attributes:true,attributeFilter:['class']});}}}catch(e){}
     patchShowPage(); patchLicense();
     try{rzRefreshCommandCenter();}catch(e){}
-    try{
-      if(typeof currentUser!=='undefined'&&currentUser&&currentUser.id&&typeof fetchSubscription==='function'){
-        fetchSubscription(currentUser.id).then(function(sub){applySubscription(sub);});
-      }
-    }catch(e){}
+    try{if(window.MutationObserver){new MutationObserver(function(){rzCCUpdateThemeButton();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});}}catch(e){}
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(init,80);});
   else setTimeout(init,80);
