@@ -2532,6 +2532,7 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
   </footer>
  </div>
 
+
  <div class="rz-navpop-head" aria-hidden="true">
   <span class="rz-navpop-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
   <span class="rz-navpop-text">
@@ -13908,7 +13909,255 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   }
 })();
 </script>
-<!-- RASID Navigation Popover V1 script removed: superseded by Command Center V2 behavior. -->
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   RASID — Top Navigation interactions (UI فقط)
+   فتح/إغلاق قوائم الشريط العلوي + اختصار Ctrl/Cmd+K للبحث.
+   لا يمسّ أي منطق أو بيانات. متوافق مع WebView القديم (var، بدون أسهم).
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  function rzCloseAllMenus(except){
+    var menus=document.querySelectorAll('.rz-menu');
+    for(var i=0;i<menus.length;i++){
+      if(menus[i]!==except) menus[i].classList.remove('open');
+    }
+  }
+  window.rzToggleMenu=function(id,ev){
+    if(ev){ ev.stopPropagation(); ev.preventDefault(); }
+    var el=document.getElementById(id);
+    if(!el) return;
+    var isOpen=el.classList.contains('open');
+    rzCloseAllMenus(el);
+    if(isOpen){ el.classList.remove('open'); }
+    else{ el.classList.add('open'); }
+  };
+  window.rzRun=function(fn){
+    rzCloseAllMenus(null);
+    try{ if(typeof fn==='function') fn(); }catch(e){ console.error('rzRun',e); }
+  };
+  /* فتح قائمة التنقّل المنبثقة وتثبيتها تحت الزر (حاسوب/تابلت فقط) — يعيد استخدام openSidebar */
+  /* (نُقل نظام القائمة المنبثقة إلى وحدة مستقلة: openNavPopover/closeNavPopover/toggleNavPopover) */
+  /* إغلاق عند النقر خارج القوائم */
+  document.addEventListener('click',function(e){
+    var n=e.target;
+    while(n){
+      if(n.classList && n.classList.contains('rz-menu')) return;
+      n=n.parentNode;
+    }
+    rzCloseAllMenus(null);
+  });
+  /* اختصارات لوحة المفاتيح: Esc للإغلاق، Ctrl/Cmd+K للبحث */
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      var _sb=document.getElementById('sidebar');
+      if(_sb && _sb.classList.contains('open') && window.innerWidth>=769){ if(typeof closeSidebar==='function') closeSidebar(); }
+      rzCloseAllMenus(null); return;
+    }
+    var k=(e.key||'').toLowerCase();
+    if((e.ctrlKey||e.metaKey) && k==='k'){
+      e.preventDefault();
+      var inp=document.getElementById('global-search-input');
+      if(inp){ inp.focus(); inp.select(); }
+    }
+  });
+})();
+</script>
+
+<style id="rasid-sidebar-nologo-2026">
+/* القائمة الجانبية بلا شعار: مسافة علوية مريحة للعنصر الأول */
+.sidebar > .sidebar-nav:first-child{padding-top:max(18px,env(safe-area-inset-top,0px));}
+@media(max-width:768px){.sidebar > .sidebar-nav:first-child{padding-top:max(16px,env(safe-area-inset-top,0px));}}
+</style>
+<style id="rasid-unify-2026">
+/* RASID — Unified Cards & Quiet System (UI فقط)
+   توحيد أرقام البطاقات + تهدئة الضوضاء + شبكة 8pt على لوحة التحكم.
+   لا يمسّ منطقاً أو بيانات. */
+.stat-value{color:var(--text);font-weight:800;letter-spacing:-.5px;}
+.stat-label{color:var(--text-3);font-weight:700;letter-spacing:.1px;}
+.stats-grid{gap:16px;}
+#dash-quick{gap:16px;}
+.stat-card{transition:transform .18s var(--ease),border-color .18s var(--ease),box-shadow .18s var(--ease);}
+.stat-card:hover{transform:translateY(-2px);}
+</style>
+
+<style id="rasid-launcher-2026">
+/* ═══════════════════════════════════════════════════════════════
+   RASID — Nav Launcher + Floating Panel (حاسوب + تابلت فقط)
+   الهاتف (≤768px) بلا أي تغيير — كل القواعد ضمن @media(min-width:769px).
+   يعيد استخدام openSidebar/closeSidebar/showPage بالكامل (بلا تغيير منطق).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* مُشغّل التنقّل + الهوية: مخفيان افتراضياً (الهاتف لا يراهما) */
+.rz-launcher{display:none;width:40px;height:40px;border-radius:11px;align-items:center;justify-content:center;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);cursor:pointer;flex-shrink:0;transition:background .16s var(--ease),color .16s var(--ease),border-color .16s var(--ease),transform .12s var(--ease);}
+.rz-launcher:hover{background:var(--surface-hover);color:var(--text);border-color:var(--border-strong);}
+.rz-launcher:active{transform:scale(.94);}
+.rz-zone-brand{display:none;gap:11px;flex-shrink:0;}
+.rz-divider{width:1px;height:26px;background:var(--border-strong);margin:0 2px;}
+
+/* ترويسة القائمة المنبثقة: مخفية على الهاتف (بلا تغيير للموبايل) */
+.rz-navpop-head{display:none;}
+
+/* ════════ حاسوب + تابلت فقط (≥769px) ════════ */
+@media (min-width:769px){
+  .rz-launcher{display:flex;}
+  .rz-zone-brand{display:flex;}
+
+  /* عكس الشريط: الهوية يسار، المستخدم/الإجراءات يمين (البحث يبقى وسطاً) */
+  .rz-topbar{flex-direction:row-reverse;}
+  .rz-pop{right:0;left:auto;}
+
+  /* الشريط الجانبي → لوحة عائمة تنزلق من جهة البداية */
+  /* الشريط الجانبي → قائمة منبثقة عائمة (Popover) قرب زر القائمة */
+  .sidebar{position:fixed!important;top:var(--rz-nav-top,64px);left:var(--rz-nav-left,16px);right:auto!important;height:auto!important;max-height:min(72vh,560px);width:300px!important;border:1px solid var(--border-strong)!important;border-radius:18px;z-index:1400!important;box-shadow:none;display:flex!important;flex-direction:column;overflow-y:auto;padding-bottom:8px;opacity:0;visibility:hidden;transform:scale(.96) translateY(-10px);transform-origin:top left;transition:opacity .18s var(--ease),transform .2s cubic-bezier(.34,1.3,.64,1),visibility .2s!important;}
+  .sidebar.open{opacity:1;visibility:visible;transform:none!important;box-shadow:var(--shadow-xl);}
+
+  /* ── زجاج فاخر + حدّ ذهبي شفاف + ظل عميق (Navigation Popover) ── */
+  html:not([data-theme=light]) #sidebar{
+    background:rgba(22,25,30,.90)!important;
+    backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);
+    border:1px solid rgba(212,166,90,.20)!important;
+    box-shadow:0 24px 64px -14px rgba(0,0,0,.66), 0 0 0 1px rgba(255,255,255,.02) inset!important;
+  }
+  html[data-theme=light] #sidebar{
+    background:rgba(252,250,246,.92)!important;
+    backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);
+    border:1px solid rgba(184,142,72,.30)!important;
+    box-shadow:0 24px 60px -16px rgba(80,60,28,.30), 0 0 0 1px rgba(255,255,255,.5) inset!important;
+  }
+
+  /* ── ترويسة داخل القائمة (ثابتة أعلى عند التمرير) ── */
+  .rz-navpop-head{display:flex;align-items:center;gap:11px;position:sticky;top:0;z-index:2;padding:14px 14px 12px;margin-bottom:4px;border-bottom:1px solid var(--border);background:var(--bg-elevated);}
+  .rz-navpop-mark{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--brand-soft-gradient);border:1px solid var(--brand-border);color:var(--brand-light);flex-shrink:0;}
+  .rz-navpop-text{display:flex;flex-direction:column;line-height:1.2;min-width:0;}
+  .rz-navpop-name{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.2px;}
+  .rz-navpop-sub{font-size:10px;color:var(--text-3);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* ── حالة نشطة واضحة + Hover ناعم داخل القائمة ── */
+  #sidebar .nav-item{position:relative;transition:background .15s var(--ease),color .15s var(--ease);}
+  #sidebar .nav-item:hover{background:var(--surface-hover);}
+  #sidebar .nav-item.active{background:var(--brand-tint)!important;color:var(--brand-light)!important;font-weight:700;}
+  #sidebar .nav-item.active::before{content:"";position:absolute;inset-inline-start:3px;top:50%;transform:translateY(-50%);width:3px;height:18px;border-radius:3px;background:var(--brand);}
+  #sidebar .nav-item.active .nav-icon{color:var(--brand-light);}
+
+  /* جعل المحتوى داخل القائمة المنبثقة مدمجاً كقائمة اختيار (وليس لوحة جانبية) */
+  .sidebar .sidebar-nav{padding:7px!important;gap:0;}
+  .sidebar .nav-section{font-size:9.5px!important;letter-spacing:.4px;padding:9px 10px 4px!important;opacity:.65;margin:0!important;}
+  .sidebar .nav-section:first-child{padding-top:2px!important;}
+  .sidebar .nav-item{padding:9px 11px!important;margin:1px 0!important;border-radius:10px!important;font-size:13px!important;}
+  .sidebar .nav-item .nav-icon{transform:scale(.92);}
+  .sidebar .sidebar-footer{padding:7px!important;margin-top:4px!important;}
+  /* شريط تمرير نحيف وأنيق */
+  .sidebar::-webkit-scrollbar{width:8px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px;border:2px solid transparent;background-clip:content-box;}
+
+  /* المحتوى يأخذ كامل العرض + تنفّس أكبر */
+  .main-wrap{margin-right:0!important;width:100%!important;min-width:0!important;}
+  .content{padding-left:clamp(28px,3vw,44px);padding-right:clamp(28px,3vw,44px);}
+
+  /* الطبقة الخلفية (إغلاق بالنقر خارجاً) */
+  .sidebar-overlay{display:none;position:fixed;inset:0;background:transparent;z-index:1390;}
+  .sidebar-overlay.open{display:block!important;}
+}
+</style>
+
+<style id="rasid-navpop-refine-2026">
+/* RASID — Navigation Popover refinements (حاسوب/تابلت فقط؛ الهاتف بلا تغيير) */
+@media (min-width:769px){
+  /* الأيقونات تتبع لون العنصر → تتحوّل ذهبية بوضوح عند التنشيط، وأهدأ افتراضياً */
+  #sidebar .nav-item .nav-icon{color:var(--text-3)!important;transition:color .15s var(--ease);}
+  #sidebar .nav-item .nav-icon svg{stroke:currentColor!important;}
+  #sidebar .nav-item:hover .nav-icon{color:var(--text)!important;}
+  #sidebar .nav-item.active .nav-icon{color:var(--brand-light)!important;}
+
+  /* ترويسة زجاجية متناسقة مع زجاج القائمة (بدل خلفية صلبة) */
+  html:not([data-theme=light]) .rz-navpop-head{background:rgba(20,23,28,.55)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,166,90,.14)!important;}
+  html[data-theme=light] .rz-navpop-head{background:rgba(250,248,243,.60)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(184,142,72,.18)!important;}
+
+  /* مجموعات أوضح عبر المسافات (هدوء بصري بلا خطوط زائدة) */
+  #sidebar .nav-section{margin-top:10px!important;}
+  #sidebar .sidebar-nav > .nav-section:first-child{margin-top:0!important;}
+
+  /* تذييل (الإبلاغ/الخروج) مفصول بلطف */
+  #sidebar .sidebar-footer{border-top:1px solid var(--border);margin-top:6px!important;padding-top:8px!important;}
+}
+</style>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   RASID — Navigation Popover (نظام مستقل · حاسوب/تابلت ≥769px فقط)
+   مسؤول وحده عن: الفتح/الإغلاق/التبديل + الطبقة الخلفية + التمرير + لوحة المفاتيح + تغيير الحجم.
+   يعمل على عنصر #sidebar نفسه (مكان عناصر التنقّل وصلاحيات الأدوار) بلا تغيير أي منطق.
+   إدارة المستمعين عبر MutationObserver لمنع التكرار/التسرّب مهما كان مصدر الإغلاق
+   (نقر خارجي · ESC · اختيار قسم · تمرير · انتقال · تغيير حجم · تحوّل للهاتف).
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  function sb(){ return document.getElementById('sidebar'); }
+  function ov(){ return document.getElementById('sidebar-overlay'); }
+  function isWide(){ return window.innerWidth>=769; }
+
+  function position(ev){
+    var s=sb(); if(!s) return;
+    var btn=(ev && ev.currentTarget)?ev.currentTarget:document.querySelector('.rz-launcher');
+    if(!btn) return;
+    var r=btn.getBoundingClientRect();
+    var left=Math.min(Math.max(12,r.left), window.innerWidth-316);
+    s.style.setProperty('--rz-nav-left', left+'px');
+    s.style.setProperty('--rz-nav-top', (r.bottom+10)+'px');
+  }
+
+  window.openNavPopover=function(ev){
+    var s=sb(); if(!s) return;
+    if(isWide()) position(ev);
+    s.classList.add('open');
+    var o=ov(); if(o) o.classList.add('open');
+  };
+  window.closeNavPopover=function(){
+    var s=sb(); if(s) s.classList.remove('open');
+    var o=ov(); if(o) o.classList.remove('open');
+  };
+  window.toggleNavPopover=function(ev){
+    var s=sb(); if(!s) return;
+    if(s.classList.contains('open')) window.closeNavPopover();
+    else window.openNavPopover(ev);
+  };
+
+  /* إدارة المستمعين بلا تسرّب — مربوطة بحالة .open عبر مراقب التغييرات */
+  var bound=false;
+  function onScroll(e){
+    var s=sb();
+    var t=e?e.target:null;
+    /* تجاهل التمرير داخل القائمة نفسها (حتى لا تُغلق عند تصفّحها) */
+    if(s && t && t.nodeType===1 && (t===s || s.contains(t))) return;
+    window.closeNavPopover();
+  }
+  function onKey(e){ if(e.key==='Escape') window.closeNavPopover(); }
+  function onResize(){ window.closeNavPopover(); }
+  function bind(){
+    if(bound) return; bound=true;
+    window.addEventListener('scroll', onScroll, {passive:true, capture:true});
+    document.addEventListener('keydown', onKey, true);
+    window.addEventListener('resize', onResize, {passive:true});
+  }
+  function unbind(){
+    if(!bound) return; bound=false;
+    window.removeEventListener('scroll', onScroll, true);
+    document.removeEventListener('keydown', onKey, true);
+    window.removeEventListener('resize', onResize);
+  }
+  function sync(){
+    var s=sb();
+    if(s && s.classList.contains('open') && isWide()) bind(); else unbind();
+  }
+  function init(){
+    var s=sb();
+    if(s && window.MutationObserver){
+      new MutationObserver(sync).observe(s, {attributes:true, attributeFilter:['class']});
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
 
 
 <style id="rasid-command-center-v2-2026">
@@ -14045,7 +14294,7 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   .rz-cc-left{display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:12px;}
   .rz-cc-minihead{grid-column:1/-1;}
 }
-@media (min-width:769px) and (max-width:680px){
+@media (min-width:769px) and (max-width:860px){
   .rz-cc-nav{grid-template-columns:1fr!important;}
   .rz-cc-footer{grid-template-columns:1fr 1fr;}
 }
@@ -14262,6 +14511,5 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   else setTimeout(init,80);
 })();
 </script>
-
 </body>
 </html>
