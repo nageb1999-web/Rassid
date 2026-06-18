@@ -2803,6 +2803,7 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
 
    <button class="hamburger" onclick="openSidebar()" style="display:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
 
+   <!-- ── المجموعة الأولى: الإجراءات الرئيسية ── -->
    <!-- إضافة سريعة (+) -->
    <div class="rz-menu" id="rz-quick-menu">
     <button type="button" class="rz-add-btn" onclick="rzToggleMenu('rz-quick-menu',event)" aria-label="إضافة سريعة" title="إضافة سريعة">
@@ -2828,11 +2829,15 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
     </div>
    </div>
 
-   <!-- الرسائل -->
-   <button type="button" class="rz-icon-btn rz-hide-tablet" onclick="showPage('whatsapp')" aria-label="الرسائل" title="الرسائل">
-    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+   <!-- زر العودة للوحة التحكم (حاسوب + تابلت فقط) -->
+   <button type="button" class="rz-icon-btn rz-dash-btn" id="rz-dash-btn" onclick="showPage('dashboard')" aria-label="لوحة التحكم" title="العودة للوحة التحكم">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg>
    </button>
 
+   <!-- فاصل مجموعات -->
+   <span class="rz-act-sep" aria-hidden="true"></span>
+
+   <!-- ── المجموعة الثانية: التواصل والإشعارات ── -->
    <!-- الإشعارات -->
    <div class="rz-menu" id="rz-notif-menu">
     <button type="button" class="rz-icon-btn" onclick="rzToggleMenu('rz-notif-menu',event)" aria-label="الإشعارات" title="الإشعارات">
@@ -2847,6 +2852,14 @@ select.rbac-input{flex:0 0 auto;min-width:140px}
      </div>
     </div>
    </div>
+
+   <!-- الرسائل -->
+   <button type="button" class="rz-icon-btn rz-hide-tablet" onclick="showPage('whatsapp')" aria-label="الرسائل" title="الرسائل">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+   </button>
+
+   <!-- فاصل مجموعات -->
+   <span class="rz-act-sep" aria-hidden="true"></span>
 
    <span class="save-indicator" id="save-indicator"></span>
 
@@ -14728,6 +14741,32 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   .rz-pageheader{margin-bottom:16px;}
   .rz-page-title{font-size:clamp(18px,5vw,22px);}
   .rz-page-sub{font-size:12px;}
+}
+
+/* ── فواصل مجموعات الأزرار ── */
+.rz-act-sep{
+  display:inline-block;
+  width:1px;
+  height:20px;
+  background:var(--border);
+  opacity:.6;
+  flex-shrink:0;
+  margin:0 2px;
+  align-self:center;
+}
+
+/* ── زر لوحة التحكم (مخفي على الموبايل) ── */
+.rz-dash-btn{
+  color:var(--text-3);
+}
+.rz-dash-btn:hover{
+  color:var(--brand-light);
+  background:var(--brand-tint);
+  border-color:var(--brand-border);
+}
+@media (max-width:768px){
+  .rz-dash-btn{display:none !important;}
+  .rz-act-sep{display:none !important;}
 }
 </style>
 <script>
