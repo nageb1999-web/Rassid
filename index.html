@@ -4584,6 +4584,10 @@ function _idbGet(onResult){
 
 // حفظ في localStorage كنسخة احتياطية محلية دائمة
 function _lsSave(){
+ // ختم معرّف المالك قبل الحفظ — ضمان عزل بيانات كل معهد
+ if(currentUser && currentUser.id && data && data.settings){
+  data.settings._ownerUserId = currentUser.id;
+ }
  try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
 }
 
@@ -4733,7 +4737,14 @@ function initDB(){
     if(raw){
      try{
       var d = typeof raw === 'string' ? JSON.parse(raw) : raw;
-      if(d && d.students){ data = migrateData(d); try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){} resolve(); return; }
+      if(d && d.students){
+       // ══ فحص ملكية البيانات — إذا كانت تعود لمستخدم آخر، تجاهلها ══
+       var _idbUid = d.settings && d.settings._ownerUserId;
+       var _curUid = currentUser && currentUser.id;
+       if(_idbUid && _curUid && _idbUid !== _curUid){
+        _loadFromLS(); resolve(); return;
+       }
+       data = migrateData(d); try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){} resolve(); return; }
      }catch(e){}
     }
     _loadFromLS(); resolve();
@@ -4750,6 +4761,10 @@ function _loadFromLS(){
    try{
     var d = JSON.parse(raw);
     if(d && d.students){
+     // ══ فحص ملكية البيانات — إذا كانت تعود لمستخدم آخر، تجاهلها ══
+     var _lsUid = d.settings && d.settings._ownerUserId;
+     var _lsCurUid = currentUser && currentUser.id;
+     if(_lsUid && _lsCurUid && _lsUid !== _lsCurUid){ continue; }
      data = migrateData(d);
      if(keys[i] !== 'institute_v4'){ try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){} }
      if(_idb){ _idbSet(JSON.stringify(data), null); }
@@ -11866,6 +11881,10 @@ async function autoCloudRestore(){
    if(typeof cd === 'string') try{ cd = JSON.parse(cd); }catch(e){ return; }
    if(!cd || !cd.students) return;
    data = migrateData(cd);
+   // ختم معرّف المالك بعد الاستعادة من السحابة
+   if(currentUser && currentUser.id && data && data.settings){
+    data.settings._ownerUserId = currentUser.id;
+   }
    try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
    if(_idb){ _idbSet(JSON.stringify(data), null); }
   }
