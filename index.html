@@ -2558,6 +2558,35 @@ html[data-theme=light] #dash-quick-actions button:hover{
 html[data-theme=light] #dash-quick-actions button svg{
   stroke:#8a6d2a!important;opacity:.85;
 }
+
+/* ═══ PERF: CSS Performance Optimizations ═══ */
+
+/* GPU-accelerated scrolling for all scrollable areas */
+.page,.modal,.sidebar,.tab-content{-webkit-overflow-scrolling:touch;}
+
+/* Contain layout for page containers — prevents reflow propagation */
+.page{contain:layout style;}
+
+/* Reduce heavy shadows on mobile for painting performance */
+@media(max-width:768px){
+ .item-card,.card,.att-card,.wa-card{box-shadow:0 1px 3px rgba(0,0,0,.1)!important;}
+ .login-box{box-shadow:0 8px 24px rgba(0,0,0,.35)!important;}
+ .modal{box-shadow:0 4px 16px rgba(0,0,0,.3)!important;}
+}
+
+/* Respect reduced motion preference */
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{
+  animation-duration:.01ms!important;
+  animation-iteration-count:1!important;
+  transition-duration:.01ms!important;
+ }
+}
+
+/* Optimized will-change for frequently animated elements */
+.modal-overlay{will-change:opacity;}
+.sidebar{will-change:transform;}
+.save-indicator{will-change:opacity;}
 </style>
 <body>
 
@@ -2928,7 +2957,7 @@ html[data-theme=light] #dash-quick-actions button svg{
   <div class="rz-zone rz-zone-search">
    <div class="global-search-wrap rz-search" id="global-search-wrap">
     <span class="global-search-icon rz-search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-    <input class="global-search-input rz-search-input" id="global-search-input" type="text" placeholder="ابحث عن طالب، مدرس، دفعة، نتيجة، قسط..." oninput="globalSearch(this.value)" onblur="setTimeout(closeGlobalSearch,180)" autocomplete="off">
+    <input class="global-search-input rz-search-input" id="global-search-input" type="text" placeholder="ابحث عن طالب، مدرس، دفعة، نتيجة، قسط..." oninput="_debounce('g-search',function(){globalSearch(document.getElementById('global-search-input').value)},150)" onblur="setTimeout(closeGlobalSearch,180)" autocomplete="off">
     <span class="rz-kbd" aria-hidden="true"><kbd>Ctrl</kbd><kbd>K</kbd></span>
     <div class="global-search-results" id="global-search-results"></div>
    </div>
@@ -3286,7 +3315,7 @@ html[data-theme=light] #dash-quick-actions button svg{
  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.32"/></svg> إعادة ضبط
  </button>
  </div>
- <input type="text" id="student-search" placeholder="بحث بالاسم أو الهاتف أو اسم ولي الأمر..." oninput="renderStudents()"
+ <input type="text" id="student-search" placeholder="بحث بالاسم أو الهاتف أو اسم ولي الأمر..." oninput="_debounce('stu-search',renderStudents,180)"
  style="width:100%;box-sizing:border-box;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;margin-bottom:12px;">
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
  <div>
@@ -3479,7 +3508,7 @@ html[data-theme=light] #dash-quick-actions button svg{
  <div id="disc-tab-students-status" class="tab-content">
  <!-- شريط البحث -->
  <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
- <input class="search-input" type="text" id="disc-s-search" placeholder="بحث باسم الطالب..." oninput="renderStudentsStatusList()" style="flex:1">
+ <input class="search-input" type="text" id="disc-s-search" placeholder="بحث باسم الطالب..." oninput="_debounce('disc-search',renderStudentsStatusList,180)" style="flex:1">
  <button id="disc-s-filter-btn" onclick="toggleDiscFilter('s')" style="display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border);border-radius:10px;padding:8px 13px;color:var(--text-3);font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap">
  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
  تصفية
@@ -3585,7 +3614,7 @@ html[data-theme=light] #dash-quick-actions button svg{
  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.32"/></svg> إعادة ضبط
  </button>
  </div>
- <input type="text" id="att-student-search" placeholder="بحث باسم الطالب أو رقم الهاتف..." oninput="renderAttGrid()"
+ <input type="text" id="att-student-search" placeholder="بحث باسم الطالب أو رقم الهاتف..." oninput="_debounce('att-search',renderAttGrid,180)"
  style="width:100%;box-sizing:border-box;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;margin-bottom:12px;">
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
  <div>
@@ -3647,7 +3676,7 @@ html[data-theme=light] #dash-quick-actions button svg{
  <div class="fee-sum-card"><div class="fee-sum-val" style="color:var(--success)" id="fee-paid">0</div><div class="fee-sum-lbl">المسدد</div></div>
  <div class="fee-sum-card"><div class="fee-sum-val" style="color:var(--danger)" id="fee-rem">0</div><div class="fee-sum-lbl">المتبقي</div></div>
  </div>
- <div class="search-bar"><input class="search-input" type="text" placeholder="بحث بالاسم..." id="fee-search" oninput="renderFees()"></div>
+ <div class="search-bar"><input class="search-input" type="text" placeholder="بحث بالاسم..." id="fee-search" oninput="_debounce('fee-search',renderFees,180)"></div>
  <div class="cards-grid" id="fees-cards"></div>
  </div>
 
@@ -4900,21 +4929,22 @@ var data = defaultData();
 
 // الحفظ: IndexedDB أولاً + localStorage دائماً كنسخة احتياطية
 function save(){
+ _invalidateCache(); // PERF: invalidate lookup cache
  _lsSave(); // localStorage دائماً — ضمان عدم فقدان البيانات
  if(_idbAvailable === false){ saveWithIndicator(); return; }
  if(_idb){
-  // IndexedDB متاح — احفظ فيه
+  // IndexedDB متاح — احفظ فيه — PERF: reuse snapshot
   var snapshot = JSON.stringify(data);
   _idbSet(snapshot, function(ok){
    if(!ok){ _lsSave(); } // fallback إضافي
   });
-  saveWithIndicator();
+  saveWithIndicator(snapshot);
  } else if(_idbAvailable === null){
   // لم يُفتح بعد — افتح ثم احفظ
   _openIDB(function(){
    var snapshot = JSON.stringify(data);
    _idbSet(snapshot, null);
-   saveWithIndicator();
+   saveWithIndicator(snapshot);
   }, function(){
    saveWithIndicator(); // localStorage كافي
   });
@@ -4939,7 +4969,7 @@ function initDB(){
         // بيانات معهد آخر — تجاوز إلى localStorage
         _loadFromLS(); resolve(); return;
        }
-       data = migrateData(d); try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){} resolve(); return; }
+       data = migrateData(d); _invalidateCache(); try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){} resolve(); return; }
      }catch(e){}
     }
     _loadFromLS(); resolve();
@@ -4961,6 +4991,7 @@ function _loadFromLS(){
      var _lsCur = currentUser && currentUser.id;
      if(_lsOwner && _lsCur && _lsOwner !== _lsCur){ continue; }
      data = migrateData(d);
+     _invalidateCache();
      if(keys[i] !== 'institute_v4'){ try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){} }
      if(_idb){ _idbSet(JSON.stringify(data), null); }
      return;
@@ -4969,24 +5000,52 @@ function _loadFromLS(){
   }
  }
  data = defaultData();
+ _invalidateCache();
  // لا نستدعي save() هنا — لتجنب الكتابة فوق بيانات لم تُحمَّل بعد
 }
 
 // ══════════════════════════════════════════════
 // HELPERS
 // ══════════════════════════════════════════════
-function gS(id){return data.students.find(function(s){return s.id===id;});}
-function gT(id){return data.teachers.find(function(t){return t.id===id;});}
+/* ═══ PERF: Data index cache — O(1) lookups instead of O(N) scans ═══ */
+var _cacheGen = 0;
+var _dataIdx = null;
+function _invalidateCache(){ _cacheGen++; _dataIdx = null; }
+function _ensureIdx(){
+ if(_dataIdx && _dataIdx.gen === _cacheGen) return;
+ var att={},res={},fees={},pay={},beh={},viol={},warn={},tatt={},stu={},tea={};
+ var i,r,arr;
+ for(i=0;i<data.students.length;i++){r=data.students[i]; stu[r.id]=r;}
+ for(i=0;i<data.teachers.length;i++){r=data.teachers[i]; tea[r.id]=r;}
+ for(i=0;i<data.attendance.length;i++){r=data.attendance[i]; if(!att[r.studentId])att[r.studentId]=[]; att[r.studentId].push(r);}
+ for(i=0;i<data.results.length;i++){r=data.results[i]; if(!res[r.studentId])res[r.studentId]=[]; res[r.studentId].push(r);}
+ for(i=0;i<data.fees.length;i++){r=data.fees[i]; if(!fees[r.studentId])fees[r.studentId]=[]; fees[r.studentId].push(r);}
+ for(i=0;i<data.payments.length;i++){r=data.payments[i]; if(!pay[r.studentId])pay[r.studentId]=[]; pay[r.studentId].push(r);}
+ for(i=0;i<data.behaviors.length;i++){r=data.behaviors[i]; if(!beh[r.studentId])beh[r.studentId]=[]; beh[r.studentId].push(r);}
+ arr=data.violationRecords||[];for(i=0;i<arr.length;i++){r=arr[i]; if(!viol[r.studentId])viol[r.studentId]=[]; viol[r.studentId].push(r);}
+ arr=data.warningRecords||[];for(i=0;i<arr.length;i++){r=arr[i]; if(!warn[r.studentId])warn[r.studentId]=[]; warn[r.studentId].push(r);}
+ for(i=0;i<data.teacherAttendance.length;i++){r=data.teacherAttendance[i]; if(!tatt[r.teacherId])tatt[r.teacherId]=[]; tatt[r.teacherId].push(r);}
+ _dataIdx={gen:_cacheGen,att:att,res:res,fees:fees,pay:pay,beh:beh,viol:viol,warn:warn,tatt:tatt,stu:stu,tea:tea};
+}
+/* ═══ PERF: Debounce utility ═══ */
+var _dbTimers = {};
+function _debounce(key, fn, delay){
+ if(_dbTimers[key]) clearTimeout(_dbTimers[key]);
+ _dbTimers[key] = setTimeout(fn, delay || 200);
+}
+/* ═══ Indexed helper functions ═══ */
+function gS(id){_ensureIdx(); return _dataIdx.stu[id] || null;}
+function gT(id){_ensureIdx(); return _dataIdx.tea[id] || null;}
 function sName(id){var s=gS(id);return s?s.fname+' '+s.lname:'—';}
 function tName(id){var t=gT(id);return t?t.fname+' '+t.lname:'—';}
-function attRate(sid){var r=data.attendance.filter(a=>a.studentId===sid);if(!r.length)return null;return Math.round(r.filter(a=>a.status==='present').length/r.length*100);}
+function attRate(sid){_ensureIdx();var r=_dataIdx.att[sid];if(!r||!r.length)return null;var p=0;for(var i=0;i<r.length;i++){if(r[i].status==='present')p++;}return Math.round(p/r.length*100);}
 function attStatusLabel(status){return status==='present'?'حاضر':status==='excused'?'غياب بعلم ولي الأمر':status==='late'?'متأخر':'غائب';}
 function attStatusColor(status){return status==='present'?'var(--success)':status==='excused'?'#d4a017':status==='late'?'var(--purple)':'var(--danger)';}
 function attStatusBg(status){return status==='present'?'rgba(52,211,153,0.12)':status==='excused'?'rgba(212,160,23,0.12)':status==='late'?'rgba(139,92,246,0.12)':'rgba(248,113,113,0.12)';}
-function tattRate(tid){var r=data.teacherAttendance.filter(a=>a.teacherId===tid);if(!r.length)return null;return Math.round(r.filter(a=>a.status==='present').length/r.length*100);}
-function avgGrade(sid){var g=data.results.filter(r=>r.studentId===sid);if(!g.length)return null;return Math.round(g.reduce((a,r)=>a+r.grade/r.max*100,0)/g.length);}
+function tattRate(tid){_ensureIdx();var r=_dataIdx.tatt[tid];if(!r||!r.length)return null;var p=0;for(var i=0;i<r.length;i++){if(r[i].status==='present')p++;}return Math.round(p/r.length*100);}
+function avgGrade(sid){_ensureIdx();var g=_dataIdx.res[sid];if(!g||!g.length)return null;var sum=0;for(var i=0;i<g.length;i++){sum+=g[i].grade/g[i].max*100;}return Math.round(sum/g.length);}
 function gradeLabel(p){if(p>=90)return['ممتاز','success'];if(p>=75)return['جيد جداً','success'];if(p>=60)return['جيد','warning'];if(p>=50)return['مقبول','warning'];return['راسب','danger'];}
-function feeStats(sid){var fees=data.fees.filter(f=>f.studentId===sid);var total=fees.reduce((a,f)=>a+f.amount,0);var paid=data.payments.filter(p=>p.studentId===sid).reduce((a,p)=>a+p.amount,0);return{total,paid,remaining:total-paid};}
+function feeStats(sid){_ensureIdx();var f=_dataIdx.fees[sid]||[];var p=_dataIdx.pay[sid]||[];var total=0,paid=0;for(var i=0;i<f.length;i++)total+=f[i].amount;for(var j=0;j<p.length;j++)paid+=p[j].amount;return{total:total,paid:paid,remaining:total-paid};}
 function fmt(n){return Number(n).toLocaleString('ar-IQ')+' د.ع';}
 function today(){return new Date().toISOString().split('T')[0];}
 function toArabicDigits(str){return String(str||'').replace(/\d/g,function(d){return '٠١٢٣٤٥٦٧٨٩'[d];});}
@@ -5043,7 +5102,7 @@ function waPhone(phone){
  return d;
 }
 function starsHtml(n){return(n?''.repeat(n):'')+''.repeat(5-(n||0));}
-function getBeh(sid){return data.behaviors.filter(b=>b.studentId===sid).sort((a,b)=>b.id-a.id)[0]||null;}
+function getBeh(sid){_ensureIdx();var arr=_dataIdx.beh[sid];if(!arr||!arr.length)return null;var best=arr[0];for(var i=1;i<arr.length;i++){if(arr[i].id>best.id)best=arr[i];}return best;}
 function getAttemptNum(sid,subject,type){return data.results.filter(r=>r.studentId===sid&&r.subject===subject&&r.type===type).length+1;}
 
 // ══════════════════════════════════════════════
@@ -5054,14 +5113,27 @@ var pageSubs={dashboard:'ملخص أداء المركز اليوم',students:'إ
 var currentPage='dashboard';
 
 
+var _prevPageEl = null;
 function showPage(name){
  currentPage=name||'dashboard';
+ /* PERF: reset pagination on page switch */
+ if(typeof _stuShown !== 'undefined') _stuShown = _stuPageSize;
+ if(typeof _attShown !== 'undefined') _attShown = _attPageSize;
  try{ if(typeof rbacEnsure==='function') rbacEnsure(); if(typeof Perms!=='undefined' && !Perms.canPage(currentPage)){ if(typeof rbacToast==='function') rbacToast('ليس لديك صلاحية للوصول لهذا القسم','err'); currentPage='dashboard'; } }catch(_pgGuard){}
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+ /* PERF: deactivate only previous page instead of scanning all .page elements */
+ if(_prevPageEl) _prevPageEl.classList.remove('active');
  var el=document.getElementById('page-'+currentPage);
  if(el)el.classList.add('active');
- document.querySelectorAll('.nav-item').forEach(n=>{if(n.textContent.trim().includes(pageTitles[currentPage]?pageTitles[currentPage].substring(0,4):''||''))n.classList.add('active');});
+ _prevPageEl = el;
+ /* PERF: use data-page/onclick attribute for nav items instead of text matching */
+ var navItems=document.querySelectorAll('.nav-item');
+ for(var ni=0;ni<navItems.length;ni++){
+  var navEl=navItems[ni];
+  navEl.classList.remove('active');
+  var dp=navEl.getAttribute('data-page');
+  var oc=navEl.getAttribute('onclick')||'';
+  if(dp===currentPage || oc.indexOf("showPage('"+currentPage+"')")>-1) navEl.classList.add('active');
+ }
  document.getElementById('page-title').textContent=pageTitles[currentPage]||currentPage;
  var _rzSub=document.getElementById('rz-page-sub'); if(_rzSub){_rzSub.textContent=(typeof pageSubs!=='undefined'&&pageSubs[currentPage])?pageSubs[currentPage]:'';}
  var renders={dashboard:renderDashboard,students:renderStudents,results:renderResults,attendance:renderAttendance,teachers:renderTeachers,fees:renderFees,expenses:renderExpenses,slips:renderSlips,courses:renderCourses,whatsapp:renderWhatsapp,reports:renderReports,settings:renderSettings,discipline:renderDisciplinePage,schedules:renderSchedules};
@@ -6998,6 +7070,9 @@ function toggleAttFilter(){
  }
  if(!open)resetAttFilters();
 }
+var _stuPageSize = 40;
+var _stuShown = _stuPageSize;
+function _stuShowMore(){ _stuShown += _stuPageSize; renderStudents(); }
 function renderStudents(){
  var el0=document.getElementById('students-cards');if(el0&&!el0.dataset.loaded){showCardsLoading('students-cards',3);}
  var _finView = (typeof Perms!=='undefined') ? Perms.canFinance() : true;
@@ -7008,6 +7083,7 @@ function renderStudents(){
  var attF=document.getElementById('filter-att')?document.getElementById('filter-att').value:'';
  var sortF=(document.getElementById('filter-sort')?document.getElementById('filter-sort').value:'')||'name';
  var _baseStudents = (typeof Perms!=='undefined' && Perms.isScoped()) ? Perms.scopeStudents(data.students) : data.students;
+ _ensureIdx(); // PERF: build index once before loop
  var list=_baseStudents.filter(function(s){
  if(q){var h=(s.fname+' '+s.lname+' '+(s.phone||'')+' '+(s.parentName||'')+' '+(s.parentPhone||'')).toLowerCase();if(!h.includes(q))return false;}
  if(stageF&&(s.stage||'ابتدائي')!==stageF)return false;
@@ -7026,7 +7102,11 @@ function renderStudents(){
  if(statsEl){var hasF=q||stageF||feesF||attF;statsEl.textContent=hasF?'يُعرض '+list.length+' من أصل '+data.students.length+' طالب':'';}
  var el=document.getElementById('students-cards');
  if(!list.length){var msg=q||stageF||feesF||attF?'لا توجد نتائج مطابقة':'لا يوجد طلبة حتى الآن';var desc=q||stageF||feesF||attF?'جرّب تغيير خيارات البحث أو الفلتر':'ابدأ بإضافة أول طالب لمتابعة حضوره ودرجاته ومدفوعاته';el.innerHTML=emptyState({emoji:'🎓',title:msg,desc:desc,btnLabel:(q||stageF||feesF||attF)?null:'إضافة طالب',btnAction:"openModal('add-student')"});return;}
- el.innerHTML=list.map(s=>{
+ /* PERF: paginate — render only visible chunk */
+ var totalCount = list.length;
+ var showCount = Math.min(_stuShown, totalCount);
+ var visible = list.slice(0, showCount);
+ el.innerHTML=visible.map(s=>{
  var rate=attRate(s.id),avg=avgGrade(s.id);
  var _fs=feeStats(s.id);var total=_fs.total;var paid=_fs.paid;var remaining=_fs.remaining;
  var beh=getBeh(s.id);
@@ -7062,6 +7142,10 @@ function renderStudents(){
  ${(_finView&&(function(){var sp=s.subPrice||0;var spd=s.subPaid||0;var srem=sp-spd;return srem>0?'<div style="margin-top:8px;padding:7px 10px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:var(--danger)">متبقي من الاشتراك</span><span style="font-size:11px;font-weight:700;color:var(--danger)">'+fmt(srem)+'</span></div>':'';}()))||''}
  </div>`;
  }).join('');
+ /* PERF: "Load More" button if more students exist */
+ if(showCount < totalCount){
+  el.innerHTML += '<div style="text-align:center;padding:16px"><button onclick="_stuShowMore()" class="btn btn-outline" style="font-size:12px;padding:10px 28px;border-radius:10px">عرض المزيد (' + (totalCount - showCount) + ' طالب متبقي)</button></div>';
+ }
 }
 function addStudent(){
  if(typeof Perms!=='undefined'&&!Perms.require('students.add'))return;
@@ -7588,10 +7672,10 @@ function openStudentProfile(id){
 
 // ── Helpers ──
 function getViolations(sid){
- return (data.violationRecords||[]).filter(function(v){return v.studentId===sid;}).sort(function(a,b){return b.id-a.id;});
+ _ensureIdx();var arr=_dataIdx.viol[sid];if(!arr||!arr.length)return[];return arr.slice().sort(function(a,b){return b.id-a.id;});
 }
 function getWarnings(sid){
- return (data.warningRecords||[]).filter(function(w){return w.studentId===sid;}).sort(function(a,b){return b.id-a.id;});
+ _ensureIdx();var arr=_dataIdx.warn[sid];if(!arr||!arr.length)return[];return arr.slice().sort(function(a,b){return b.id-a.id;});
 }
 function getBehaviorStatus(sid){
  var viols=getViolations(sid);
@@ -10479,6 +10563,7 @@ async function restoreFromCloud(){
   if(!confirm('سيتم استبدال بيانات هذا الجهاز بالنسخة السحابية.\nتاريخ النسخة: '+updated+'\nهل أنت متأكد؟')) return;
   if(!confirm('تأكيد أخير: لا يمكن التراجع بعد الاستعادة.')) return;
   data = migrateData(res.data.data);
+  _invalidateCache();
   // تصحيح ملكية البيانات — المالك الحالي يمتلكها
   if(currentUser && currentUser.id && data.settings){ data.settings._ownerId = currentUser.id; }
   save();
@@ -10718,6 +10803,9 @@ function resetAttFilters(){
  var e3=document.getElementById('att-filter-stage');if(e3)e3.value='';
  renderAttGrid();
 }
+var _attPageSize = 50;
+var _attShown = _attPageSize;
+function _attShowMore(){ _attShown += _attPageSize; renderAttGrid(); }
 function renderAttGrid(){
  var dv=(document.getElementById('att-date')?document.getElementById('att-date').value:'')||today();
  var dateEl=document.getElementById('att-date');if(dateEl&&!dateEl.value)dateEl.value=dv;
@@ -10726,7 +10814,13 @@ function renderAttGrid(){
  var statusF=document.getElementById('att-filter-status')?document.getElementById('att-filter-status').value:'';
  var stageF=document.getElementById('att-filter-stage')?document.getElementById('att-filter-stage').value:'';
  if(!data.students.length){g.innerHTML=`<div class="empty"><div class="empty-icon"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/></svg></div><p>لا يوجد طلبة</p></div>`;return;}
- data.students.forEach(s=>{if(attState[s.id]===undefined){var ex=data.attendance.find(a=>a.studentId===s.id&&a.date===dv);attState[s.id]=ex?ex.status:'absent';}});
+ /* PERF: build date-based attendance lookup for O(1) per student */
+ var _attByDate = {};
+ for(var ai=0;ai<data.attendance.length;ai++){
+  var ar=data.attendance[ai];
+  if(ar.date===dv) _attByDate[ar.studentId] = ar;
+ }
+ data.students.forEach(function(s){if(attState[s.id]===undefined){var ex=_attByDate[s.id];attState[s.id]=ex?ex.status:'absent';}});
  var filtered=data.students.filter(function(s){
  if(attSearch){var h=(s.fname+' '+s.lname+' '+(s.phone||'')+' '+(s.parentPhone||'')).toLowerCase();if(!h.includes(attSearch))return false;}
  if(stageF&&(s.stage||'ابتدائي')!==stageF)return false;
@@ -10736,7 +10830,10 @@ function renderAttGrid(){
  var statsEl=document.getElementById('att-filter-stats');
  if(statsEl){var hasF=attSearch||statusF||stageF;statsEl.textContent=hasF?'يُعرض '+filtered.length+' من أصل '+data.students.length+' طالب':'';}
  if(!filtered.length){g.innerHTML=`<div class="empty"><div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p>لا توجد نتائج مطابقة</p></div>`;return;}
- g.innerHTML=filtered.map(s=>{
+ /* PERF: paginate attendance grid */
+ var attTotal = filtered.length;
+ var attVisible = filtered.slice(0, Math.min(_attShown, attTotal));
+ g.innerHTML=attVisible.map(function(s){
  var state=attState[s.id]||'absent';
  var isPresent=state==='present';
  var isExcused=state==='excused';
@@ -10745,7 +10842,7 @@ function renderAttGrid(){
  var stBg=attStatusBg(state);
  var stBorder=state==='present'?'rgba(52,211,153,0.4)':state==='excused'?'rgba(212,160,23,0.4)':state==='late'?'rgba(139,92,246,0.4)':'var(--border2)';
  var nowTime=currentTime24();
- var attRec=data.attendance.find(function(a){return a.studentId===s.id&&a.date===dv;});
+ var attRec=_attByDate[s.id]||null;
  var arrivalTime=attRec&&attRec.arrivalTime?attRec.arrivalTime:'';
  var departTime=attRec&&attRec.departTime?attRec.departTime:'';
  return '<div class="att-card" style="border-color:'+stBorder+';flex-direction:column;align-items:stretch;gap:8px">'+
@@ -10780,6 +10877,10 @@ function renderAttGrid(){
  )+
  '</div>';
  }).join('');
+ /* PERF: "Load More" button for attendance */
+ if(_attShown < attTotal){
+  g.innerHTML += '<div style="text-align:center;padding:16px"><button onclick="_attShowMore()" class="btn btn-outline" style="font-size:12px;padding:10px 28px;border-radius:10px">عرض المزيد (' + (attTotal - _attShown) + ' طالب متبقي)</button></div>';
+ }
 }
 
 // ══ إشعارات الحضور والانصراف ══
@@ -12091,6 +12192,7 @@ async function autoCloudRestore(){
    if(typeof cd === 'string') try{ cd = JSON.parse(cd); }catch(e){ return; }
    if(!cd || !cd.students) return;
    data = migrateData(cd);
+   _invalidateCache();
    _stampOwner();
    try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
    if(_idb){ _idbSet(JSON.stringify(data), null); }
@@ -12130,6 +12232,7 @@ async function _periodicCloudPull(){
    if(typeof cd === 'string') try{ cd = JSON.parse(cd); }catch(e){ _cloudSyncLock = false; return; }
    if(!cd || !cd.students){ _cloudSyncLock = false; return; }
    data = migrateData(cd);
+   _invalidateCache();
    _stampOwner();
    try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
    if(_idb){ _idbSet(JSON.stringify(data), null); }
@@ -12254,7 +12357,7 @@ function _scheduledCloudSync(){
  }, 5000);
 }
 
-function saveWithIndicator(){
+function saveWithIndicator(_snapshot){
  var ind = document.getElementById('save-indicator');
  if(ind){
   ind.className = 'save-indicator saving';
@@ -12265,7 +12368,9 @@ function saveWithIndicator(){
   if(!data.settings) data.settings = {};
   data.settings._localSavedAt = new Date().toISOString();
   _stampOwner();
-  localStorage.setItem('institute_v4', JSON.stringify(data));
+  // PERF: reuse snapshot if already serialized
+  var json = _snapshot || JSON.stringify(data);
+  localStorage.setItem('institute_v4', json);
   if(ind){
    ind.className = 'save-indicator saved';
    ind.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> تم الحفظ';
@@ -16906,7 +17011,7 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
   else prepareAll();
   setTimeout(prepareAll,300);
   setTimeout(prepareAll,1200);
-  try{ new MutationObserver(prepareAll).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']}); }catch(e){}
+  try{ var _moPending=false; new MutationObserver(function(){if(_moPending)return;_moPending=true;setTimeout(function(){_moPending=false;prepareAll();},200);}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']}); }catch(e){}
 })();
 </script>
 <!-- /Rasid Mobile Modal Escape Safety 2026 -->
