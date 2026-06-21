@@ -10538,6 +10538,8 @@ async function autoBackupSilent(){
  if(!navigator.onLine) return;
  if(!currentUser || !currentUser.id) return;
  if(!_supabase) return;
+ if(_cloudSyncLock) return;
+ _cloudSyncLock = true;
  try{
   var payload = JSON.parse(JSON.stringify(data));
   var size = JSON.stringify(payload).length;
@@ -10549,7 +10551,7 @@ async function autoBackupSilent(){
    }, { onConflict:'user_id' }),
    12000
   );
-  if(r1 && r1.error) return;
+  if(r1 && r1.error){ _cloudSyncLock = false; return; }
   await withTimeout(
    _supabase.from('backup_history').insert({
     user_id: currentUser.id,
@@ -10561,6 +10563,7 @@ async function autoBackupSilent(){
  }catch(e){
   console.warn('Auto backup silent fail:', e && e.message ? e.message : e);
  }
+ _cloudSyncLock = false;
 }
 
 // ══════════════════════════════════════════════
@@ -12095,6 +12098,47 @@ async function autoCloudRestore(){
  }catch(e){ console.warn('autoCloudRestore:', e && e.message ? e.message : e); }
 }
 
+// ══════════════════════════════════════════════
+// PERIODIC CLOUD PULL — سحب دوري من السحابة كل 30 ثانية
+// يفحص إذا السحابة أحدث من المحلي ويحدّث البيانات تلقائياً
+// ══════════════════════════════════════════════
+function _startCloudPull(){
+ _stopCloudPull();
+ _cloudPullTimer = setInterval(function(){
+  _periodicCloudPull();
+ }, 30000);
+}
+
+function _stopCloudPull(){
+ if(_cloudPullTimer){ clearInterval(_cloudPullTimer); _cloudPullTimer = null; }
+}
+
+async function _periodicCloudPull(){
+ if(!navigator.onLine || !_supabase || !currentUser || !_appReady) return;
+ if(_cloudSyncLock) return;
+ _cloudSyncLock = true;
+ try{
+  var res = await Promise.race([
+   _supabase.from('app_backups').select('data,updated_at').eq('user_id', currentUser.id).maybeSingle(),
+   new Promise(function(_,rej){ setTimeout(function(){ rej(new Error('timeout')); }, 8000); })
+  ]);
+  if(res.error || !res.data || !res.data.data){ _cloudSyncLock = false; return; }
+  var cloudUpdated = new Date(res.data.updated_at || 0).getTime();
+  var localUpdated = new Date((data.settings && data.settings._localSavedAt) || 0).getTime();
+  if(cloudUpdated > localUpdated + 5000){
+   var cd = res.data.data;
+   if(typeof cd === 'string') try{ cd = JSON.parse(cd); }catch(e){ _cloudSyncLock = false; return; }
+   if(!cd || !cd.students){ _cloudSyncLock = false; return; }
+   data = migrateData(cd);
+   _stampOwner();
+   try{ localStorage.setItem('institute_v4', JSON.stringify(data)); }catch(e){}
+   if(_idb){ _idbSet(JSON.stringify(data), null); }
+   renderCurrentPage();
+  }
+ }catch(e){ console.warn('_periodicCloudPull:', e && e.message ? e.message : e); }
+ _cloudSyncLock = false;
+}
+
 async function startApp(){
  try{ await initDB(); }catch(e){ console.warn('DB init:',e); }
  await autoCloudRestore();
@@ -12106,6 +12150,7 @@ async function startApp(){
  currentPage = 'dashboard';
  renderDashboard();
  _appReady = true;
+ _startCloudPull();
  try{
   if(_entryMode==='employee' && _forceEmployeeId!=null){
    var fu=null,fi; for(fi=0;fi<data.appUsers.length;fi++){ if(data.appUsers[fi].id===_forceEmployeeId){ fu=data.appUsers[fi]; break; } }
@@ -12175,6 +12220,8 @@ var _appReady      = false;
 var _saveTimer     = null;
 var _renderTimer   = null;
 var _cloudSyncTimer= null;
+var _cloudSyncLock = false;
+var _cloudPullTimer= null;
 
 var _renderMap = {
  dashboard : function(){ renderDashboard(); },
