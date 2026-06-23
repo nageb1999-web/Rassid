@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="rasid-pro-ui">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -1397,25 +1397,6 @@ html[data-theme=light] .profile-header{
 html[data-theme=light] #dash-greeting{color:#6e5420 !important;}
 
 /* ── buttons ── */
-html[data-theme=light] .btn-gold,
-html[data-theme=light] .save-btn{
- background:linear-gradient(180deg,#5a4535 0%,#4a3828 50%,#3a2c1e 100%);
- color:#e8d9c4 !important;
- border:1px solid rgba(30,18,8,.22);
- box-shadow:
- inset 0 1px 0 rgba(255,255,255,.09),
- inset 0 -1px 0 rgba(0,0,0,.22),
- 0 2px 6px rgba(30,18,8,.16);
- text-shadow:none;
-}
-html[data-theme=light] .btn-gold:hover,
-html[data-theme=light] .save-btn:hover{
- background:linear-gradient(180deg,#6a5545 0%,#5a4838 50%,#4a3c2e 100%);
- box-shadow:
- inset 0 1px 0 rgba(255,255,255,.09),
- inset 0 -1px 0 rgba(0,0,0,.20),
- 0 4px 12px rgba(30,18,8,.20);
-}
 html[data-theme=light] .btn-outline{
  background:transparent;
  border-color:#dee2e6;
@@ -1425,6 +1406,99 @@ html[data-theme=light] .btn-outline:hover{
  background:#f1f3f5;
  border-color:#ced4da;
  color:#212529;
+}
+
+/* ── Light-mode action buttons — warm, harmonious palette ── */
+html[data-theme=light] .btn-gold,
+html[data-theme=light] .save-btn{
+ background:linear-gradient(180deg,#7a6230 0%,#6b5428 50%,#5c4820 100%);
+ color:#f5ead6 !important;
+ border:1px solid rgba(90,55,20,.18);
+ box-shadow:0 1px 4px rgba(90,55,20,.14);
+ text-shadow:none;
+}
+html[data-theme=light] .btn-gold:hover,
+html[data-theme=light] .save-btn:hover{
+ background:linear-gradient(180deg,#8a7240 0%,#7b6438 50%,#6c5830 100%);
+ box-shadow:0 3px 10px rgba(90,55,20,.18);
+}
+html[data-theme=light] .btn-danger{
+ background:rgba(180,80,60,.08);
+ border-color:rgba(180,80,60,.18);
+ color:#a04030;
+}
+html[data-theme=light] .btn-danger:hover{
+ background:rgba(180,80,60,.14);
+ border-color:rgba(180,80,60,.28);
+}
+html[data-theme=light] .btn-info{
+ background:rgba(120,100,60,.08);
+ border-color:rgba(120,100,60,.16);
+ color:#6b5c30;
+}
+html[data-theme=light] .btn-info:hover{
+ background:rgba(120,100,60,.14);
+ border-color:rgba(120,100,60,.26);
+}
+html[data-theme=light] .btn-success{
+ background:rgba(80,130,60,.08);
+ border-color:rgba(80,130,60,.16);
+ color:#4a7838;
+}
+html[data-theme=light] .btn-success:hover{
+ background:rgba(80,130,60,.14);
+ border-color:rgba(80,130,60,.26);
+}
+html[data-theme=light] .btn-purple{
+ background:rgba(120,90,60,.08);
+ border-color:rgba(120,90,60,.16);
+ color:#6e5420;
+}
+html[data-theme=light] .btn-purple:hover{
+ background:rgba(120,90,60,.14);
+}
+/* Card action buttons — extra subtle in light mode */
+html[data-theme=light] .item-card-actions .btn{
+ box-shadow:none;
+ padding:5px 8px;
+}
+html[data-theme=light] .item-card-actions .btn-gold{
+ background:rgba(138,109,42,.07);
+ border-color:rgba(138,109,42,.16);
+ color:#8a6d2a;
+ box-shadow:none;
+}
+html[data-theme=light] .item-card-actions .btn-gold:hover{
+ background:rgba(138,109,42,.14);
+ border-color:rgba(138,109,42,.28);
+ box-shadow:none;
+}
+html[data-theme=light] .item-card-actions .btn-danger{
+ background:rgba(160,64,48,.06);
+ border-color:rgba(160,64,48,.14);
+ color:#a8604a;
+}
+html[data-theme=light] .item-card-actions .btn-danger:hover{
+ background:rgba(160,64,48,.12);
+ border-color:rgba(160,64,48,.24);
+}
+html[data-theme=light] .item-card-actions .btn-info{
+ background:rgba(110,84,32,.06);
+ border-color:rgba(110,84,32,.14);
+ color:#8a6d2a;
+}
+html[data-theme=light] .item-card-actions .btn-info:hover{
+ background:rgba(110,84,32,.12);
+ border-color:rgba(110,84,32,.24);
+}
+/* Confirm dialog danger button — warm red */
+html[data-theme=light] .confirm-btn-danger{
+ background:rgba(180,80,60,.10);
+ color:#a04030;
+ border-color:rgba(180,80,60,.20);
+}
+html[data-theme=light] .confirm-btn-danger:hover{
+ background:rgba(180,80,60,.16);
 }
 
 /* ── inputs ── */
@@ -3793,7 +3867,10 @@ html[data-theme=light] #dash-quick-actions button svg{
  <div class="page" id="page-schedules">
  <div class="sec-header">
   <span class="sec-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> الجداول الدراسية</span></span>
-  <button class="btn btn-gold btn-sm" onclick="openModal('add-schedule')">+ جدول جديد</button>
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+   <button class="btn btn-gold btn-sm" onclick="openModal('add-schedule')">+ جدول جديد</button>
+   <button class="btn btn-sm" onclick="openScheduleNotify()" style="display:inline-flex;align-items:center;gap:5px;background:rgba(37,211,102,.10);border:1px solid rgba(37,211,102,.35);color:#25d366;font-weight:700;cursor:pointer;border-radius:9px;padding:6px 12px;font-size:12px;font-family:var(--font)"><svg width="13" height="13" viewBox="0 0 24 24" fill="#25d366"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.008 9.469c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 14.447l-2.938-.916c-.638-.203-.651-.638.136-.943l11.49-4.43c.531-.194.995.131.684.09z"/></svg>إبلاغ المدرسين</button>
+  </div>
  </div>
  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:12px;background:var(--surface);border-radius:12px;border:1px solid var(--border)">
   <select id="sch-filter-day" onchange="renderSchedules()" style="background:var(--card2);border:1px solid var(--border2);border-radius:9px;padding:7px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none"><option value="">كل الأيام</option><option>الأحد</option><option>الاثنين</option><option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option><option>الجمعة</option><option>السبت</option></select>
@@ -3920,6 +3997,17 @@ html[data-theme=light] #dash-quick-actions button svg{
     إرسال عبر تيليغرام
    </button>
   </div>
+ </div>
+</div>
+<div class="modal-overlay" id="modal-schedule-notify">
+ <div class="modal" style="max-width:520px">
+ <h3 style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="#25d366"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.008 9.469c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 14.447l-2.938-.916c-.638-.203-.651-.638.136-.943l11.49-4.43c.531-.194.995.131.684.09z"/></svg> إبلاغ المدرسين بجداولهم</h3>
+ <p style="font-size:11px;color:var(--muted);margin:-4px 0 12px">سيتم إرسال الجدول الأسبوعي الخاص بكل مدرس عبر واتساب</p>
+ <div id="sch-notify-list" style="display:flex;flex-direction:column;gap:8px;max-height:55vh;overflow-y:auto;padding:2px"></div>
+ <div class="modal-footer" style="margin-top:14px">
+  <button class="btn btn-outline" onclick="closeModal('schedule-notify')">إغلاق</button>
+  <button class="btn" id="sch-notify-all-btn" onclick="sendScheduleToAllTeachers()" style="display:inline-flex;align-items:center;gap:5px;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.35);color:#25d366;font-weight:700;cursor:pointer"><svg width="13" height="13" viewBox="0 0 24 24" fill="#25d366"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.008 9.469c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 14.447l-2.938-.916c-.638-.203-.651-.638.136-.943l11.49-4.43c.531-.194.995.131.684.09z"/></svg> إرسال للجميع</button>
+ </div>
  </div>
 </div>
 <div class="modal-overlay" id="modal-add-schedule">
@@ -5121,6 +5209,7 @@ function showPage(name){
  if(typeof _attShown !== 'undefined') _attShown = _attPageSize;
  try{ if(typeof rbacEnsure==='function') rbacEnsure(); if(typeof Perms!=='undefined' && !Perms.canPage(currentPage)){ if(typeof rbacToast==='function') rbacToast('ليس لديك صلاحية للوصول لهذا القسم','err'); currentPage='dashboard'; } }catch(_pgGuard){}
  /* PERF: deactivate only previous page instead of scanning all .page elements */
+ if(!_prevPageEl) _prevPageEl = document.querySelector('.page.active');
  if(_prevPageEl) _prevPageEl.classList.remove('active');
  var el=document.getElementById('page-'+currentPage);
  if(el)el.classList.add('active');
@@ -12888,6 +12977,186 @@ function renderSchedulesWeekView(el, list){
  el.innerHTML = html;
 }
 
+// ══════════════════════════════════════════════
+// SCHEDULE NOTIFY — إبلاغ المدرسين بجداولهم
+// ══════════════════════════════════════════════
+function openScheduleNotify(){
+ var schedules = data.schedules || [];
+ if(!schedules.length){ toast('لا توجد جداول لإبلاغ المدرسين بها'); return; }
+
+ // Group schedules by teacher
+ var teacherMap = {};
+ schedules.forEach(function(s){
+  if(!s.teacherId) return;
+  if(!teacherMap[s.teacherId]) teacherMap[s.teacherId] = [];
+  teacherMap[s.teacherId].push(s);
+ });
+
+ var teacherIds = Object.keys(teacherMap);
+ if(!teacherIds.length){ toast('لا توجد جداول مرتبطة بمدرسين'); return; }
+
+ var container = document.getElementById('sch-notify-list');
+ var html = '';
+ var hasPhone = 0;
+
+ teacherIds.forEach(function(tid){
+  var t = gT(parseInt(tid));
+  if(!t) return;
+  var tSchedules = teacherMap[tid];
+  var phone = t.phone || '';
+  var noPhone = !phone;
+  if(!noPhone) hasPhone++;
+
+  // Sort by day then time
+  var dayOrder = {'\u0627\u0644\u0623\u062d\u062f':0,'\u0627\u0644\u0627\u062b\u0646\u064a\u0646':1,'\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621':2,'\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621':3,'\u0627\u0644\u062e\u0645\u064a\u0633':4,'\u0627\u0644\u062c\u0645\u0639\u0629':5,'\u0627\u0644\u0633\u0628\u062a':6};
+  tSchedules.sort(function(a,b){
+   var da = dayOrder[a.day] !== undefined ? dayOrder[a.day] : 7;
+   var db = dayOrder[b.day] !== undefined ? dayOrder[b.day] : 7;
+   if(da !== db) return da - db;
+   return (a.startTime||'').localeCompare(b.startTime||'');
+  });
+
+  // Group by day for preview
+  var byDay = {};
+  tSchedules.forEach(function(s){
+   if(!byDay[s.day]) byDay[s.day] = [];
+   byDay[s.day].push(s);
+  });
+  var dayCount = Object.keys(byDay).length;
+
+  html += '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:11px'+(noPhone?';opacity:.6':'')+'">';
+  html += '<div style="width:36px;height:36px;border-radius:50%;background:var(--brand-tint);color:var(--brand-light);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">'+rzInitial(t.fname)+'</div>';
+  html += '<div style="flex:1;min-width:0">';
+  html += '<div style="font-size:13px;font-weight:700">'+rzEscHTML(t.fname+' '+t.lname)+'</div>';
+  html += '<div style="font-size:10px;color:var(--muted);margin-top:1px">'+tSchedules.length+' حصة في '+dayCount+' يوم'+(t.subject?' — '+rzEscHTML(t.subject):'')+'</div>';
+  if(noPhone) html += '<div style="font-size:9px;color:var(--danger);margin-top:2px">لا يوجد رقم هاتف</div>';
+  html += '</div>';
+  html += '<button onclick="sendScheduleToTeacher('+t.id+')" '+(noPhone?'disabled style="opacity:.4;cursor:not-allowed;':'style="cursor:pointer;')+'display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;border:1px solid rgba(37,211,102,.35);background:rgba(37,211,102,.10);color:#25d366;font-size:11px;font-weight:700;font-family:var(--font);white-space:nowrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="#25d366"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.008 9.469c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 14.447l-2.938-.916c-.638-.203-.651-.638.136-.943l11.49-4.43c.531-.194.995.131.684.09z"/></svg>إرسال</button>';
+  html += '</div>';
+ });
+
+ container.innerHTML = html;
+
+ // disable "send all" if no teachers have phone
+ var allBtn = document.getElementById('sch-notify-all-btn');
+ if(allBtn){
+  if(hasPhone === 0){ allBtn.disabled = true; allBtn.style.opacity = '.4'; allBtn.style.cursor = 'not-allowed'; }
+  else { allBtn.disabled = false; allBtn.style.opacity = '1'; allBtn.style.cursor = 'pointer'; }
+ }
+ openModal('schedule-notify');
+}
+
+function buildTeacherScheduleMsg(teacherId){
+ var t = gT(teacherId);
+ if(!t) return '';
+ var schedules = (data.schedules||[]).filter(function(s){ return s.teacherId === teacherId; });
+ if(!schedules.length) return '';
+
+ var instName = (data.settings && data.settings.instName) ? data.settings.instName : '\u0631\u0627\u0635\u062f';
+
+ // Sort by day then time
+ var dayOrderMap = {'\u0627\u0644\u0623\u062d\u062f':0,'\u0627\u0644\u0627\u062b\u0646\u064a\u0646':1,'\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621':2,'\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621':3,'\u0627\u0644\u062e\u0645\u064a\u0633':4,'\u0627\u0644\u062c\u0645\u0639\u0629':5,'\u0627\u0644\u0633\u0628\u062a':6};
+ schedules.sort(function(a,b){
+  var da = dayOrderMap[a.day] !== undefined ? dayOrderMap[a.day] : 7;
+  var db = dayOrderMap[b.day] !== undefined ? dayOrderMap[b.day] : 7;
+  if(da !== db) return da - db;
+  return (a.startTime||'').localeCompare(b.startTime||'');
+ });
+
+ // Group by day
+ var byDay = {};
+ var dayOrder = [];
+ schedules.forEach(function(s){
+  if(!byDay[s.day]){ byDay[s.day] = []; dayOrder.push(s.day); }
+  byDay[s.day].push(s);
+ });
+
+ var lines = [];
+ lines.push('\u0627\u0644\u0633\u0644\u0627\u0645 \u0639\u0644\u064a\u0643\u0645 \u0623\u0633\u062a\u0627\u0630 ' + t.fname);
+ lines.push('\u0647\u0630\u0627 \u062c\u062f\u0648\u0644\u0643\u0645 \u0627\u0644\u062f\u0631\u0627\u0633\u064a \u0641\u064a ' + instName + ':');
+ lines.push('');
+
+ dayOrder.forEach(function(day){
+  lines.push('\u{1F4C5} ' + day + ':');
+  byDay[day].forEach(function(s){
+   var line = '  \u25AA ' + s.name;
+   if(s.subject) line += ' (' + s.subject + ')';
+   line += ' \u2014 ' + formatTime12H(s.startTime) + ' \u0625\u0644\u0649 ' + formatTime12H(s.endTime);
+   if(s.room) line += ' | \u0642\u0627\u0639\u0629: ' + s.room;
+   if(s.stage || s.grade){
+    line += ' | ';
+    if(s.stage) line += s.stage;
+    if(s.grade) line += ' - ' + s.grade;
+   }
+   lines.push(line);
+  });
+  lines.push('');
+ });
+
+ lines.push('\u0645\u0639 \u062a\u062d\u064a\u0627\u062a ' + instName + ' \u{1F4DA}');
+ return lines.join('\n');
+}
+
+function sendScheduleToTeacher(teacherId){
+ var t = gT(teacherId);
+ if(!t){ toast('\u0627\u0644\u0645\u062f\u0631\u0633 \u063a\u064a\u0631 \u0645\u0648\u062c\u0648\u062f'); return; }
+ if(!t.phone){ toast('\u0644\u0627 \u064a\u0648\u062c\u062f \u0631\u0642\u0645 \u0647\u0627\u062a\u0641 \u0644\u0644\u0645\u062f\u0631\u0633 ' + t.fname); return; }
+
+ var msg = buildTeacherScheduleMsg(teacherId);
+ if(!msg){ toast('\u0644\u0627 \u062a\u0648\u062c\u062f \u062c\u062f\u0627\u0648\u0644 \u0644\u0647\u0630\u0627 \u0627\u0644\u0645\u062f\u0631\u0633'); return; }
+
+ openWhatsAppAndLog({
+  teacherId: teacherId,
+  phone: t.phone,
+  message: msg,
+  type: '\u062c\u062f\u0648\u0644-\u0645\u062f\u0631\u0633',
+  source: '\u0645\u062f\u0631\u0633',
+  date: today()
+ });
+ toast('\u062a\u0645 \u0641\u062a\u062d \u0648\u0627\u062a\u0633\u0627\u0628 \u0644\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u062c\u062f\u0648\u0644 \u0625\u0644\u0649 ' + t.fname);
+}
+
+function sendScheduleToAllTeachers(){
+ var schedules = data.schedules || [];
+ var teacherMap = {};
+ schedules.forEach(function(s){
+  if(!s.teacherId) return;
+  teacherMap[s.teacherId] = true;
+ });
+
+ var teachersWithPhone = Object.keys(teacherMap).filter(function(tid){
+  var t = gT(parseInt(tid));
+  return t && t.phone;
+ });
+
+ if(!teachersWithPhone.length){ toast('\u0644\u0627 \u064a\u0648\u062c\u062f \u0645\u062f\u0631\u0633\u0648\u0646 \u0628\u0623\u0631\u0642\u0627\u0645 \u0647\u0648\u0627\u062a\u0641'); return; }
+
+ if(!confirm('\u0633\u064a\u062a\u0645 \u0641\u062a\u062d \u0648\u0627\u062a\u0633\u0627\u0628 \u0644\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u062c\u062f\u0648\u0644 \u0625\u0644\u0649 ' + teachersWithPhone.length + ' \u0645\u062f\u0631\u0633. \u0645\u062a\u0627\u0628\u0639\u0629\u061f')) return;
+
+ var delay = 0;
+ teachersWithPhone.forEach(function(tid){
+  var teacherId = parseInt(tid);
+  var t = gT(teacherId);
+  if(!t || !t.phone) return;
+  var msg = buildTeacherScheduleMsg(teacherId);
+  if(!msg) return;
+  setTimeout(function(){
+   openWhatsAppAndLog({
+    teacherId: teacherId,
+    phone: t.phone,
+    message: msg,
+    type: '\u062c\u062f\u0648\u0644-\u0645\u062f\u0631\u0633',
+    source: '\u0645\u062f\u0631\u0633',
+    date: today(),
+    delay: 0
+   });
+  }, delay);
+  delay += 1500;
+ });
+ toast('\u062c\u0627\u0631\u064a \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u062c\u062f\u0627\u0648\u0644 \u0625\u0644\u0649 ' + teachersWithPhone.length + ' \u0645\u062f\u0631\u0633...');
+ setTimeout(function(){ closeModal('schedule-notify'); }, 800);
+}
+
 function formatTime12H(t){
  if(!t) return '—';
  var parts = t.split(':');
@@ -17131,5 +17400,441 @@ html:not([data-theme=light]) .rz-search-input{background:#15181D;}
 }
 </style>
 <!-- /Rasid Mobile WhatsApp Notifications Layout Fix 2026 -->
+
+<!-- Rasid Professional UI Refresh 2026 -->
+<style id="rasid-professional-ui-refresh-2026">
+html.rasid-pro-ui{
+  --pro-radius:14px;
+  --pro-radius-lg:18px;
+  --pro-line:rgba(255,255,255,.075);
+  --pro-panel:rgba(255,255,255,.035);
+  --pro-panel-2:rgba(255,255,255,.055);
+  --pro-shadow:0 10px 28px rgba(0,0,0,.22);
+  --pro-shadow-soft:0 4px 14px rgba(0,0,0,.16);
+}
+html[data-theme=light].rasid-pro-ui{
+  --pro-line:rgba(90,70,40,.12);
+  --pro-panel:rgba(255,253,248,.56);
+  --pro-panel-2:rgba(255,253,248,.78);
+  --pro-shadow:0 10px 26px rgba(70,45,15,.10);
+  --pro-shadow-soft:0 4px 14px rgba(70,45,15,.07);
+}
+
+html.rasid-pro-ui body{
+  background:
+    radial-gradient(circle at 8% 0%,rgba(212,166,90,.045),transparent 30%),
+    var(--bg)!important;
+}
+
+html.rasid-pro-ui .content{
+  max-width:1380px;
+  width:100%;
+  margin:0 auto;
+  box-sizing:border-box;
+}
+
+html.rasid-pro-ui .rz-topbar{
+  border-bottom:1px solid var(--pro-line)!important;
+  box-shadow:none!important;
+}
+
+html.rasid-pro-ui .rz-pageheader,
+html.rasid-pro-ui .sec-header{
+  margin-bottom:18px!important;
+}
+
+html.rasid-pro-ui .rz-page-title,
+html.rasid-pro-ui .sec-title{
+  letter-spacing:0!important;
+  line-height:1.25!important;
+}
+
+html.rasid-pro-ui .stat-card,
+html.rasid-pro-ui .card,
+html.rasid-pro-ui .item-card,
+html.rasid-pro-ui .att-card,
+html.rasid-pro-ui .wa-card,
+html.rasid-pro-ui .chapter-block,
+html.rasid-pro-ui .topic-row{
+  border:1px solid var(--pro-line)!important;
+  border-radius:var(--pro-radius)!important;
+  background:var(--pro-panel)!important;
+  box-shadow:none!important;
+}
+
+html.rasid-pro-ui .stat-card::before,
+html.rasid-pro-ui .stat-card::after{
+  display:none!important;
+}
+
+html.rasid-pro-ui .stat-card:hover,
+html.rasid-pro-ui .item-card:hover,
+html.rasid-pro-ui .att-card:hover,
+html.rasid-pro-ui .wa-card:hover{
+  transform:translateY(-1px)!important;
+  border-color:var(--brand-border)!important;
+  box-shadow:var(--pro-shadow-soft)!important;
+}
+
+html.rasid-pro-ui .stats-grid,
+html.rasid-pro-ui .cards-grid,
+html.rasid-pro-ui #dash-quick{
+  gap:14px!important;
+}
+
+html.rasid-pro-ui .stat-label,
+html.rasid-pro-ui .item-card-meta,
+html.rasid-pro-ui .rz-page-sub{
+  color:var(--text-3)!important;
+}
+
+html.rasid-pro-ui .btn,
+html.rasid-pro-ui .rz-add-btn,
+html.rasid-pro-ui .theme-btn,
+html.rasid-pro-ui .login-btn,
+html.rasid-pro-ui .tab-btn{
+  border-radius:12px!important;
+  box-shadow:none!important;
+  letter-spacing:0!important;
+}
+
+html.rasid-pro-ui .btn-gold,
+html.rasid-pro-ui .rz-add-btn{
+  background:var(--brand)!important;
+  color:#1b1409!important;
+  border-color:transparent!important;
+}
+
+html.rasid-pro-ui .btn:not(.btn-gold):not(.btn-danger):not(.btn-success):not(.btn-info):not(.btn-wa):not(.btn-purple){
+  background:var(--pro-panel-2)!important;
+  border-color:var(--pro-line)!important;
+  color:var(--text-2)!important;
+}
+
+html.rasid-pro-ui .tab-bar{
+  padding:6px!important;
+  gap:6px!important;
+  border-radius:16px!important;
+  background:var(--pro-panel)!important;
+  border:1px solid var(--pro-line)!important;
+  overflow:auto!important;
+}
+
+html.rasid-pro-ui .tab-btn{
+  min-height:38px!important;
+  white-space:nowrap!important;
+}
+
+html.rasid-pro-ui .tab-btn.active{
+  background:var(--brand-tint)!important;
+  color:var(--brand-light)!important;
+  border-color:var(--brand-border)!important;
+}
+
+html.rasid-pro-ui input,
+html.rasid-pro-ui select,
+html.rasid-pro-ui textarea{
+  border-radius:12px!important;
+  border-color:var(--pro-line)!important;
+}
+
+html.rasid-pro-ui input:focus,
+html.rasid-pro-ui select:focus,
+html.rasid-pro-ui textarea:focus{
+  box-shadow:0 0 0 3px var(--brand-tint)!important;
+  border-color:var(--brand-border)!important;
+}
+
+html.rasid-pro-ui .modal{
+  border-radius:22px!important;
+  border:1px solid var(--pro-line)!important;
+  box-shadow:var(--pro-shadow)!important;
+}
+
+html.rasid-pro-ui .modal-footer{
+  gap:10px!important;
+}
+
+html.rasid-pro-ui table{
+  border-collapse:separate!important;
+  border-spacing:0!important;
+}
+
+html.rasid-pro-ui th{
+  color:var(--text-2)!important;
+  font-weight:800!important;
+}
+
+html.rasid-pro-ui td,
+html.rasid-pro-ui th{
+  border-color:var(--pro-line)!important;
+}
+
+.rasid-fab{
+  position:fixed;
+  left:18px;
+  bottom:calc(88px + env(safe-area-inset-bottom,0px));
+  z-index:2300;
+  width:56px;
+  height:56px;
+  border-radius:18px;
+  border:1px solid rgba(212,166,90,.32);
+  background:var(--brand);
+  color:#1b1409;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 14px 32px rgba(0,0,0,.30);
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.rasid-fab svg{width:24px;height:24px;stroke:currentColor;}
+.rasid-fab:active{transform:scale(.97);}
+
+@media (max-width:768px){
+  html.rasid-pro-ui .content{
+    padding:14px 14px calc(104px + env(safe-area-inset-bottom,0px))!important;
+  }
+
+  html.rasid-pro-ui .rz-topbar,
+  html.rasid-pro-ui .topbar.rz-topbar{
+    height:68px!important;
+    min-height:68px!important;
+    padding:10px 14px!important;
+    border-bottom:1px solid var(--pro-line)!important;
+  }
+
+  html.rasid-pro-ui .rz-topbar .rz-zone-actions{
+    gap:12px!important;
+  }
+
+  html.rasid-pro-ui .rz-topbar .rz-add-btn,
+  html.rasid-pro-ui .rz-topbar .rz-icon-btn,
+  html.rasid-pro-ui .rz-topbar .rz-user{
+    width:46px!important;
+    min-width:46px!important;
+    max-width:46px!important;
+    height:46px!important;
+    min-height:46px!important;
+    max-height:46px!important;
+    border-radius:15px!important;
+  }
+
+  html.rasid-pro-ui .mobile-bottom-nav{
+    left:10px!important;
+    right:10px!important;
+    bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;
+    width:auto!important;
+    height:66px!important;
+    padding:7px!important;
+    border-radius:22px!important;
+    border:1px solid var(--pro-line)!important;
+    background:rgba(18,20,26,.86)!important;
+    backdrop-filter:blur(18px) saturate(150%)!important;
+    -webkit-backdrop-filter:blur(18px) saturate(150%)!important;
+    box-shadow:0 14px 34px rgba(0,0,0,.28)!important;
+  }
+
+  html[data-theme=light].rasid-pro-ui .mobile-bottom-nav{
+    background:rgba(255,253,248,.88)!important;
+    box-shadow:0 14px 34px rgba(70,45,15,.14)!important;
+  }
+
+  html.rasid-pro-ui .mobile-nav-item{
+    border-radius:16px!important;
+    min-width:0!important;
+    gap:3px!important;
+    color:var(--text-3)!important;
+  }
+
+  html.rasid-pro-ui .mobile-nav-item.active{
+    background:var(--brand-tint)!important;
+    color:var(--brand-light)!important;
+  }
+
+  html.rasid-pro-ui .mobile-nav-icon::after{
+    display:none!important;
+  }
+
+  html.rasid-pro-ui .stats-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  html.rasid-pro-ui .stat-card{
+    padding:14px!important;
+    min-height:104px!important;
+  }
+
+  html.rasid-pro-ui .stat-value{
+    font-size:clamp(22px,6vw,28px)!important;
+  }
+
+  html.rasid-pro-ui .item-card-header{
+    align-items:flex-start!important;
+    gap:12px!important;
+  }
+
+  html.rasid-pro-ui .item-card-actions{
+    width:100%!important;
+    justify-content:flex-start!important;
+    flex-wrap:wrap!important;
+  }
+
+  html.rasid-pro-ui .btn{
+    min-height:44px!important;
+  }
+
+  html.rasid-pro-ui .modal-overlay.open{
+    align-items:flex-end!important;
+  }
+
+  html.rasid-pro-ui .modal-overlay.open .modal{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    border-radius:24px 24px 0 0!important;
+    max-height:calc(92dvh - env(safe-area-inset-top,0px))!important;
+  }
+
+  html.rasid-pro-ui .modal-footer{
+    position:sticky!important;
+    bottom:0!important;
+    background:linear-gradient(180deg,rgba(24,27,32,0),var(--surface) 26%)!important;
+    padding-top:16px!important;
+  }
+
+  html[data-theme=light].rasid-pro-ui .modal-footer{
+    background:linear-gradient(180deg,rgba(255,253,248,0),var(--surface) 26%)!important;
+  }
+
+  html.rasid-pro-ui .rasid-fab{
+    display:flex;
+  }
+}
+
+@media (min-width:769px){
+  html.rasid-pro-ui .modal{
+    max-width:min(720px,92vw)!important;
+  }
+
+  html.rasid-pro-ui .rz-search{
+    max-width:460px!important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .rasid-fab,
+  html.rasid-pro-ui *{
+    transition-duration:.01ms!important;
+    animation-duration:.01ms!important;
+  }
+}
+</style>
+<!-- /Rasid Professional UI Refresh 2026 -->
+
+<style id="rasid-light-btn-harmony">
+/* ═══════════════════════════════════════════════════
+   Light Theme — Warm Button Harmony
+   Must come AFTER rasid-pro-ui to override !important
+   ═══════════════════════════════════════════════════ */
+
+/* ── Primary action buttons (btn-gold) ── */
+html[data-theme=light].rasid-pro-ui .btn-gold,
+html[data-theme=light].rasid-pro-ui .rz-add-btn,
+html[data-theme=light].rasid-pro-ui .save-btn{
+  background:linear-gradient(180deg,#7a6230 0%,#6b5428 100%)!important;
+  color:#f5ead6!important;
+  border:1px solid rgba(90,55,20,.18)!important;
+}
+html[data-theme=light].rasid-pro-ui .btn-gold:hover,
+html[data-theme=light].rasid-pro-ui .rz-add-btn:hover,
+html[data-theme=light].rasid-pro-ui .save-btn:hover{
+  background:linear-gradient(180deg,#8a7240 0%,#7b6438 100%)!important;
+}
+
+/* ── Delete buttons ── */
+html[data-theme=light].rasid-pro-ui .btn-danger{
+  background:rgba(160,64,48,.08)!important;
+  border:1px solid rgba(160,64,48,.18)!important;
+  color:#9b4535!important;
+}
+html[data-theme=light].rasid-pro-ui .btn-danger:hover{
+  background:rgba(160,64,48,.15)!important;
+  border-color:rgba(160,64,48,.28)!important;
+}
+
+/* ── Edit / Info buttons — warm gold instead of cold blue ── */
+html[data-theme=light].rasid-pro-ui .btn-info{
+  background:rgba(120,95,45,.08)!important;
+  border:1px solid rgba(120,95,45,.16)!important;
+  color:#6b5828!important;
+}
+html[data-theme=light].rasid-pro-ui .btn-info:hover{
+  background:rgba(120,95,45,.15)!important;
+  border-color:rgba(120,95,45,.26)!important;
+}
+
+/* ── Success buttons ── */
+html[data-theme=light].rasid-pro-ui .btn-success{
+  background:rgba(75,120,55,.08)!important;
+  border:1px solid rgba(75,120,55,.16)!important;
+  color:#4a7838!important;
+}
+
+/* ── Purple buttons — warm instead of cold purple ── */
+html[data-theme=light].rasid-pro-ui .btn-purple{
+  background:rgba(120,90,50,.08)!important;
+  border:1px solid rgba(120,90,50,.16)!important;
+  color:#6e5420!important;
+}
+
+/* ── Card action buttons — extra subtle ── */
+html[data-theme=light].rasid-pro-ui .item-card-actions .btn{
+  min-height:unset!important;
+}
+html[data-theme=light].rasid-pro-ui .item-card-actions .btn-gold{
+  background:rgba(138,109,42,.09)!important;
+  border:1px solid rgba(138,109,42,.18)!important;
+  color:#7a6228!important;
+}
+html[data-theme=light].rasid-pro-ui .item-card-actions .btn-gold:hover{
+  background:rgba(138,109,42,.16)!important;
+}
+html[data-theme=light].rasid-pro-ui .item-card-actions .btn-danger{
+  background:rgba(155,69,53,.07)!important;
+  border:1px solid rgba(155,69,53,.15)!important;
+  color:#a8604a!important;
+}
+html[data-theme=light].rasid-pro-ui .item-card-actions .btn-danger:hover{
+  background:rgba(155,69,53,.14)!important;
+}
+html[data-theme=light].rasid-pro-ui .item-card-actions .btn-info{
+  background:rgba(110,84,32,.07)!important;
+  border:1px solid rgba(110,84,32,.15)!important;
+  color:#7a6228!important;
+}
+html[data-theme=light].rasid-pro-ui .item-card-actions .btn-info:hover{
+  background:rgba(110,84,32,.14)!important;
+}
+
+/* ── Confirm dialog danger ── */
+html[data-theme=light].rasid-pro-ui .confirm-btn-danger{
+  background:rgba(155,69,53,.10)!important;
+  color:#9b4535!important;
+  border-color:rgba(155,69,53,.22)!important;
+}
+
+/* ── Outline buttons ── */
+html[data-theme=light].rasid-pro-ui .btn-outline{
+  background:rgba(255,253,248,.7)!important;
+  border:1px solid rgba(90,70,40,.14)!important;
+  color:#5a4e3e!important;
+}
+html[data-theme=light].rasid-pro-ui .btn-outline:hover{
+  background:rgba(255,253,248,.95)!important;
+  border-color:rgba(90,70,40,.22)!important;
+}
+</style>
 </body>
 </html>
