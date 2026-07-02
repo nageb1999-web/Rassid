@@ -3902,7 +3902,18 @@ html[data-theme=light] #dash-quick-actions button svg{
  <!-- SETTINGS -->
  <div class="page" id="page-settings">
  <div class="sec-header"><span class="sec-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> الإعدادات</span></span></div>
- <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
+ <div id="rasid-set-jump" style="display:none"></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
+<!-- ── راصد: بطاقة البيانات التجريبية (إضافة 2026-07-02) ── -->
+<div class="profile-section" id="rasid-demo-card">
+  <div class="profile-sec-title"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> بيانات تجريبية للعرض</span></div>
+  <div style="font-size:11px;color:var(--text-3);line-height:1.6;margin-bottom:10px">حمّل بيانات وهمية (طلاب، مدرسون، حضور، أقساط، نتائج) لعرض التطبيق أمام العملاء، ثم امسحها بضغطة واحدة. البيانات التجريبية معلَّمة ولا تختلط بالبيانات الحقيقية.</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn btn-gold" id="rasid-demo-load" onclick="rasidSeedDemo()">تحميل بيانات تجريبية</button>
+    <button class="btn" id="rasid-demo-clear" onclick="rasidClearDemo()" style="display:none">مسح البيانات التجريبية</button>
+  </div>
+</div>
+
  <div class="profile-section" id="rbac-settings-card">
  <div class="profile-sec-title"><span style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> المستخدمون والصلاحيات</span></div>
  <div style="font-size:11px;color:var(--text-3);line-height:1.6;margin-bottom:10px">إنشاء حسابات للموظفين والمدرسين، تحديد الأدوار والصلاحيات التفصيلية، تخصيص المدرسين، مع سجل كامل للنشاطات.</div>
@@ -17845,5 +17856,190 @@ html[data-theme=light].rasid-pro-ui .btn-outline:hover{
   border-color:rgba(90,70,40,.22)!important;
 }
 </style>
+
+<!-- ══════════════════════════════════════════════════════════
+     راصد — حزمة تحسينات إضافية (2026-07-02)
+     1) بيانات تجريبية  2) شريط تنقل الإعدادات  3) تلميع جداول الحاسوب
+     كتلة معزولة: لا تعدّل أي منطق قائم، وكل شيء داخل try/catch
+══════════════════════════════════════════════════════════ -->
+<style id="rasid-additions-css-2026">
+/* تلميع الجداول — حاسوب فقط، لا مساس بأنماط الموبايل المستقرة */
+@media(min-width:769px){
+  #app table tbody tr{transition:background .12s ease;}
+  #app table tbody tr:hover{background:rgba(201,162,67,.05);}
+}
+/* شريط التنقل السريع في الإعدادات */
+#rasid-set-jump{display:flex !important;gap:6px;overflow-x:auto;padding:2px 2px 10px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;}
+#rasid-set-jump::-webkit-scrollbar{display:none;}
+#rasid-set-jump:empty{display:none !important;}
+.rasid-jump-chip{flex:0 0 auto;font-family:inherit;font-size:11px;font-weight:700;
+  color:var(--text-2);background:var(--surface-2,rgba(255,255,255,.04));
+  border:1px solid var(--border);border-radius:999px;padding:6px 12px;cursor:pointer;
+  white-space:nowrap;transition:all .15s ease;}
+.rasid-jump-chip:hover{color:var(--gold,#C9A243);border-color:var(--gold,#C9A243);}
+</style>
+<script id="rasid-additions-js-2026">
+/* ═══ 1) البيانات التجريبية ═══ */
+function rasidDemoExists(){
+  try{
+    var arrs=[data.students,data.teachers,data.courses,data.attendance,data.fees,data.payments,data.results];
+    for(var i=0;i<arrs.length;i++){
+      var a=arrs[i]||[];
+      for(var j=0;j<a.length;j++){ if(a[j] && a[j]._demo) return true; }
+    }
+  }catch(e){}
+  return false;
+}
+function rasidDemoSyncBtn(){
+  try{
+    var has=rasidDemoExists();
+    var lb=document.getElementById('rasid-demo-load');
+    var cb=document.getElementById('rasid-demo-clear');
+    if(lb) lb.style.display=has?'none':'';
+    if(cb) cb.style.display=has?'':'none';
+  }catch(e){}
+}
+function rasidDateShift(days){
+  var d=new Date(); d.setDate(d.getDate()+days);
+  return d.toISOString().split('T')[0];
+}
+function rasidSeedDemo(){
+  try{
+    if(rasidDemoExists()){ toast('البيانات التجريبية محمّلة أصلاً'); rasidDemoSyncBtn(); return; }
+    if(!window.confirm('سيتم تحميل بيانات وهمية للعرض (طلاب، مدرسون، حضور، أقساط، نتائج).\nيمكن مسحها لاحقاً بضغطة واحدة. متابعة؟')) return;
+    if(!data.students)data.students=[]; if(!data.teachers)data.teachers=[];
+    if(!data.courses)data.courses=[];  if(!data.attendance)data.attendance=[];
+    if(!data.fees)data.fees=[];        if(!data.payments)data.payments=[];
+    if(!data.results)data.results=[];
+
+    /* مدرسون */
+    var tDefs=[['أحمد','الجابري','رياضيات','07701112233'],
+               ['زينب','الموسوي','فيزياء','07804445566'],
+               ['حيدر','العلي','لغة إنجليزية','07507778899']];
+    var tIds=[];
+    for(var i=0;i<tDefs.length;i++){
+      var tid=data.nextId.teacher++;
+      tIds.push(tid);
+      data.teachers.push({_demo:true,id:tid,fname:tDefs[i][0],lname:tDefs[i][1],subject:tDefs[i][2],phone:tDefs[i][3]});
+    }
+
+    /* طلاب */
+    var sDefs=[['علي','كاظم','إعدادي'],['فاطمة','حسن','إعدادي'],['محمد','جواد','متوسط'],
+               ['نور','عباس','متوسط'],['حسين','صالح','ابتدائي'],['مريم','خالد','إعدادي'],
+               ['يوسف','عادل','متوسط'],['رقية','سعد','ابتدائي']];
+    var sIds=[];
+    var monthStart=today().slice(0,8)+'01';
+    for(var j=0;j<sDefs.length;j++){
+      var sid=data.nextId.student++;
+      sIds.push(sid);
+      data.students.push({_demo:true,id:sid,fname:sDefs[j][0],lname:sDefs[j][1],stage:sDefs[j][2],
+        phone:'0770'+(1000000+j*111111),parentPhone:'0780'+(2000000+j*111111),parentName:'',
+        subStart:monthStart,subEnd:rasidDateShift(90),
+        subPrice:(j%2===0?150000:200000),subPaid:(j%3===0?150000:75000)});
+    }
+
+    /* دورتان */
+    var cDefs=[['دورة الرياضيات المكثفة','رياضيات',tIds[0]],
+               ['دورة الفيزياء التأسيسية','فيزياء',tIds[1]]];
+    for(var c=0;c<cDefs.length;c++){
+      data.courses.push({_demo:true,id:data.nextId.course++,name:cDefs[c][0],stage:'إعدادي',grade:'السادس',
+        subject:cDefs[c][1],desc:'دورة تجريبية للعرض',studentsCount:sIds.length,
+        startDate:rasidDateShift(-20),endDate:rasidDateShift(40),status:'active',teacherId:cDefs[c][2]});
+    }
+
+    /* حضور: اليوم واليومان السابقان */
+    var days=[0,-1,-2];
+    for(var d=0;d<days.length;d++){
+      var dv=rasidDateShift(days[d]);
+      for(var k=0;k<sIds.length;k++){
+        var absent=((k+d)%7===3); /* غياب متفرق واقعي */
+        var rec={_demo:true,id:data.nextId.attendance++,studentId:sIds[k],date:dv,
+                 status:absent?'absent':'present'};
+        if(!absent) rec.arrivalTime='08:'+(k<5?'0':'')+(5+k*3);
+        data.attendance.push(rec);
+      }
+    }
+
+    /* أقساط ودفعات */
+    for(var f=0;f<5;f++){
+      var fid=data.nextId.fee++;
+      data.fees.push({_demo:true,id:fid,studentId:sIds[f],desc:'قسط شهري',
+        amount:100000,inst:1,dueDate:rasidDateShift(7)});
+      if(f<3){
+        data.payments.push({_demo:true,id:data.nextId.payment++,feeId:fid,studentId:sIds[f],
+          amount:50000,date:today(),note:'دفعة تجريبية'});
+      }
+    }
+
+    /* نتائج */
+    var rDefs=[[0,'امتحان','رياضيات',88,tIds[0]],[1,'امتحان','رياضيات',92,tIds[0]],
+               [2,'واجب','فيزياء',75,tIds[1]],[3,'امتحان','فيزياء',81,tIds[1]],
+               [4,'مراجعة','لغة إنجليزية',68,tIds[2]],[5,'امتحان','لغة إنجليزية',95,tIds[2]]];
+    for(var r=0;r<rDefs.length;r++){
+      data.results.push({_demo:true,id:data.nextId.result++,studentId:sIds[rDefs[r][0]],
+        type:rDefs[r][1],subject:rDefs[r][2],grade:rDefs[r][3],max:100,note:'',
+        teacherId:rDefs[r][4],date:rasidDateShift(-1)});
+    }
+
+    save();
+    try{renderCurrentPage();}catch(e1){}
+    rasidDemoSyncBtn();
+    toast('تم تحميل البيانات التجريبية — تجوّل في التطبيق الآن');
+  }catch(e){
+    try{toast('تعذر تحميل البيانات التجريبية');}catch(e2){}
+  }
+}
+function rasidClearDemo(){
+  try{
+    if(!rasidDemoExists()){ toast('لا توجد بيانات تجريبية'); rasidDemoSyncBtn(); return; }
+    if(!window.confirm('سيتم مسح كل البيانات التجريبية فقط.\nالبيانات الحقيقية لن تُمسّ. متابعة؟')) return;
+    var keys=['students','teachers','courses','attendance','fees','payments','results'];
+    for(var i=0;i<keys.length;i++){
+      var k=keys[i];
+      if(data[k] && data[k].filter){
+        data[k]=data[k].filter(function(x){return !(x&&x._demo);});
+      }
+    }
+    save();
+    try{renderCurrentPage();}catch(e1){}
+    rasidDemoSyncBtn();
+    toast('تم مسح البيانات التجريبية');
+  }catch(e){
+    try{toast('تعذر المسح — أعد المحاولة');}catch(e2){}
+  }
+}
+
+/* ═══ 2) شريط التنقل السريع في الإعدادات ═══ */
+(function(){
+  function buildJumpBar(){
+    try{
+      var bar=document.getElementById('rasid-set-jump');
+      var page=document.getElementById('page-settings');
+      if(!bar||!page||bar.childNodes.length) return;
+      var secs=page.querySelectorAll('.profile-section');
+      for(var i=0;i<secs.length;i++){
+        var titleEl=secs[i].querySelector('.profile-sec-title');
+        if(!titleEl) continue;
+        var label=(titleEl.textContent||'').replace(/\s+/g,' ').trim();
+        if(!label) continue;
+        if(label.length>22) label=label.slice(0,22)+'…';
+        var chip=document.createElement('button');
+        chip.type='button';
+        chip.className='rasid-jump-chip';
+        chip.textContent=label;
+        chip.onclick=(function(el){return function(){
+          try{el.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){el.scrollIntoView();}
+        };})(secs[i]);
+        bar.appendChild(chip);
+      }
+    }catch(e){}
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',function(){buildJumpBar();rasidDemoSyncBtn();});
+  }else{ buildJumpBar(); rasidDemoSyncBtn(); }
+})();
+</script>
+
 </body>
 </html>
