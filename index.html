@@ -2662,6 +2662,41 @@ html[data-theme=light] #dash-quick-actions button svg{
 .sidebar{will-change:transform;}
 .save-indicator{will-change:opacity;}
 </style>
+<style id="rasid-ui-polish-20261111">
+/* Compact professional treatment while retaining Razid's original branding. */
+[data-rs-denied="1"]{display:none!important;visibility:hidden!important;pointer-events:none!important}
+:root{--rs-ring:rgba(190,153,85,.24)}
+button,[role="button"],a,input,select,textarea{touch-action:manipulation}
+button:focus-visible,a:focus-visible,[role="button"]:focus-visible,
+input:focus-visible,select:focus-visible,textarea:focus-visible{
+ outline:2px solid var(--gold,#c9a84c)!important;outline-offset:2px;
+ box-shadow:0 0 0 4px var(--rs-ring)!important
+}
+button:disabled{opacity:.48;cursor:not-allowed;box-shadow:none!important;transform:none!important}
+.btn,.nav-item,.filter-btn,.login-btn,.rbac-tab{transition:background-color .18s ease,border-color .18s ease,color .18s ease,opacity .18s ease,transform .18s ease}
+.btn:hover:not(:disabled){filter:brightness(1.06)}
+.modal,.rbac-panel,.sl-card,.login-box{max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain}
+.modal-overlay,.rbac-overlay{overscroll-behavior:contain}
+.modal-footer{position:sticky;bottom:-1px;padding-top:12px;z-index:2;background:var(--card,var(--surface,#1a1d24));border-top:1px solid var(--border2,rgba(255,255,255,.08))}
+input,select,textarea{max-width:100%;min-width:0}
+.item-card,.stat-card,.card,.modal{overflow-wrap:anywhere}
+.nav-item{min-height:40px}
+.item-card-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#rbac-active-badge,.rbac-badge{z-index:100;max-width:min(96vw,420px);overflow-wrap:anywhere}
+@media(max-width:768px){
+ html,body{max-width:100%;overflow-x:hidden}
+ .modal-overlay{padding:10px!important;align-items:flex-end!important}
+ .modal{width:100%!important;max-width:100%!important;max-height:calc(100dvh - 20px);border-radius:18px 18px 10px 10px;padding:20px 16px 16px!important}
+ .modal-footer{display:flex;flex-wrap:wrap;gap:8px}
+ .modal-footer>.btn{flex:1 1 130px;min-height:42px}
+ .item-card-actions>.btn{min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center}
+ input,select,textarea{font-size:16px!important}
+ .rbac-panel,.sl-card,.login-box{max-width:calc(100vw - 20px)!important}
+ .table-wrap,.table-responsive{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+}
+@media(prefers-reduced-motion:reduce){.btn,.nav-item,.modal,.login-box{animation:none!important;transition:none!important}}
+</style>
+
 <body>
 
 <!-- ══ شاشة التحميل عند فحص الجلسة ══ -->
@@ -5029,9 +5064,11 @@ var data = defaultData();
 
 // الحفظ: IndexedDB أولاً + localStorage دائماً كنسخة احتياطية
 function save() {
+  if (!rsSecurityValidate()) return false;
   _invalidateCache(); // PERF: invalidate lookup cache
   if (!data.settings) data.settings = {};
   data.settings._localSavedAt = new Date().toISOString();
+  _stampOwner();
   _lsSave(); // localStorage دائماً — ضمان عدم فقدان البيانات
   if (_idbAvailable === false) {saveWithIndicator();return;}
   if (_idb) {
@@ -5242,6 +5279,7 @@ function showPage(name) {
   var renders = { dashboard: renderDashboard, students: renderStudents, results: renderResults, attendance: renderAttendance, teachers: renderTeachers, fees: renderFees, expenses: renderExpenses, slips: renderSlips, courses: renderCourses, whatsapp: renderWhatsapp, reports: renderReports, settings: renderSettings, discipline: renderDisciplinePage, schedules: renderSchedules };
   if (renders[currentPage]) renders[currentPage]();
   try {if (typeof rbacApply === 'function') rbacApply();} catch (_ra) {}
+  rsUiQueue();
   closeSidebar();
 }
 
@@ -5383,6 +5421,7 @@ function initTheme() {
 // MODALS
 // ══════════════════════════════════════════════
 function openModal(name) {
+  var _needed=rsModalPermission(name);if(_needed && !rsAllow(_needed))return;
   if (name === 'add-slip') {openAddSlipModal();return;}
   if (name === 'add-sub-payment') {
     document.getElementById('sub-pay-student').innerHTML = data.students.map(function (s) {return '<option value="' + s.id + '">' + s.fname + ' ' + s.lname + '</option>';}).join('');
@@ -5403,9 +5442,13 @@ function openModal(name) {
   }
   if (name === 'add-fee') {document.getElementById('fee-student').innerHTML = data.students.map(function (s) {return "<option value=\"" + s.id + "\">" + sName(s.id) + "</option>";}).join('');document.getElementById('fee-due').value = today();}
   if (name === 'add-payment') {document.getElementById('pay-student').innerHTML = data.students.map(function (s) {return "<option value=\"" + s.id + "\">" + sName(s.id) + "</option>";}).join('');document.getElementById('pay-date').value = today();loadPayFees();}
-  document.getElementById('modal-' + name).classList.add('open');
+  var target=document.getElementById('modal-' + name);
+  if(!target){console.warn('Missing modal:',name);try{toast('تعذر فتح النافذة المطلوبة');}catch(e){};return;}
+  target.classList.add('open');
+  rsUiQueue();
 }
-function closeModal(name) {document.getElementById('modal-' + name).classList.remove('open');}
+function closeModal(name) {var target=document.getElementById('modal-'+name);if(target)target.classList.remove('open');}
+
 
 
 // ══ SUBSCRIPTION HELPERS ══
@@ -5562,6 +5605,7 @@ function collectSlipData() {
 }
 
 function saveSlip() {
+  if (!(rsAllow('attendance.manage'))) return;
   var slip = collectSlipData();
   if (!slip) {toast('اختر الطالب أولاً');return;}
   if (!slip.items.length) {toast('حدد مادة واحدة على الأقل مع التحضير');return;}
@@ -5681,6 +5725,7 @@ function viewSlip(slipId) {
 }
 
 function markSlipDone(slipId) {
+  if (!(rsAllow('attendance.manage'))) return;
   var slip = (data.slips || []).find(function (x) {return x.id === slipId;});
   if (!slip) {toast('لم يتم العثور على القصاصة');return;}
   var s = gS(slip.studentId);
@@ -5711,6 +5756,7 @@ function markSlipDone(slipId) {
 }
 
 function deleteSlip(slipId) {
+  if (!(rsAllow('attendance.manage'))) return;
   if (!confirm('حذف هذه القصاصة؟')) return;
   data.slips = (data.slips || []).filter(function (x) {return x.id !== slipId;});
   save();
@@ -6067,15 +6113,15 @@ var RBAC_PERMS = [
 /* الأدوار وصلاحياتها الافتراضية */
 var RBAC_ROLES = {
   owner: { label: 'مالك المعهد', all: true },
-  manager: { label: 'مدير', perms: ['students.view', 'students.add', 'students.edit', 'students.delete', 'fees.view', 'payments.add', 'payments.edit', 'payments.delete', 'attendance.manage', 'results.view', 'results.manage', 'behavior.view', 'behavior.manage', 'courses.view', 'courses.manage', 'courses.progress', 'courses.enroll', 'teachers.view', 'teachers.manage', 'reports.view', 'reports.finance'] },
-  accountant: { label: 'محاسب', perms: ['fees.view', 'payments.add', 'reports.finance', 'reports.view'] },
+  manager: { label: 'مدير', perms: ['students.view', 'students.add', 'students.edit', 'students.delete', 'fees.view', 'payments.add', 'payments.edit', 'payments.delete', 'attendance.manage', 'results.view', 'results.manage', 'behavior.view', 'behavior.manage', 'courses.view', 'courses.manage', 'courses.progress', 'courses.enroll', 'teachers.view', 'teachers.manage', 'reports.view', 'reports.finance', 'finance.manage'] },
+  accountant: { label: 'محاسب', perms: ['fees.view', 'payments.add', 'reports.finance', 'reports.view', 'finance.manage'] },
   registrar: { label: 'موظف تسجيل', perms: ['students.view', 'students.add', 'students.edit', 'courses.view', 'courses.enroll'] },
   teacher: { label: 'مدرّس', scoped: true, perms: ['students.view', 'attendance.manage', 'results.view', 'results.manage', 'courses.view', 'courses.progress', 'teachers.view'] }
 };
 
 /* أي صلاحية يتطلبها كل قسم (للحجب المركزي عبر showPage) */
 var RBAC_PAGE_PERM = {
-  dashboard: null, whatsapp: null, settings: null,
+  dashboard: null, whatsapp: 'students.view', settings: 'settings.edit',
   students: 'students.view', 'student-profile': 'students.view',
   attendance: 'attendance.manage', slips: 'attendance.manage',
   results: 'results.view', discipline: 'behavior.view',
@@ -6284,7 +6330,7 @@ var Perms = {
   isOwner: function () {return this.role() === 'owner';},
   effective: function () {
     var u = this.activeUser();
-    if (u.status === 'suspended') return {};
+    if (u.status === 'suspended' || !RBAC_ROLES[u.role]) return {};
     var def = RBAC_ROLES[u.role] || {};
     var set = {};
     if (def.all) {set['*'] = true;return set;}
@@ -6333,7 +6379,8 @@ var Perms = {
     return (list || []).filter(function (s) {
       if (tId && s.teacherId === tId) return true;
       if (courseStudentIds[s.id]) return true;
-      if (a.grades && a.grades.length && s.stage && a.grades.indexOf(s.stage) > -1) return true;
+      if (a.grades && a.grades.length && (a.grades.indexOf(s.stage) > -1 || a.grades.indexOf(s.grade) > -1)) return true;
+      if(a.stages && a.stages.indexOf(s.stage)>-1)return true;
       return false;
     });
   },
@@ -6378,8 +6425,259 @@ var Perms = {
     try {save();} catch (e) {}
     rbacApply();
     try {if (typeof showPage === 'function') showPage('dashboard');} catch (e) {}
+    rsSecurityStart();
   }
 };
+
+
+/* ═══ RASID / access controls v2 ═══
+   Front-end guardrails. True multi-user isolation requires server-side RLS/RPC.
+   Never treat a hidden button as a database authorization decision. */
+var rsSecActive = false, rsSecSnapshot = null, rsUiQueued = false;
+function rsCan(key) {
+  try {return typeof Perms !== 'undefined' && Perms.can(key);} catch(e) {return false;}
+}
+function rsAllow(key) {
+  try {if (Perms.require(key)) return true;} catch(e) {}
+  try {rbacToast('هذا الإجراء غير مسموح لحسابك', 'err');} catch(e) {}
+  return false;
+}
+function rsAllowStudent(id) {
+  try {
+    if (!Perms.isScoped() || Perms.canSeeStudent(Number(id))) return true;
+    rbacToast('الطالب خارج نطاق المدرس', 'err');
+  }catch(e) {}
+  return false;
+}
+function rsAllowCourse(id) {
+  try {
+    if (!Perms.isScoped() || Perms.scopeCourses(data.courses || []).some(function(c){return Number(c.id)===Number(id);})) return true;
+    rbacToast('الدورة غير مخصصة لهذا المدرس', 'err');
+  }catch(e) {}
+  return false;
+}
+function rsAllowTopic(topicId) {
+  try {
+    var t = (data.courseTopics || []).find(function(x){return Number(x.id)===Number(topicId);});
+    if (!t) return false;
+    var ch = (data.courseChapters || []).find(function(x){return Number(x.id)===Number(t.chapterId);});
+    return ch && rsAllowCourse(ch.courseId);
+  }catch(e){return false;}
+}
+function rsProfileFrom(snapshot) {
+  try {
+    var id=snapshot.activeProfileId;
+    if (!id || id==='__owner__') return {role:'invalid',status:'suspended'};
+    var u=(snapshot.appUsers||[]).find(function(x){return String(x.id)===String(id);});
+    return u || {role:'invalid',status:'suspended'};
+  }catch(e){return {role:'invalid',status:'suspended'};}
+}
+function rsHasFrom(snapshot,key) {
+  var u=rsProfileFrom(snapshot);
+  if (u.status==='suspended') return false;
+  var def=RBAC_ROLES[u.role];if(!def)return false;
+  if(def.all)return true;
+  if(u.perms && Object.prototype.hasOwnProperty.call(u.perms,key))return !!u.perms[key];
+  return (def.perms||[]).indexOf(key)>=0;
+}
+function rsTeacherStudent(snapshot,sid) {
+  var u=rsProfileFrom(snapshot);
+  if(u.role!=='teacher')return true;
+  var a=u.assign||{}, tid=u.teacherId;
+  var student=(snapshot.students||[]).find(function(x){return String(x.id)===String(sid);});
+  if(!student)return false;
+  if(tid && String(student.teacherId)===String(tid))return true;
+  if((a.grades||[]).indexOf(student.grade)>-1 || (a.grades||[]).indexOf(student.stage)>-1)return true;
+  if((a.stages||[]).indexOf(student.stage)>-1)return true;
+  return (snapshot.courses||[]).some(function(c){
+    return (tid && String(c.teacherId)===String(tid) || (a.subjects||[]).indexOf(c.subject)>-1) && (c.studentIds||[]).some(function(x){return String(x)===String(sid);});
+  });
+}
+function rsTeacherCourse(snapshot,cid) {
+  var u=rsProfileFrom(snapshot);
+  if(u.role!=='teacher')return true;
+  var a=u.assign||{}, tid=u.teacherId;
+  var c=(snapshot.courses||[]).find(function(x){return String(x.id)===String(cid);});
+  return !!(c && (tid && String(c.teacherId)===String(tid) || (a.subjects||[]).indexOf(c.subject)>-1 || (a.grades||[]).indexOf(c.grade)>-1));
+}
+function rsStable(v){return JSON.stringify(v===undefined?null:v);}
+function rsListAllowed(before,after,collection,addPerm,editPerm,deletePerm,scopeKind) {
+  var oldArr=before[collection]||[], newArr=after[collection]||[];
+  if(rsStable(oldArr)===rsStable(newArr))return true;
+  if(!Array.isArray(oldArr)||!Array.isArray(newArr))return false;
+  if(newArr.some(function(x){return !x||x.id===undefined||x.id===null;}))return false;
+  var oldMap={},newMap={};
+  oldArr.forEach(function(x){if(x && x.id!=null)oldMap[String(x.id)]=x;});
+  newArr.forEach(function(x){if(x && x.id!=null)newMap[String(x.id)]=x;});
+  var u=rsProfileFrom(before);var isTeacher=u.role==='teacher';
+  for(var id in newMap){
+    var n=newMap[id], o=oldMap[id];
+    if(!o && !rsHasFrom(before,addPerm))return false;
+    if(o && rsStable(o)!==rsStable(n) && !rsHasFrom(before,editPerm))return false;
+    if(!o || rsStable(o)!==rsStable(n)){
+      if(scopeKind==='student' && isTeacher && !rsTeacherStudent(before,n.studentId))return false;
+      if(scopeKind==='course' && isTeacher && !rsTeacherCourse(before,n.courseId))return false;
+      if(scopeKind==='topic' && isTeacher){
+        var ch=(before.courseChapters||[]).find(function(x){return String(x.id)===String(n.chapterId);});
+        if(!ch||!rsTeacherCourse(before,ch.courseId))return false;
+        // Teachers can update topic progress and dates, not rename or reorganize content.
+        if(o){var o1=Object.assign({},o),n1=Object.assign({},n);
+          ['status','startDate','endDate','actualDate','completedAt'].forEach(function(k){delete o1[k];delete n1[k];});
+          if(rsStable(o1)!==rsStable(n1))return false;
+        } else return false;
+      }
+      if(collection==='students' && o){
+        var f=['subPrice','subPaid','subStart','subEnd'];
+        if(f.some(function(k){return rsStable(o[k])!==rsStable(n[k]);}) && !rsHasFrom(before,'payments.edit'))return false;
+      }
+    }
+  }
+  for(var oid in oldMap){if(!newMap[oid]){
+    if(!rsHasFrom(before,deletePerm))return false;
+    var old=oldMap[oid];
+    if(scopeKind==='student' && isTeacher && !rsTeacherStudent(before,old.studentId))return false;
+    if(scopeKind==='course' && isTeacher && !rsTeacherCourse(before,old.courseId))return false;
+    if(scopeKind==='topic' && isTeacher)return false;
+  }}
+  return true;
+}
+function rsSecurityValidate() {
+  if(!rsSecActive || !rsSecSnapshot)return true;
+  try {
+    var before=JSON.parse(rsSecSnapshot), after=data;
+    var u=rsProfileFrom(before);
+    if(u.status==='suspended' || !RBAC_ROLES[u.role])throw new Error('حساب غير صالح');
+    // No staff member may update the staff directory, ownership or profile selected.
+    if(rsStable(before.appUsers)!==rsStable(after.appUsers))throw new Error('حسابات الموظفين');
+    if(rsStable(before.activeProfileId)!==rsStable(after.activeProfileId))throw new Error('تبديل الصلاحيات');
+    var bs=Object.assign({},before.settings||{}),as=Object.assign({},after.settings||{});
+    ['_localSavedAt','_lastCloudBackup','_ownerUserId'].forEach(function(k){delete bs[k];delete as[k];});
+    if(rsStable(bs)!==rsStable(as))throw new Error('إعدادات المعهد');
+    if(!rsListAllowed(before,after,'students','students.add','students.edit','students.delete'))throw new Error('ملفات الطلبة');
+    if(!rsListAllowed(before,after,'teachers','teachers.manage','teachers.manage','teachers.manage'))throw new Error('ملفات المدرسين');
+    var defs=[
+      ['attendance','attendance.manage','attendance.manage','attendance.manage','student'],
+      ['teacherAttendance','teachers.manage','teachers.manage','teachers.manage',null],
+      ['results','results.manage','results.manage','results.manage','student'],
+      ['fees','payments.add','payments.edit','payments.delete',null],
+      ['payments','payments.add','payments.edit','payments.delete',null],
+      ['subPayments','payments.add','payments.edit','payments.delete','student'],
+      ['expenses','finance.manage','finance.manage','finance.manage',null],
+      ['salaries','finance.manage','finance.manage','finance.manage',null],
+      ['salaryPayments','finance.manage','finance.manage','finance.manage',null],
+      ['financialAuditLog','finance.manage','finance.manage','finance.manage',null],
+      ['behaviors','behavior.manage','behavior.manage','behavior.manage','student'],
+      ['violationRecords','behavior.manage','behavior.manage','behavior.manage','student'],
+      ['warningRecords','behavior.manage','behavior.manage','behavior.manage','student'],
+      ['parentNotifications','behavior.manage','behavior.manage','behavior.manage','student'],
+      ['courses','courses.manage','courses.manage','courses.manage',null],
+      ['courseChapters','courses.manage','courses.manage','courses.manage',null],
+      ['courseTopics','courses.manage','courses.progress','courses.manage','topic'],
+      ['schedules','courses.manage','courses.manage','courses.manage',null],
+      ['slips','attendance.manage','attendance.manage','attendance.manage','student']
+    ];
+    for(var i=0;i<defs.length;i++){
+      var d=defs[i];if(!rsListAllowed(before,after,d[0],d[1],d[2],d[3],d[4]))throw new Error(d[0]);
+    }
+    // WhatsApp history is an append-only record. Sending notifications does not require
+    // write access to the student records themselves; old log entries stay immutable.
+    var wOld=before.waLog||[],wNew=after.waLog||[];
+    if(!Array.isArray(wNew) || wNew.length<wOld.length ||
+       rsStable(wNew.slice(0,wOld.length))!==rsStable(wOld))
+      throw new Error('سجل رسائل واتساب');
+    // Audit entries may be appended, never rewritten by staff.
+    var logOld=before.activityLog||[],logNew=after.activityLog||[];
+    if(!Array.isArray(logNew)||logNew.length<logOld.length||rsStable(logNew.slice(0,logOld.length))!==rsStable(logOld))throw new Error('سجل النشاطات');
+    // Forbid edits to unknown root data sections, except ID counters and UI metadata.
+    var known={settings:1,appUsers:1,activeProfileId:1,nextId:1,activityLog:1};
+    defs.forEach(function(d){known[d[0]]=1;});known.students=1;known.teachers=1;known.waLog=1;
+    var keys={};Object.keys(before).concat(Object.keys(after)).forEach(function(k){keys[k]=1;});
+    for(var key in keys){if(!known[key] && rsStable(before[key])!==rsStable(after[key]))throw new Error('بيانات محمية: '+key);}
+    rsSecSnapshot=JSON.stringify(after);
+    return true;
+  } catch(e) {
+    try {data=JSON.parse(rsSecSnapshot);_invalidateCache();} catch(restoreErr){}
+    try {rbacToast('لم يُحفظ التعديل: لا تمتلك الصلاحية ('+e.message+')','err');}catch(ex){}
+    console.warn('[Rasid permissions] prevented change:',e.message);
+    try {renderCurrentPage();}catch(ex){}
+    return false;
+  }
+}
+function rsSecurityStart() {
+  try {
+    rsSecActive=!!(typeof Perms!=='undefined' && !Perms.isOwner());
+    rsSecSnapshot=rsSecActive?JSON.stringify(data):null;
+    rsUiQueue();
+  }catch(e){rsSecActive=false;rsSecSnapshot=null;}
+}
+function rsSecurityStop() {rsSecActive=false;rsSecSnapshot=null;}
+function rsModalPermission(name) {
+  var access={
+    'add-student':'students.add','edit-student':'students.edit','add-teacher':'teachers.manage','edit-teacher':'teachers.manage',
+    'add-result':'results.manage','add-fee':'payments.add','add-payment':'payments.add','add-sub-payment':'payments.add',
+    'add-expense':'finance.manage','set-salary':'finance.manage','pay-salary':'finance.manage',
+    'course-form':'courses.manage','chapter-form':'courses.manage','topic-form':'courses.manage',
+    'course-students':'courses.enroll','topic-dates':'courses.progress','add-schedule':'courses.manage',
+    'backup':'settings.edit','behavior':'behavior.manage','add-slip':'attendance.manage'
+  };
+  return access[name]||null;
+}
+function autoResizeTA(el){
+  if(!el||!el.style)return;
+  el.style.height='auto';
+  var h=Math.max(40,Math.min(Number(el.scrollHeight)||40,320));
+  el.style.height=h+'px';
+}
+function rsUiPermission(onclick) {
+  var map=[
+    [/openEditStudent|saveEditStudent/, 'students.edit'],[/delStudent/, 'students.delete'],[/addStudent/, 'students.add'],
+    [/openEditTeacher|saveEditTeacher|addTeacher|delTeacher/,'teachers.manage'],
+    [/saveSettings|saveTemplates|addTaskType|removeTaskType|addViolationType|removeViolationType/,'settings.edit'],
+    [/openRbac|rbac(?!CopyInstCode|Toast|NormCode)/,'users.manage'],
+    [/addFee|addPayment|addSubPayment|quickSubPayment/,'payments.add'],
+    [/openFeeDetail/,'fees.view'],[/addExpense|saveSalary|paySalary|openSetSalary|openPaySalary/,'finance.manage'],
+    [/saveCourseForm|openAddCourseModal|openEditCourseModal|deleteCourse|openAddChapterModal|openEditChapterModal|deleteChapter|moveChapter|openAddTopicModal|openEditTopicModal|deleteTopic|moveTopic/,'courses.manage'],
+    [/openCourseStudentsModal|saveCourseStudents/,'courses.enroll'],
+    [/cycleTopicStatus|saveTopicDates|openTopicDatesModal/,'courses.progress'],
+    [/openScheduleModal|saveSchedule|deleteSchedule/,'courses.manage'],
+    [/saveViolation|deleteViolation|openAddViolationModal|saveBehavior/,'behavior.manage'],
+    [/saveTAttendance|toggleTAtt|setTAttTime/,'teachers.manage'],
+    [/saveAttendance|cycleAtt|toggleAtt|saveSlip|markSlipDone|deleteSlip/,'attendance.manage'],
+    [/addResult|delResult/,'results.manage'],
+    [/restoreFromCloud|restoreFromText|restoreInternalBackup|importJSON|cloudBackupNow|toggleAutoBackup/,'settings.edit']
+  ];
+  var m=onclick.match(/openModal\(['"]([^'"]+)['"]\)/);
+  if(m)return rsModalPermission(m[1]);
+  for(var i=0;i<map.length;i++)if(map[i][0].test(onclick))return map[i][1];
+  return null;
+}
+function rsUiQueue() {
+  if(rsUiQueued)return;
+  rsUiQueued=true;
+  (window.requestAnimationFrame||function(cb){return setTimeout(cb,20);})(function(){rsUiQueued=false;rsUiApply();});
+}
+function rsUiApply() {
+  try {
+    if(typeof Perms==='undefined')return;
+    document.body.setAttribute('data-rasid-role',Perms.role());
+    var els=document.querySelectorAll('[onclick]');
+    for(var i=0;i<els.length;i++){
+      var el=els[i], oc=el.getAttribute('onclick')||'', perm=rsUiPermission(oc);
+      var deny=perm && !Perms.can(perm);
+      if(deny){if(el.getAttribute('data-rs-denied')!=='1')el.setAttribute('data-rs-denied','1');}
+      else if(el.hasAttribute('data-rs-denied'))el.removeAttribute('data-rs-denied');
+    }
+  } catch(e){console.warn('UI permissions:',e.message);}
+}
+document.addEventListener('DOMContentLoaded',function(){
+  try {
+    var root=document.getElementById('app');if(!root||!window.MutationObserver)return;
+    var obs=new MutationObserver(function(list){
+      for(var i=0;i<list.length;i++)if(list[i].addedNodes.length || list[i].removedNodes.length){rsUiQueue();break;}
+    });
+    obs.observe(root,{childList:true,subtree:true});
+  } catch(e){}
+});
 
 /* ===== سجل النشاطات ===== */
 function logActivity(action, section) {
@@ -6419,7 +6717,7 @@ function rbacApply() {
     }
     /* إخفاء عنوان قسم «المالية» في القائمة إن لم تكن للمستخدم رؤية مالية */
     try {var _nsf = document.getElementById('nav-sec-finance');if (_nsf) _nsf.style.display = Perms.canFinance() ? '' : 'none';} catch (eNF) {}
-    rbacRenderBadge();
+    rbacRenderBadge();rsUiQueue();
   } catch (e) {}
 }
 
@@ -7280,6 +7578,8 @@ function addStudent() {
 }
 
 function openEditStudent(id) {
+  if(!rsAllowStudent(id))return;
+  if (!(rsAllow('students.edit'))) return;
   var s = gS(id);if (!s) return;
   document.getElementById('edit-s-id').value = s.id;
   document.getElementById('edit-s-fname').value = s.fname || '';
@@ -7291,9 +7591,15 @@ function openEditStudent(id) {
   document.getElementById('edit-s-sub-end').value = s.subEnd || '';
   document.getElementById('edit-s-sub-price').value = s.subPrice || '';
   document.getElementById('edit-s-sub-paid').value = s.subPaid || '';
+  var _rsFinAllowed=rsCan('payments.edit');
+  ['edit-s-sub-start','edit-s-sub-end','edit-s-sub-price','edit-s-sub-paid'].forEach(function(fid){
+    var field=document.getElementById(fid);if(field){field.disabled=!_rsFinAllowed;field.title=_rsFinAllowed?'':'يحتاج إلى صلاحية مالية';}
+  });
   document.getElementById('modal-edit-student').classList.add('open');
 }
 async function saveEditStudent() {
+  var _rsStuId=Number(gVal('edit-s-id'));if(!rsAllowStudent(_rsStuId))return;
+  if (!(rsAllow('students.edit'))) return;
   var id = parseInt(document.getElementById('edit-s-id').value);
   var fname = document.getElementById('edit-s-fname').value.trim();
   var lname = document.getElementById('edit-s-lname').value.trim();
@@ -7311,6 +7617,7 @@ async function saveEditStudent() {
   (beforeStudent.subPrice || 0) !== nextSubPrice ||
   (beforeStudent.subPaid || 0) !== nextSubPaid;
   var financialCode = null;
+  if (financialChanged && !rsAllow('payments.edit')) return;
   if (financialChanged) {
     financialCode = await requestFinancialEditCode();
     if (!financialCode) return;
@@ -7335,7 +7642,13 @@ function delStudent(id) {
   if (typeof Perms !== 'undefined' && !Perms.require('students.delete')) return;
   var st = gS(id);var stName = st ? st.fname + ' ' + st.lname : 'هذا الطالب';
   showConfirm({ title: 'حذف ' + stName, msg: 'سيتم حذف جميع بياناته بشكل نهائي (الحضور، النتائج، الرسوم، السلوك، المخالفات).', confirmText: 'نعم، احذف' }, function () {
-    ['students', 'attendance', 'results', 'fees', 'payments', 'behaviors', 'violationRecords', 'warningRecords', 'parentNotifications'].forEach(function (k) {if (data[k]) data[k] = data[k].filter(function (x) {return x.id !== id && x.studentId !== id;});});
+    var feeIds=(data.fees||[]).filter(function(f){return Number(f.studentId)===Number(id);}).map(function(f){return f.id;});
+    data.students=(data.students||[]).filter(function(x){return Number(x.id)!==Number(id);});
+    ['attendance','results','fees','behaviors','violationRecords','warningRecords','parentNotifications','subPayments','slips'].forEach(function(k){
+      if(data[k])data[k]=data[k].filter(function(x){return Number(x.studentId)!==Number(id);});
+    });
+    data.payments=(data.payments||[]).filter(function(p){return Number(p.studentId)!==Number(id) && feeIds.indexOf(p.feeId)===-1;});
+    (data.courses||[]).forEach(function(c){if(c.studentIds)c.studentIds=c.studentIds.filter(function(sid){return Number(sid)!==Number(id);});});
     save();renderStudents();toast('تم حذف ' + stName);
   });
 }
@@ -7564,6 +7877,7 @@ function s360PrintReport(sid) {
 }
 
 function openStudentProfile(id) {
+  if(!rsAllow('students.view')||!rsAllowStudent(id))return;
   var s = gS(id);if (!s) return;
   if (typeof Perms !== 'undefined' && Perms.isScoped() && !Perms.canSeeStudent(id)) {try {rbacToast('هذا الطالب غير متاح لحسابك الحالي', 'err');} catch (e) {}return;}
   var rate = attRate(s.id),avg = avgGrade(s.id);
@@ -7853,6 +8167,7 @@ var _violSelectedType = null;
 var _violSelectedSeverity = 'low';
 
 function openAddViolationModal(sid) {
+  if (!(rsAllow('behavior.manage'))) return;
   _violCurrentSid = sid;
   _violSelectedType = null;
   _violSelectedSeverity = 'low';
@@ -7936,6 +8251,8 @@ function updateViolWarnPreview() {
 }
 
 function saveViolation() {
+  if(!rsAllowStudent(Number(gVal('viol-student'))))return;
+  if (!(rsAllow('behavior.manage'))) return;
   var sel = document.getElementById('viol-student');
   var sid = parseInt(sel ? sel.value : '');
   var date = document.getElementById('viol-date').value || today();
@@ -7986,6 +8303,8 @@ function saveViolation() {
 }
 
 function deleteViolation(vid) {
+  var _rsViol=(data.violationRecords||[]).find(function(x){return Number(x.id)===Number(vid);});if(_rsViol && !rsAllowStudent(_rsViol.studentId))return;
+  if (!(rsAllow('behavior.manage'))) return;
   var v = (data.violationRecords || []).find(function (x) {return x.id === vid;});
   var s = v ? gS(v.studentId) : null;
   var lbl = (s ? s.fname + ' — ' : '') + (v ? v.type : 'المخالفة');
@@ -8535,6 +8854,8 @@ function openBehModal(sid) {
 function setBehStar(n) {behStars = n;updateBehStars();}
 function updateBehStars() {document.querySelectorAll('#beh-stars .star').forEach(function (s, i) {if (i < behStars) {s.classList.add('active');} else {s.classList.remove('active');}});}
 function saveBehavior() {
+  if(!rsAllowStudent(behSid))return;
+  if (!(rsAllow('behavior.manage'))) return;
   data.behaviors.push({ id: data.nextId.behavior++, studentId: behSid, stars: behStars, note: document.getElementById('beh-note').value.trim(), date: today() });
   save();closeModal('behavior');renderStudents();toast('تم حفظ تقييم السلوك');
 }
@@ -8651,6 +8972,7 @@ function calcHours(tIn, tOut) {
 }
 
 function toggleTAtt(id) {
+  if (!(rsAllow('teachers.manage'))) return;
   var wasAbsent = tattState[id] === 'absent' || !tattState[id];
   tattState[id] = wasAbsent ? 'present' : 'absent';
   if (wasAbsent) {
@@ -8662,12 +8984,14 @@ function toggleTAtt(id) {
 }
 
 function setTAttTime(id, field, val) {
+  if (!(rsAllow('teachers.manage'))) return;
   if (!tattTimes[id]) tattTimes[id] = { in: '', out: '' };
   tattTimes[id][field] = parseTimeInput12(val);
   renderTAttGrid();
 }
 
 function saveTAttendance() {
+  if (!(rsAllow('teachers.manage'))) return;
   var dv = document.getElementById('tatt-date').value;
   if (!dv) {toast('اختر التاريخ');return;}
   data.teachers.forEach(function (t) {
@@ -8812,6 +9136,7 @@ function clearSelectedSubjects(pickerId) {
 }
 
 function addTeacher() {
+  if (!(rsAllow('teachers.manage'))) return;
   var fname = document.getElementById('t-fname').value.trim(),lname = document.getElementById('t-lname').value.trim();
   if (!fname || !lname) {toast('يرجى إدخال الاسم');return;}
   data.teachers.push({ id: data.nextId.teacher++, fname: fname, lname: lname, subject: document.getElementById('t-subject').value.trim() || '—', phone: document.getElementById('t-phone').value.trim() });
@@ -8820,6 +9145,7 @@ function addTeacher() {
   toast('تمت إضافة المدرس');
 }
 function openEditTeacher(id) {
+  if (!(rsAllow('teachers.manage'))) return;
   var t = gT(id);if (!t) return;
   document.getElementById('edit-t-id').value = t.id;
   document.getElementById('edit-t-fname').value = t.fname || '';
@@ -8829,6 +9155,7 @@ function openEditTeacher(id) {
   document.getElementById('modal-edit-teacher').classList.add('open');
 }
 function saveEditTeacher() {
+  if (!(rsAllow('teachers.manage'))) return;
   var id = parseInt(document.getElementById('edit-t-id').value);
   var fname = document.getElementById('edit-t-fname').value.trim(),lname = document.getElementById('edit-t-lname').value.trim();
   if (!fname || !lname) {toast('يرجى إدخال الاسم');return;}
@@ -8917,6 +9244,8 @@ function toggleResultDetail(id) {
   el.style.display = el.style.display === 'none' ? 'table-row' : 'none';
 }
 function addResult() {
+  var _rsId=Number(gVal('r-student'));if(!rsAllowStudent(_rsId))return;
+  if (!(rsAllow('results.manage'))) return;
   var studentId = parseInt(document.getElementById('r-student').value);
   var type = document.getElementById('r-type').value;
   var subject = document.getElementById('r-subject').value;
@@ -8927,6 +9256,11 @@ function addResult() {
   if (!subject) {toast('اختر المادة');return;}
   if (isNaN(grade) || grade < 0 || grade > max) {toast('الدرجة غير صحيحة');return;}
   var teacherId = parseInt(document.getElementById('r-teacher').value) || 0;
+  if (Perms.isScoped()) {
+    var _ru=Perms.activeUser(), _subjects=(_ru.assign && _ru.assign.subjects)||[];
+    if(_subjects.length && _subjects.indexOf(subject)===-1){rbacToast('المادة غير مخصصة لحسابك','err');return;}
+    if(_ru.teacherId) teacherId = _ru.teacherId;
+  }
   var nr = { id: data.nextId.result++, studentId: studentId, type: type, subject: subject, grade: grade, max: max, note: note, teacherId: teacherId, date: today() };
   data.results.push(nr);save();closeModal('add-result');renderResults();
   ['r-grade', 'r-note'].forEach(function (id) {return document.getElementById(id).value = '';});
@@ -8934,6 +9268,7 @@ function addResult() {
   if (sendWA) sendResultWA(nr.id);else toast('تمت إضافة النتيجة');
 }
 function delResult(id) {
+  var _rsResult=(data.results||[]).find(function(x){return Number(x.id)===Number(id);});if(_rsResult && !rsAllowStudent(_rsResult.studentId))return;
   if (typeof Perms !== 'undefined' && !Perms.require('results.manage')) return;
   var r = data.results.find(function (x) {return x.id === id;});
   var s = r ? gS(r.studentId) : null;
@@ -8968,6 +9303,7 @@ function loadSubPayInfo() {
 }
 
 function quickSubPayment(sid) {
+  if (!(rsAllow('payments.add'))) return;
   data.students.forEach(function (s, i) {
     document.getElementById('sub-pay-student').value = s.id;
   });
@@ -8981,6 +9317,7 @@ function quickSubPayment(sid) {
 }
 
 async function addSubPayment() {
+  if (!(rsAllow('payments.add'))) return;
   var sid = parseInt(gVal('sub-pay-student'));
   var amount = parseFloat(gVal('sub-pay-amount'));
   var date = gVal('sub-pay-date') || today();
@@ -9100,6 +9437,7 @@ function openFeeDetail(sid) {
   openModal('fee-detail');
 }
 async function addFee() {
+  if (!(rsAllow('payments.add'))) return;
   var sid = parseInt(document.getElementById('fee-student').value);
   var desc = document.getElementById('fee-desc').value.trim();
   var amount = parseFloat(gVal('fee-amount'));
@@ -9121,6 +9459,7 @@ function loadPayFees() {
   document.getElementById('pay-fee').innerHTML = fees.length ? fees.map(function (f) {var p = data.payments.filter(function (x) {return x.feeId === f.id;}).reduce(function (a, x) {return a + x.amount;}, 0);return "<option value=\"" + f.id + "\">" + f.desc + " — متبقي: " + fmt(f.amount - p) + "</option>";}).join('') : "<option>لا توجد رسوم</option>";
 }
 async function addPayment() {
+  if (!(rsAllow('payments.add'))) return;
   var feeId = parseInt(document.getElementById('pay-fee').value);
   var sid = parseInt(document.getElementById('pay-student').value);
   var amount = parseFloat(gVal('pay-amount'));
@@ -9276,6 +9615,7 @@ function renderCourses() {
 
 // ── course detail ──
 function openCourseDetail(id) {
+  if(!rsAllow('courses.view')||!rsAllowCourse(id))return;
   _currentCourseId = id;
   showPage('course-detail');
   renderCourseDetail();
@@ -9433,6 +9773,7 @@ function _cfSetStageGrade(stage, grade, subject) {
 }
 
 function openAddCourseModal() {
+  if (!(rsAllow('courses.manage'))) return;
   document.getElementById('course-form-title').innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> إضافة دورة جديدة</span>';
   document.getElementById('cf-edit-id').value = '';
   document.getElementById('cf-name').value = '';
@@ -9446,6 +9787,7 @@ function openAddCourseModal() {
   document.getElementById('modal-course-form').classList.add('open');
 }
 function openEditCourseModal(id) {
+  if (!(rsAllow('courses.manage'))) return;
   var c = gCourse(id);if (!c) return;
   document.getElementById('course-form-title').innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> تعديل الدورة</span>';
   document.getElementById('cf-edit-id').value = c.id;
@@ -9465,6 +9807,7 @@ function _populateCourseTeachers(selectedId) {
   data.teachers.map(function (t) {return '<option value="' + t.id + '"' + (t.id == selectedId ? ' selected' : '') + '>' + t.fname + ' ' + t.lname + '</option>';}).join('');
 }
 function saveCourseForm() {
+  if (!(rsAllow('courses.manage'))) return;
   var name = document.getElementById('cf-name').value.trim();
   var stage = document.getElementById('cf-stage').value;
   var grade = document.getElementById('cf-grade').value;
@@ -9507,6 +9850,7 @@ function deleteCourse(id) {
 
 // ── chapter CRUD ──
 function openAddChapterModal(courseId) {
+  if (!(rsAllow('courses.manage'))) return;
   document.getElementById('chapter-form-title').textContent = 'إضافة فصل جديد';
   document.getElementById('chf-course-id').value = courseId;
   document.getElementById('chf-edit-id').value = '';
@@ -9514,6 +9858,7 @@ function openAddChapterModal(courseId) {
   document.getElementById('modal-chapter-form').classList.add('open');
 }
 function openEditChapterModal(chapterId) {
+  if (!(rsAllow('courses.manage'))) return;
   var ch = gChapter(chapterId);if (!ch) return;
   document.getElementById('chapter-form-title').textContent = 'تعديل الفصل';
   document.getElementById('chf-course-id').value = ch.courseId;
@@ -9522,6 +9867,7 @@ function openEditChapterModal(chapterId) {
   document.getElementById('modal-chapter-form').classList.add('open');
 }
 function saveChapterForm() {
+  if (!(rsAllow('courses.manage'))) return;
   var title = document.getElementById('chf-title').value.trim();
   if (!title) {toast('يرجى إدخال عنوان الفصل');return;}
   var courseId = parseInt(document.getElementById('chf-course-id').value);
@@ -9539,6 +9885,7 @@ function saveChapterForm() {
   toast(editId ? 'تم تحديث الفصل' : 'تمت إضافة الفصل');
 }
 function deleteChapter(id) {
+  if (!(rsAllow('courses.manage'))) return;
   showConfirm({ title: 'حذف الفصل', msg: 'سيتم حذف الفصل وجميع مواضيعه.', confirmText: 'نعم، احذف' }, function () {
     data.courseChapters = (data.courseChapters || []).filter(function (c) {return c.id !== id;});
     data.courseTopics = (data.courseTopics || []).filter(function (t) {return t.chapterId !== id;});
@@ -9546,6 +9893,7 @@ function deleteChapter(id) {
   });
 }
 function moveChapterUp(id) {
+  if (!(rsAllow('courses.manage'))) return;
   var chapters = (data.courseChapters || []).filter(function (c) {return c.courseId === gChapter(id).courseId;});
   chapters.sort(function (a, b) {return (a.order || 0) - (b.order || 0);});
   var idx = chapters.findIndex(function (c) {return c.id === id;});
@@ -9553,6 +9901,7 @@ function moveChapterUp(id) {
   save();renderCourseDetail();
 }
 function moveChapterDown(id) {
+  if (!(rsAllow('courses.manage'))) return;
   var chapters = (data.courseChapters || []).filter(function (c) {return c.courseId === gChapter(id).courseId;});
   chapters.sort(function (a, b) {return (a.order || 0) - (b.order || 0);});
   var idx = chapters.findIndex(function (c) {return c.id === id;});
@@ -9562,6 +9911,7 @@ function moveChapterDown(id) {
 
 // ── topic CRUD ──
 function openAddTopicModal(chapterId) {
+  if (!(rsAllow('courses.manage'))) return;
   document.getElementById('topic-form-title').textContent = 'إضافة موضوع جديد';
   document.getElementById('tpf-chapter-id').value = chapterId;
   document.getElementById('tpf-edit-id').value = '';
@@ -9570,6 +9920,7 @@ function openAddTopicModal(chapterId) {
   document.getElementById('modal-topic-form').classList.add('open');
 }
 function openEditTopicModal(topicId, chapterId) {
+  if (!(rsAllow('courses.manage'))) return;
   var tp = gTopic(topicId);if (!tp) return;
   document.getElementById('topic-form-title').textContent = 'تعديل الموضوع';
   document.getElementById('tpf-chapter-id').value = chapterId;
@@ -9579,6 +9930,7 @@ function openEditTopicModal(topicId, chapterId) {
   document.getElementById('modal-topic-form').classList.add('open');
 }
 function saveTopicForm() {
+  if (!(rsAllow('courses.manage'))) return;
   var title = document.getElementById('tpf-title').value.trim();
   if (!title) {toast('يرجى إدخال عنوان الموضوع');return;}
   var chapterId = parseInt(document.getElementById('tpf-chapter-id').value);
@@ -9597,10 +9949,13 @@ function saveTopicForm() {
   toast(editId ? 'تم تحديث الموضوع' : 'تمت إضافة الموضوع');
 }
 function deleteTopic(id) {
+  if (!(rsAllow('courses.manage'))) return;
   data.courseTopics = (data.courseTopics || []).filter(function (t) {return t.id !== id;});
   save();renderCourseDetail();toast('تم حذف الموضوع');
 }
 function cycleTopicStatus(id) {
+  if(!rsAllowTopic(id))return;
+  if (!(rsAllow('courses.progress'))) return;
   var tp = gTopic(id);if (!tp) return;
   var cycle = ['لم يبدأ', 'قيد الشرح', 'مكتمل'];
   var idx = cycle.indexOf(tp.status || 'لم يبدأ');
@@ -9610,6 +9965,7 @@ function cycleTopicStatus(id) {
   renderCourseDetail();
 }
 function moveTopicUp(id, chapterId) {
+  if (!(rsAllow('courses.manage'))) return;
   var topics = (data.courseTopics || []).filter(function (t) {return t.chapterId === chapterId;});
   topics.sort(function (a, b) {return (a.order || 0) - (b.order || 0);});
   var idx = topics.findIndex(function (t) {return t.id === id;});
@@ -9617,6 +9973,7 @@ function moveTopicUp(id, chapterId) {
   save();renderCourseDetail();
 }
 function moveTopicDown(id, chapterId) {
+  if (!(rsAllow('courses.manage'))) return;
   var topics = (data.courseTopics || []).filter(function (t) {return t.chapterId === chapterId;});
   topics.sort(function (a, b) {return (a.order || 0) - (b.order || 0);});
   var idx = topics.findIndex(function (t) {return t.id === id;});
@@ -9792,6 +10149,7 @@ renderCourses = function () {
 
 // ══ ٢. ربط الطلبة بالدورة ══
 function openCourseStudentsModal(courseId) {
+  if (!(rsAllow('courses.enroll'))) return;
   var c = gCourse(courseId);if (!c) return;
   document.getElementById('cs-course-id').value = courseId;
   document.getElementById('cs-search').value = '';
@@ -9819,6 +10177,7 @@ function renderCourseStudentsPicker() {
   }).join('');
 }
 function saveCourseStudents() {
+  if (!(rsAllow('courses.enroll'))) return;
   var courseId = parseInt(document.getElementById('cs-course-id').value);
   var c = gCourse(courseId);if (!c) return;
   var checked = document.querySelectorAll('#cs-students-list input[type=checkbox]:checked');
@@ -9832,6 +10191,7 @@ function saveCourseStudents() {
 
 // ══ ٣. تواريخ الموضوع ══
 function openTopicDatesModal(topicId) {
+  if (!(rsAllow('courses.progress'))) return;
   var tp = gTopic(topicId);if (!tp) return;
   document.getElementById('td-topic-id').value = topicId;
   document.getElementById('td-start').value = tp.startDate || '';
@@ -9839,6 +10199,8 @@ function openTopicDatesModal(topicId) {
   document.getElementById('modal-topic-dates').classList.add('open');
 }
 function saveTopicDates() {
+  if(!rsAllowTopic(Number(gVal('td-topic-id'))))return;
+  if (!(rsAllow('courses.progress'))) return;
   var id = parseInt(document.getElementById('td-topic-id').value);
   var tp = gTopic(id);if (!tp) return;
   tp.startDate = document.getElementById('td-start').value;
@@ -10378,13 +10740,15 @@ function renderTaskTypes() {
   if (el) el.innerHTML = types.map(function (t, i) {return '<div class="inst-item"><span style="font-size:12px">' + t + '</span><button class="btn btn-danger btn-xs" onclick="removeTaskType(' + i + ')">×</button></div>';}).join('');
 }
 function addTaskType() {
+  if (!(rsAllow('settings.edit'))) return;
   var v = document.getElementById('new-task-type').value.trim();
   if (!v) return;
   data.settings.taskTypes = data.settings.taskTypes || [];
   data.settings.taskTypes.push(v);
   save();document.getElementById('new-task-type').value = '';renderTaskTypes();toast('تمت الإضافة');
 }
-function removeTaskType(i) {data.settings.taskTypes.splice(i, 1);save();renderTaskTypes();}
+function removeTaskType(i) {
+  if (!(rsAllow('settings.edit'))) return;data.settings.taskTypes.splice(i, 1);save();renderTaskTypes();}
 
 function renderViolationTypes() {
   var types = data.settings && data.settings.violationTypes || [];
@@ -10395,6 +10759,7 @@ function renderViolationTypes() {
   }).join('');
 }
 function addViolationType() {
+  if (!(rsAllow('settings.edit'))) return;
   var v = document.getElementById('new-violation-type').value.trim();
   if (!v) return;
   if (!data.settings.violationTypes) data.settings.violationTypes = [];
@@ -10402,16 +10767,19 @@ function addViolationType() {
   save();document.getElementById('new-violation-type').value = '';renderViolationTypes();toast('تمت إضافة نوع المخالفة');
 }
 function removeViolationType(i) {
+  if (!(rsAllow('settings.edit'))) return;
   data.settings.violationTypes.splice(i, 1);
   save();renderViolationTypes();
 }
 function saveSettings() {
+  if (!(rsAllow('settings.edit'))) return;
   data.settings.instName = document.getElementById('set-inst-name').value.trim() || 'راصد';
   data.settings.instAddr = document.getElementById('set-inst-addr').value.trim();
   data.settings.instPhone = document.getElementById('set-inst-phone').value.trim();
   save();updateInstName();toast('تم حفظ الإعدادات');
 }
 function saveTemplates() {
+  if (!(rsAllow('settings.edit'))) return;
   data.settings.templates = { result: document.getElementById('tmpl-result').value, absent: document.getElementById('tmpl-absent').value, fees: document.getElementById('tmpl-fees').value };
   save();toast('تم حفظ القوالب');
 }
@@ -10480,6 +10848,7 @@ function copyBackupText() {
 }
 
 function restoreInternalBackup() {
+  if (!(rsAllow('settings.edit'))) return;
   var saved = localStorage.getItem(BACKUP_KEY);
   if (!saved) {toast('لا توجد نسخة محفوظة داخلياً');return;}
   var date = localStorage.getItem(BACKUP_KEY + '_date') || '';
@@ -10505,6 +10874,7 @@ function showRestoreText() {
 }
 
 function restoreFromText() {
+  if (!(rsAllow('settings.edit'))) return;
   var txt = document.getElementById('restore-text-area').value.trim();
   if (!txt) {toast('الصق النص أولاً');return;}
   try {
@@ -10618,6 +10988,8 @@ async function getCloudUser() {
 }
 
 async function cloudBackupNow() {
+  if (!rsSecurityValidate())return;
+  if (!(rsAllow('settings.edit'))) return;
   if (!navigator.onLine) {toast('لا يوجد اتصال بالإنترنت');setCloudStatus('لا يوجد اتصال بالإنترنت.', 'error');return;}
   setCloudButtons(true);
   setCloudStatus('جاري رفع النسخة السحابية...', 'info');
@@ -10656,6 +11028,7 @@ async function cloudBackupNow() {
 }
 
 async function restoreFromCloud() {
+  if (!(rsAllow('settings.edit'))) return;
   if (!navigator.onLine) {toast('لا يوجد اتصال بالإنترنت');setCloudStatus('لا يوجد اتصال بالإنترنت.', 'error');return;}
   setCloudButtons(true);
   setCloudStatus('جاري البحث عن النسخة السحابية...', 'info');
@@ -10711,6 +11084,7 @@ function loadAutoBackupState() {
 }
 
 function toggleAutoBackup(enabled) {
+  if (!(rsAllow('settings.edit'))) return;
   try {localStorage.setItem(AUTO_BACKUP_KEY, enabled ? 'true' : 'false');} catch (e) {}
   if (enabled) {
     startAutoBackupTimer();
@@ -10733,6 +11107,7 @@ function stopAutoBackupTimer() {
 }
 
 async function autoBackupSilent() {
+  if (!rsSecurityValidate())return;
   if (!navigator.onLine) return;
   if (!currentUser || !currentUser.id) return;
   if (!_supabase) return;
@@ -10842,6 +11217,7 @@ function exportJSON() {
   toast('تم تصدير النسخة الاحتياطية');
 }
 function importJSON(e) {
+  if (!(rsAllow('settings.edit'))) return;
   var f = e.target.files[0];if (!f) return;
   var r = new FileReader();
   r.onload = async function (ev) {
@@ -11125,6 +11501,7 @@ function notifyAllDeparture() {
 }
 
 function cycleAtt(id) {
+  if (!rsAllow('attendance.manage') || !rsAllowStudent(id))return;
   var order = ['absent', 'present', 'excused', 'late'];
   var cur = attState[id] || 'absent';
   var idx = order.indexOf(cur);
@@ -11137,13 +11514,16 @@ function cycleAtt(id) {
   }
 }
 // دالة قديمة للتوافق مع أي كود يستدعيها
-function toggleAtt(id) {cycleAtt(id);}
+function toggleAtt(id) {
+  if (!rsAllow('attendance.manage') || !rsAllowStudent(id))return;cycleAtt(id);}
 function saveAttendance() {
+  if(Perms.isScoped() && !Perms.scopeStudents(data.students || []).length){rbacToast('لا يوجد طلبة مخصصون لحسابك','err');return;}
+  if (!(rsAllow('attendance.manage'))) return;
   var dv = document.getElementById('att-date').value;if (!dv) {toast('اختر التاريخ');return;}
   var isToday = dv === today();
   // find first present time to check 12h auto-notify
   var hadPresentBefore = data.attendance.some(function (a) {return a.studentId && a.date === dv && a.status === 'present';});
-  data.students.forEach(function (s) {
+  (Perms.isScoped() ? Perms.scopeStudents(data.students) : data.students).forEach(function (s) {
     var st = attState[s.id] || 'absent';
     var idx = data.attendance.findIndex(function (a) {return a.studentId === s.id && a.date === dv;});
     if (idx !== -1) data.attendance[idx].status = st;else
@@ -11159,7 +11539,7 @@ function saveAttendance() {
 // 12-HOUR AUTO ABSENT NOTIFICATION
 // ══════════════════════════════════════════════
 function scheduleAbsentNotifications() {
-  var absentStudents = data.students.filter(function (s) {
+  var absentStudents = (Perms.isScoped() ? Perms.scopeStudents(data.students) : data.students).filter(function (s) {
     var rec = data.attendance.find(function (a) {return a.studentId === s.id && a.date === today();});
     return rec && rec.status === 'absent' && s.parentPhone; // 'excused' لا تُجدول تلقائياً
   });
@@ -11289,6 +11669,7 @@ function renderExpTable() {
   ).join('');
 }
 function addExpense() {
+  if (!(rsAllow('finance.manage'))) return;
   if (typeof Perms !== 'undefined' && !Perms.require('fees.view')) {return;}
   var cat = document.getElementById('exp-cat').value;
   var amount = parseFloat(gVal('exp-amount'));
@@ -11476,6 +11857,7 @@ function renderSalariesCards() {
 // SET SALARY MODAL
 // ══════════════════════════════════════════════
 function openSetSalary(tid) {
+  if (!(rsAllow('finance.manage'))) return;
   var t = gT(tid);
   var sal = data.salaries.find(function (s) {return s.teacherId === tid;});
   document.getElementById('sal-teacher-id').value = tid;
@@ -11532,6 +11914,7 @@ function updateSalPreview() {
 }
 
 function saveSalary() {
+  if (!(rsAllow('finance.manage'))) return;
   var tid = parseInt(document.getElementById('sal-teacher-id').value);
   var amount = parseFloat(gVal('sal-amount'));
   var workDays = parseInt(document.getElementById('sal-workdays').value) || 26;
@@ -11551,6 +11934,7 @@ function saveSalary() {
 // PAY SALARY MODAL
 // ══════════════════════════════════════════════
 function openPaySalary(tid) {
+  if (!(rsAllow('finance.manage'))) return;
   var t = gT(tid);
   var sal = data.salaries.find(function (s) {return s.teacherId === tid;});
   if (!sal) {toast('يجب تحديد الراتب أولاً');return;}
@@ -11600,6 +11984,7 @@ function calcSalaryForMonth() {
 }
 
 function paySalary() {
+  if (!(rsAllow('finance.manage'))) return;
   if (typeof Perms !== 'undefined' && !Perms.require('fees.view')) {return;}
   var tid = parseInt(document.getElementById('psal-teacher-id').value);
   var amount = parseFloat(gVal('psal-amount'));
@@ -11879,6 +12264,7 @@ async function doEmployeeLogin() {
 
 /* خروج الموظف — العودة إلى شاشة الدخول مع إبقاء الجهاز مهيّأً للمعهد */
 function employeeExitToLogin() {
+  rsSecurityStop();
   _entryMode = null;_forceEmployeeId = null;_employeeEntryMode = false;_staffLoadedFromRpc = false;
   try {if (data) {data.activeProfileId = null;save();}} catch (e) {}
   try {rbacApply();} catch (e) {}
@@ -12112,6 +12498,7 @@ function updateUserInfo(user) {
 }
 
 async function doLogin(){
+  rsSecurityStop();
  var username = document.getElementById('login-username').value.trim();
  var password = document.getElementById('login-password').value;
  var errEl = document.getElementById('login-error-msg');
@@ -12330,6 +12717,7 @@ async function _periodicCloudPull() {
       var cd = res.data.data;
       if (typeof cd === 'string') try {cd = JSON.parse(cd);} catch (e) {_cloudSyncLock = false;return;}
       if (!cd || !cd.students) {_cloudSyncLock = false;return;}
+      if(rsSecActive){_cloudSyncLock=false;return;} /* safe fallback */
       data = migrateData(cd);
       _invalidateCache();
       _stampOwner();
@@ -12348,7 +12736,7 @@ async function startApp() {
   }
   // Employee entry from RPC already carries the latest institute snapshot.
   // Avoid replacing it via an unrelated/stale owner session stored on this device.
-  if (!(_entryMode === 'employee' && _staffLoadedFromRpc)) await autoCloudRestore();
+  if (_entryMode !== 'employee') await autoCloudRestore();
   _staffLoadedFromRpc = false;
   try {if (localStorage.getItem(AUTO_BACKUP_KEY) === 'true') startAutoBackupTimer();} catch (e) {}
   if (data.settings && !data.settings.instName) {data.settings.instName = 'راصد';}
@@ -12375,10 +12763,12 @@ async function startApp() {
       try {rbacApply();} catch (e) {}
       try {showPage('dashboard');} catch (e) {}
       try {logActivity('تسجيل دخول الموظف: ' + fu.name, 'الصلاحيات');rbacToast('مرحباً ' + fu.name);} catch (e) {}
+      rsSecurityStart();
     } else if (_entryMode === 'owner') {
       try {if (currentUser && currentUser.id && data.settings) {data.settings._ownerId = currentUser.id;}} catch (e) {}
       data.activeProfileId = null;try {save();} catch (e) {}
       try {rbacApply();} catch (e) {}
+      rsSecurityStop();
     } else {
       if (typeof staffGateNeeded === 'function' && !_skipStaffGate && staffGateNeeded()) {showStaffLogin();}
     }
@@ -12472,8 +12862,7 @@ function saveWithIndicator(_snapshot) {
   try {
     // أضف طابع زمني للمقارنة مع السحابة
     if (!data.settings) data.settings = {};
-    data.settings._localSavedAt = new Date().toISOString();
-    _stampOwner();
+    // Timestamp and owner are already stamped in save().
     // PERF: reuse snapshot if already serialized
     var json = _snapshot || JSON.stringify(data);
     localStorage.setItem('institute_v4', json);
@@ -12484,7 +12873,7 @@ function saveWithIndicator(_snapshot) {
       _saveTimer = setTimeout(function () {ind.className = 'save-indicator';ind.innerHTML = '';}, 2500);
     }
     // تحديث الواجهة فوراً
-    renderCurrentPage();
+    renderCurrentPage();rsUiQueue();
     // مزامنة السحابة بعد 5 ثوانٍ من آخر تغيير
     if (_appReady) _scheduledCloudSync();
   } catch (e) {
@@ -12711,6 +13100,7 @@ function getSubjectColor(subject) {
 function gSchedule(id) {return (data.schedules || []).find(function (s) {return s.id === id;});}
 
 function openScheduleModal(editId) {
+  if (!(rsAllow('courses.manage'))) return;
   var sch = editId ? gSchedule(editId) : null;
   document.getElementById('schedule-modal-title').textContent = editId ? 'تعديل الجدول' : 'إضافة جدول دراسي';
   document.getElementById('sch-edit-id').value = editId || '';
@@ -12745,6 +13135,7 @@ function openScheduleModal(editId) {
 }
 
 function saveSchedule() {
+  if (!(rsAllow('courses.manage'))) return;
   var editId = parseInt(document.getElementById('sch-edit-id').value) || 0;
   var name = document.getElementById('sch-name').value.trim();
   var subject = document.getElementById('sch-subject').value.trim();
@@ -12806,6 +13197,7 @@ function checkScheduleConflict(day, startTime, endTime, teacherId, room, courseI
 }
 
 function deleteSchedule(id) {
+  if (!(rsAllow('courses.manage'))) return;
   if (!confirm('هل تريد حذف هذا الجدول؟')) return;
   data.schedules = (data.schedules || []).filter(function (s) {return s.id !== id;});
   save();
