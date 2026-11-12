@@ -2697,6 +2697,19 @@ input,select,textarea{max-width:100%;min-width:0}
 @media(prefers-reduced-motion:reduce){.btn,.nav-item,.modal,.login-box{animation:none!important;transition:none!important}}
 </style>
 
+<style id="rasid-session-logo-style">
+.rasid-activation-brand{width:78px;height:78px;border-radius:23px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;
+ color:var(--brand-light,#c9a46b);background:linear-gradient(155deg,var(--surface-2,#282820),var(--surface,#1b1b1f));
+ border:1.5px solid var(--brand-border,rgba(201,164,107,.26));
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 24px rgba(0,0,0,.08)}
+.rasid-activation-brand svg{display:block;filter:drop-shadow(0 2px 5px rgba(0,0,0,.14))}
+.rasid-remember-option{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;-webkit-user-select:none;
+ color:var(--text-2,#a0a0a0);font-size:12px;font-weight:600;line-height:1.5;margin:12px 0 6px;padding:8px 2px}
+.rasid-remember-option input{width:18px;height:18px;accent-color:var(--brand,#b88a44);flex:none;cursor:pointer}
+.rasid-remember-option:focus-within{outline:2px solid var(--brand,#b88a44);outline-offset:3px;border-radius:8px}
+@media(max-width:768px){.rasid-remember-option{min-height:42px}}
+</style>
+
 <body>
 
 <!-- ══ شاشة التحميل عند فحص الجلسة ══ -->
@@ -2747,6 +2760,10 @@ input,select,textarea{max-width:100%;min-width:0}
  <label>كلمة المرور</label>
  <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
  </div>
+ <label class="rasid-remember-option" for="login-remember-owner">
+  <input type="checkbox" id="login-remember-owner" checked>
+  <span>البقاء مسجلاً على هذا الجهاز</span>
+ </label>
  <button class="login-btn" id="login-submit-btn" onclick="doLogin()">تسجيل الدخول</button>
  </div>
 
@@ -2764,6 +2781,10 @@ input,select,textarea{max-width:100%;min-width:0}
  <label>كلمة المرور</label>
  <input type="password" id="login-emp-password" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter'){doEmployeeLogin();}" />
  </div>
+ <label class="rasid-remember-option" for="login-remember-employee">
+  <input type="checkbox" id="login-remember-employee" checked>
+  <span>البقاء مسجلاً على هذا الجهاز</span>
+ </label>
  <button class="login-btn" id="emp-login-btn" onclick="doEmployeeLogin()">دخول الموظف</button>
  </div>
 
@@ -2809,7 +2830,11 @@ input,select,textarea{max-width:100%;min-width:0}
  <div style="width:100%;max-width:380px">
  <!-- هيدر الشعار -->
  <div style="text-align:center;margin-bottom:28px">
- <div style="width:72px;height:72px;background:var(--surface);border:1.5px solid var(--brand-border);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 14px"></div>
+ <div class="rasid-activation-brand" role="img" aria-label="شعار راصد">
+  <svg width="39" height="39" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+  </svg>
+ </div>
  <div style="font-size:24px;font-weight:900;color:var(--brand-light);letter-spacing:-0.5px">راصد</div>
  </div>
 
@@ -6501,6 +6526,31 @@ function rsTeacherCourse(snapshot,cid) {
   return !!(c && (tid && String(c.teacherId)===String(tid) || (a.subjects||[]).indexOf(c.subject)>-1 || (a.grades||[]).indexOf(c.grade)>-1));
 }
 function rsStable(v){return JSON.stringify(v===undefined?null:v);}
+function rsAllowedStudentPaymentDelta(before, after, original, updated) {
+  // Sole exception: a user with payments.add may increase paid amount by recording
+  // a corresponding new subscription-payment entry, without gaining students.edit.
+  if (!rsHasFrom(before,'payments.add')) return false;
+  var keys={};
+  Object.keys(original||{}).concat(Object.keys(updated||{})).forEach(function(k){keys[k]=1;});
+  for(var key in keys){
+    if(key !== 'subPaid' && rsStable(original[key]) !== rsStable(updated[key])) return false;
+  }
+  var oldPaid=Number(original.subPaid)||0,newPaid=Number(updated.subPaid)||0;
+  var delta=newPaid-oldPaid;
+  if(!Number.isFinite(delta) || delta<=0) return false;
+  var oldItems=before.subPayments||[],newItems=after.subPayments||[];
+  if(!Array.isArray(oldItems)||!Array.isArray(newItems)) return false;
+  var oldIds={};oldItems.forEach(function(p){oldIds[String(p.id)]=true;});
+  var sum=0,count=0;
+  newItems.forEach(function(p){
+    if(!oldIds[String(p.id)] && String(p.studentId)===String(original.id)){
+      var amount=Number(p.amount);
+      if(Number.isFinite(amount) && amount>0){sum+=amount;count++;}
+    }
+  });
+  return count>0 && Math.abs(sum-delta)<0.00001;
+}
+
 function rsListAllowed(before,after,collection,addPerm,editPerm,deletePerm,scopeKind) {
   var oldArr=before[collection]||[], newArr=after[collection]||[];
   if(rsStable(oldArr)===rsStable(newArr))return true;
@@ -6513,7 +6563,9 @@ function rsListAllowed(before,after,collection,addPerm,editPerm,deletePerm,scope
   for(var id in newMap){
     var n=newMap[id], o=oldMap[id];
     if(!o && !rsHasFrom(before,addPerm))return false;
-    if(o && rsStable(o)!==rsStable(n) && !rsHasFrom(before,editPerm))return false;
+    if(o && rsStable(o)!==rsStable(n) && !rsHasFrom(before,editPerm)){
+      if(collection!=='students' || !rsAllowedStudentPaymentDelta(before,after,o,n))return false;
+    }
     if(!o || rsStable(o)!==rsStable(n)){
       if(scopeKind==='student' && isTeacher && !rsTeacherStudent(before,n.studentId))return false;
       if(scopeKind==='course' && isTeacher && !rsTeacherCourse(before,n.courseId))return false;
@@ -6528,7 +6580,9 @@ function rsListAllowed(before,after,collection,addPerm,editPerm,deletePerm,scope
       }
       if(collection==='students' && o){
         var f=['subPrice','subPaid','subStart','subEnd'];
-        if(f.some(function(k){return rsStable(o[k])!==rsStable(n[k]);}) && !rsHasFrom(before,'payments.edit'))return false;
+        if(f.some(function(k){return rsStable(o[k])!==rsStable(n[k]);}) &&
+           !rsHasFrom(before,'payments.edit') &&
+           !rsAllowedStudentPaymentDelta(before,after,o,n))return false;
       }
     }
   }
@@ -6565,7 +6619,7 @@ function rsSecurityValidate() {
       ['expenses','finance.manage','finance.manage','finance.manage',null],
       ['salaries','finance.manage','finance.manage','finance.manage',null],
       ['salaryPayments','finance.manage','finance.manage','finance.manage',null],
-      ['financialAuditLog','finance.manage','finance.manage','finance.manage',null],
+      ['financialAuditLog','payments.add','finance.manage','finance.manage',null],
       ['behaviors','behavior.manage','behavior.manage','behavior.manage','student'],
       ['violationRecords','behavior.manage','behavior.manage','behavior.manage','student'],
       ['warningRecords','behavior.manage','behavior.manage','behavior.manage','student'],
@@ -7607,21 +7661,21 @@ async function saveEditStudent() {
   var idx = data.students.findIndex(function (s) {return s.id === id;});
   if (idx === -1) return;
   var beforeStudent = cloneFinancialData(data.students[idx]);
-  var nextSubStart = gVal('edit-s-sub-start');
-  var nextSubEnd = gVal('edit-s-sub-end');
-  var nextSubPrice = parseFloat(gVal('edit-s-sub-price')) || 0;
-  var nextSubPaid = parseFloat(gVal('edit-s-sub-paid')) || 0;
-  var financialChanged =
-  (beforeStudent.subStart || '') !== nextSubStart ||
-  (beforeStudent.subEnd || '') !== nextSubEnd ||
-  (beforeStudent.subPrice || 0) !== nextSubPrice ||
-  (beforeStudent.subPaid || 0) !== nextSubPaid;
-  var financialCode = null;
+  // Protected fields stay bit-for-bit unchanged for accounts without payments.edit.
+  var canEditFinance = rsCan('payments.edit');
+  var nextSubStart = canEditFinance ? gVal('edit-s-sub-start') : beforeStudent.subStart;
+  var nextSubEnd = canEditFinance ? gVal('edit-s-sub-end') : beforeStudent.subEnd;
+  var nextSubPrice = canEditFinance ? (parseFloat(gVal('edit-s-sub-price')) || 0) : beforeStudent.subPrice;
+  var nextSubPaid = canEditFinance ? (parseFloat(gVal('edit-s-sub-paid')) || 0) : beforeStudent.subPaid;
+  var financialChanged = canEditFinance && (
+    (beforeStudent.subStart || '') !== (nextSubStart || '') ||
+    (beforeStudent.subEnd || '') !== (nextSubEnd || '') ||
+    (Number(beforeStudent.subPrice) || 0) !== (Number(nextSubPrice) || 0) ||
+    (Number(beforeStudent.subPaid) || 0) !== (Number(nextSubPaid) || 0)
+  );
+  // Role-based authorization replaces one-time financial edit codes.
+  // Unauthorized staff may edit only the nonfinancial fields they are allowed to manage.
   if (financialChanged && !rsAllow('payments.edit')) return;
-  if (financialChanged) {
-    financialCode = await requestFinancialEditCode();
-    if (!financialCode) return;
-  }
   data.students[idx] = Object.assign({}, data.students[idx], {
     fname: fname,
     lname: lname,
@@ -7634,7 +7688,7 @@ async function saveEditStudent() {
     subPaid: nextSubPaid
   });
   if (financialChanged) {
-    await logFinancialAudit('student_subscription_update', financialCode, beforeStudent, cloneFinancialData(data.students[idx]));
+    await logFinancialAudit('student_subscription_update', financialAuditActor(), beforeStudent, cloneFinancialData(data.students[idx]));
   }
   save();closeModal('edit-student');renderStudents();toast('تم تحديث بيانات الطالب');
 }
@@ -9329,8 +9383,6 @@ async function addSubPayment() {
   var rem = price - paid;
   if (amount > rem && rem > 0) {toast('المبلغ أكبر من المتبقي!');return;}
   // اقتطاع من مبلغ الاشتراك
-  var financialCode = await requestFinancialEditCode();
-  if (!financialCode) return;
   var beforeData = { student: cloneFinancialData(s), subPayments: cloneFinancialData((data.subPayments || []).filter(function (p) {return p.studentId === sid;})) };
   var idx = data.students.findIndex(function (x) {return x.id === sid;});
   data.students[idx].subPaid = paid + amount;
@@ -9338,7 +9390,7 @@ async function addSubPayment() {
   if (!data.subPayments) data.subPayments = [];
   if (!data.nextId.subPayment) data.nextId.subPayment = 1;
   data.subPayments.push({ id: data.nextId.subPayment++, studentId: sid, amount: amount, date: date, note: note });
-  await logFinancialAudit('subscription_payment_add', financialCode, beforeData, { student: cloneFinancialData(data.students[idx]), payment: cloneFinancialData(data.subPayments[data.subPayments.length - 1]) });
+  await logFinancialAudit('subscription_payment_add', financialAuditActor(), beforeData, { student: cloneFinancialData(data.students[idx]), payment: cloneFinancialData(data.subPayments[data.subPayments.length - 1]) });
   save();
   closeModal('add-sub-payment');
   renderFees();
@@ -9444,11 +9496,9 @@ async function addFee() {
   var inst = parseInt(document.getElementById('fee-inst').value) || 1;
   var due = document.getElementById('fee-due').value;
   if (!desc || !amount || amount <= 0) {toast('أدخل البيانات كاملة');return;}
-  var financialCode = await requestFinancialEditCode();
-  if (!financialCode) return;
   var beforeData = { fees: cloneFinancialData(data.fees.filter(function (f) {return f.studentId === sid;})) };
   data.fees.push({ id: data.nextId.fee++, studentId: sid, desc: desc, amount: amount, inst: inst, dueDate: due });
-  await logFinancialAudit('fee_add', financialCode, beforeData, { fee: cloneFinancialData(data.fees[data.fees.length - 1]) });
+  await logFinancialAudit('fee_add', financialAuditActor(), beforeData, { fee: cloneFinancialData(data.fees[data.fees.length - 1]) });
   save();closeModal('add-fee');renderFees();
   document.getElementById('fee-desc').value = '';document.getElementById('fee-amount').value = '';
   toast('تم تسجيل الرسوم');
@@ -9467,13 +9517,12 @@ async function addPayment() {
   var note = document.getElementById('pay-note').value.trim();
   if (!feeId || !amount || amount <= 0) {toast('أدخل البيانات كاملة');return;}
   var fee = data.fees.find(function (f) {return f.id === feeId;});
+  if (!fee || Number(fee.studentId) !== sid) {toast('الرسوم المختارة لا تتبع هذا الطالب');return;}
   var paid = data.payments.filter(function (p) {return p.feeId === feeId;}).reduce(function (a, p) {return a + p.amount;}, 0);
   if (paid + amount > fee.amount) {toast('المبلغ أكبر من المتبقي!');return;}
-  var financialCode = await requestFinancialEditCode();
-  if (!financialCode) return;
   var beforeData = { fee: cloneFinancialData(fee), payments: cloneFinancialData(data.payments.filter(function (p) {return p.feeId === feeId;})) };
   data.payments.push({ id: data.nextId.payment++, feeId: feeId, studentId: sid, amount: amount, date: date, note: note });
-  await logFinancialAudit('payment_add', financialCode, beforeData, { fee: cloneFinancialData(fee), payment: cloneFinancialData(data.payments[data.payments.length - 1]) });
+  await logFinancialAudit('payment_add', financialAuditActor(), beforeData, { fee: cloneFinancialData(fee), payment: cloneFinancialData(data.payments[data.payments.length - 1]) });
   save();closeModal('add-payment');renderFees();
   document.getElementById('pay-amount').value = '';document.getElementById('pay-note').value = '';
   toast('تم تسجيل الدفعة');
@@ -11699,19 +11748,16 @@ function addExpense() {
   toast('تم إضافة المصروف');
 }
 function delExpense(id) {
-  if (typeof Perms !== 'undefined' && !Perms.require('reports.finance') && !Perms.require('fees.view')) {return;}
+  if (!rsAllow('finance.manage')) return;
   var ex = data.expenses.find(function (e) {return e.id === id;});
   if (!ex) {toast('المصروف غير موجود');return;}
   var exName = ex ? ex.desc : 'هذا المصروف';
   showConfirm({ title: 'حذف المصروف', msg: 'سيتم حذف: ' + exName + ' (' + fmt(ex.amount) + ') بشكل نهائي.', confirmText: 'احذف' }, async function () {
-    var financialCode = null;
-    if (typeof requestFinancialEditCode === 'function') {
-      financialCode = await requestFinancialEditCode();
-      if (!financialCode) return;
-    }
+    // Recheck authorization after the confirmation dialog; no financial activation code.
+    if (!rsAllow('finance.manage')) return;
     var beforeData = { expense: cloneFinancialData(ex) };
     data.expenses = data.expenses.filter(function (e) {return e.id !== id;});
-    if (typeof logFinancialAudit === 'function') {await logFinancialAudit('expense_delete', financialCode, beforeData, { deleted: true });}
+    if (typeof logFinancialAudit === 'function') {await logFinancialAudit('expense_delete', financialAuditActor(), beforeData, { deleted: true });}
     try {logActivity('حذف مصروف: ' + exName, 'المصروفات');} catch (e) {}
     save();renderExpenses();toast('تم الحذف');
   });
@@ -12082,28 +12128,16 @@ function cloneFinancialData(value) {
   try {return JSON.parse(JSON.stringify(value));} catch (e) {return value || null;}
 }
 
-async function requestFinancialEditCode() {
-  var code = window.prompt('أدخل كود التعديل المالي');
-  if (!code) {toast('الكود غير صحيح أو منتهي الصلاحية');return null;}
-  code = String(code).trim().toUpperCase();
-  if (!_supabase) {toast('الكود غير صحيح أو منتهي الصلاحية');return null;}
+// Financial changes are authorized by the signed-in role, not by paid edit codes.
+// Preserve the existing audit schema's codeUsed/code_used field for backward compatibility.
+function financialAuditActor() {
   try {
-    var res = await _supabase.
-    from('codes').
-    select('code,code_type,status,expires_at').
-    eq('code', code).
-    eq('code_type', 'financial_edit').
-    eq('status', 'active').
-    gt('expires_at', new Date().toISOString()).
-    maybeSingle();
-    if (res.error || !res.data) {
-      toast('الكود غير صحيح أو منتهي الصلاحية');
-      return null;
-    }
-    return code;
+    var u = Perms.activeUser();
+    if (!u || u.status === 'suspended' || !RBAC_ROLES[u.role]) return 'ROLE:unknown';
+    var uid = String(u.id == null ? '' : u.id).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,56);
+    return 'ROLE:' + u.role + ':' + uid;
   } catch (e) {
-    toast('الكود غير صحيح أو منتهي الصلاحية');
-    return null;
+    return 'ROLE:unknown';
   }
 }
 
@@ -12121,14 +12155,17 @@ async function logFinancialAudit(operationType, codeUsed, beforeData, afterData)
   data.financialAuditLog.push(entry);
   try {
     if (_supabase) {
-      await _supabase.from('financial_audit_log').insert({
+      // Fire-and-forget: a network problem must not block local saving.
+      Promise.resolve(_supabase.from('financial_audit_log').insert({
         user_id: currentUser ? currentUser.id : null,
         operation_type: entry.operationType,
         operation_time: entry.operationTime,
         code_used: entry.codeUsed,
         before_data: entry.beforeData,
         after_data: entry.afterData
-      });
+      })).then(function(result){
+        if(result && result.error) console.warn('Financial audit cloud save:',result.error.message);
+      }).catch(function(e){console.warn('Financial audit cloud save:',e && e.message);});
     }
   } catch (e) {}
 }
@@ -12145,6 +12182,58 @@ var _forceEmployeeId = null; /* معرّف الموظف المختار عند ا
 var _skipStaffGate = false; /* منع ظهور نافذة اختيار الوضع بعد البدء */
 var _employeeEntryMode = false; /* هل الجلسة الحالية دخول موظف من شاشة البدء */
 var _staffLoadedFromRpc = false; /* avoid replacing server-fetched staff data with stale IndexedDB */
+
+/* RASID — تذكر الدخول على هذا الجهاز فقط. لا نحفظ كلمات المرور. */
+var RASID_REMEMBERED_LOGIN_KEY = 'rasid_remembered_login_v1';
+function rasidRememberChoice(kind){
+ var el=document.getElementById(kind==='employee'?'login-remember-employee':'login-remember-owner');
+ return !!(el && el.checked);
+}
+function rasidReadRememberedLogin(){
+ try{
+  var raw=localStorage.getItem(RASID_REMEMBERED_LOGIN_KEY);
+  if(!raw)return null;
+  var item=JSON.parse(raw);
+  if(!item || item.v!==1 || (item.kind!=='owner' && item.kind!=='employee'))return null;
+  return item;
+ }catch(e){return null;}
+}
+function rasidSaveRememberedLogin(kind,staff){
+ try{
+  if(!rasidRememberChoice(kind)){
+   localStorage.removeItem(RASID_REMEMBERED_LOGIN_KEY);return;
+  }
+  var item={v:1,kind:kind};
+  if(kind==='owner'){
+   if(!currentUser || !currentUser.id)return;
+   item.ownerId=currentUser.id;
+  }else{
+   if(!staff || staff.id===undefined || staff.id===null || !data || !data.settings)return;
+   item.staffId=staff.id;
+   item.username=String(staff.username||'').toLowerCase();
+   item.instituteCode=rbacNormCode(rbacInstCode());
+   item.ownerId=String(data.settings._ownerId || data.settings._ownerUserId || '');
+  }
+  localStorage.setItem(RASID_REMEMBERED_LOGIN_KEY,JSON.stringify(item));
+ }catch(e){console.warn('[Rasid] Cannot remember login:',e && e.message ? e.message:e);}
+}
+function rasidClearRememberedLogin(){
+ try{localStorage.removeItem(RASID_REMEMBERED_LOGIN_KEY);}catch(e){}
+}
+function rasidRestoreStaffLogin(saved){
+ try{
+  if(!saved || saved.kind!=='employee' || !data || !data.settings || !Array.isArray(data.appUsers))return false;
+  if(!saved.instituteCode || saved.instituteCode!==rbacNormCode(rbacInstCode()))return false;
+  var ownerId=String(data.settings._ownerId || data.settings._ownerUserId || '');
+  if(saved.ownerId && ownerId && saved.ownerId!==ownerId)return false;
+  var account=data.appUsers.find(function(x){return String(x.id)===String(saved.staffId) &&
+    String(x.username||'').toLowerCase()===saved.username && x.status!=='suspended';});
+  if(!account || !account.username)return false;
+  _entryMode='employee';_forceEmployeeId=account.id;_employeeEntryMode=true;_skipStaffGate=true;
+  if(ownerId) currentUser={id:ownerId};
+  return true;
+ }catch(e){return false;}
+}
 
 function switchLoginTab(mode) {
   var ow = document.getElementById('owner-pane'),ep = document.getElementById('employee-pane');
@@ -12256,6 +12345,7 @@ async function doEmployeeLogin() {
   } catch (e) {}
   _entryMode = 'employee';_forceEmployeeId = found.id;_employeeEntryMode = true;_skipStaffGate = true;
   try {localStorage.setItem('rasid_last_login_role','employee');}catch(e){}
+  rasidSaveRememberedLogin('employee',found);
   try {updateUserInfo(currentUser);} catch (e) {}
   showApp();
   /* الموظف يدخل ببيانات الجهاز المحلية مباشرةً — لا يمرّ عبر بوابة اشتراك المالك (لا يملكها) */
@@ -12264,6 +12354,7 @@ async function doEmployeeLogin() {
 
 /* خروج الموظف — العودة إلى شاشة الدخول مع إبقاء الجهاز مهيّأً للمعهد */
 function employeeExitToLogin() {
+  rasidClearRememberedLogin();
   rsSecurityStop();
   _entryMode = null;_forceEmployeeId = null;_employeeEntryMode = false;_staffLoadedFromRpc = false;
   try {if (data) {data.activeProfileId = null;save();}} catch (e) {}
@@ -12561,6 +12652,8 @@ async function doLogin(){
 
  try {document.getElementById('login-password').value = '';} catch(e){}
  _entryMode = 'owner'; _forceEmployeeId = null; _employeeEntryMode = false; _skipStaffGate = true;
+ rasidSaveRememberedLogin('owner',null);
+ try {localStorage.setItem('rasid_last_login_role','owner');}catch(e){}
  updateUserInfo(currentUser);
  showApp();
  // بعد تسجيل الدخول: تحقق من الاشتراك
@@ -12569,6 +12662,9 @@ async function doLogin(){
 
 async function doLogout() {
   if (!confirm('هل تريد تسجيل الخروج؟')) return;
+  rasidClearRememberedLogin();
+  try {localStorage.removeItem('rasid_last_login_role');}catch(e){}
+  rsSecurityStop();
   // مسح الكاش المحلي للمستخدم والاشتراك قبل الخروج
   try {
     if (currentUser && currentUser.id) localStorage.removeItem('sub_cache_' + currentUser.id);
@@ -12616,40 +12712,55 @@ async function checkAndStart() {
 
 // فحص الجلسة عند فتح التطبيق
 async function checkSession() {
-  showAuthLoader();
-  var verifiedSession = false;
-  try {
-    if (_supabase && _supabase.auth) {
-      var r = await withTimeout(_supabase.auth.getSession(), 5000);
-      if (r && r.data && r.data.session && r.data.session.user) {
-        currentUser = r.data.session.user;
-        verifiedSession = true;
-      }
-    }
-  } catch(e) {
-    console.warn('[Rasid] Session check:', e && e.message ? e.message : e);
+ showAuthLoader();
+ var verifiedSession=false;
+ var saved=rasidReadRememberedLogin();
+ try {
+  if(_supabase && _supabase.auth){
+   var r=await withTimeout(_supabase.auth.getSession(), 6500);
+   if(r && r.data && r.data.session && r.data.session.user){
+    currentUser=r.data.session.user;verifiedSession=true;
+   }
   }
-  if (!currentUser) {
-    try {
-      var cached = localStorage.getItem('cached_user');
-      if (cached) {
-        var info = JSON.parse(cached);
-        if (info && info.id) currentUser = {id:info.id,email:info.email || ''};
-      }
-    }catch(e){}
-  }
-  // Initialize the local staff directory before presenting login, without opening the dashboard.
-  try {await initDB();}catch(e){console.warn('[Rasid] Local storage:',e && e.message ? e.message : e);}
-  try {if (currentUser) updateUserInfo(currentUser);}catch(e){}
-  _entryMode = null;_forceEmployeeId = null;_employeeEntryMode = false;_skipStaffGate = true;
-  hideAuthLoader();
-  showEntryLogin(!!currentUser && !(typeof staffGateNeeded === 'function' && staffGateNeeded()));
-  // Default to staff tab on devices with a remembered staff preference.
-  try {
-    if (localStorage.getItem('rasid_last_login_role') === 'employee') switchLoginTab('emp');
+ }catch(e){console.warn('[Rasid] Session check:',e && e.message ? e.message:e);}
+ // Only recover cached owner offline; never treat a cached user as authenticated online.
+ if(!verifiedSession && saved && saved.kind==='owner' && navigator.onLine===false){
+  try{
+   var raw=localStorage.getItem('cached_user');
+   var info=raw?JSON.parse(raw):null;
+   if(info && info.id && info.id===saved.ownerId)currentUser={id:info.id,email:info.email||''};
   }catch(e){}
+ }
+ try{await initDB();}catch(e){console.warn('[Rasid] Local storage:',e && e.message ? e.message:e);}
+ _entryMode=null;_forceEmployeeId=null;_employeeEntryMode=false;_skipStaffGate=true;
+ try{
+  // Employee remembrance always wins over any owner Supabase session left on the device.
+  if(saved && saved.kind==='employee'){
+   if(rasidRestoreStaffLogin(saved)){
+    hideAuthLoader();showApp();
+    await startApp();
+    return;
+   }
+   rasidClearRememberedLogin(); // Missing, suspended, or wrong-institute account.
+   currentUser=null;
+   hideAuthLoader();showEntryLogin(false);switchLoginTab('emp');return;
+  }
+  if(saved && saved.kind==='owner' && currentUser &&
+    String(currentUser.id)===String(saved.ownerId) && (verifiedSession || navigator.onLine===false)){
+   _entryMode='owner';_forceEmployeeId=null;_employeeEntryMode=false;_skipStaffGate=true;
+   updateUserInfo(currentUser);hideAuthLoader();showApp();
+   await checkAndStart();
+   return;
+  }
+  if(saved && saved.kind==='owner')rasidClearRememberedLogin();
+ }catch(e){
+  console.warn('[Rasid] Restore remembered login:',e && e.message ? e.message:e);
+  _entryMode=null;_forceEmployeeId=null;_employeeEntryMode=false;
+ }
+ hideAuthLoader();
+ showEntryLogin(false);
+ try{if(localStorage.getItem('rasid_last_login_role')==='employee')switchLoginTab('emp');}catch(e){}
 }
-
 
 // Enter key في login
 document.addEventListener('DOMContentLoaded', function () {
