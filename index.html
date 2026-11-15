@@ -2749,6 +2749,7 @@ html[data-theme=light] .rs-att-time-field{color-scheme:light}
 .rz-payment-history-row .btn{flex-shrink:0}
 @media(max-width:520px){.rz-payment-history-row{align-items:stretch;flex-direction:column}.rz-payment-wa-details strong{max-width:59%}}
 </style>
+<style id="rz-payment-save-feedback-css">.rz-payment-feedback{display:none;margin:10px 0;padding:12px;border-radius:10px;background:rgba(190,54,54,.10);border:1px solid rgba(190,54,54,.35);color:var(--danger,#c75151);font-size:13px;line-height:1.65}.modal button[aria-busy="true"]{opacity:.75;cursor:progress}</style>
 <body>
 
 <!-- ══ شاشة التحميل عند فحص الجلسة ══ -->
@@ -9588,40 +9589,56 @@ function quickSubPayment(sid) {
 }
 
 async function addSubPayment() {
-  if (!(rsAllow('payments.add'))) return;
-  var sid = parseInt(gVal('sub-pay-student'));
-  var amount = parseFloat(gVal('sub-pay-amount'));
+  if (!rsAllow('payments.add')) return;
+  if (_rzPaymentSaveBusy) { rzPaymentFeedback('add-sub-payment','عملية تسجيل سابقة قيد التنفيذ.'); return; }
+  rzPaymentFeedback('add-sub-payment','');
+  var sid = Number(gVal('sub-pay-student'));
+  var amount = Number(gVal('sub-pay-amount'));
   var date = gVal('sub-pay-date') || today();
   var note = gVal('sub-pay-note');
-  if (!sid || !amount || amount <= 0) {toast('أدخل البيانات كاملة');return;}
-  var s = gS(sid);if (!s) return;
-  var price = s.subPrice || 0;
-  var paid = s.subPaid || 0;
-  var rem = price - paid;
-  if (rem <= 0) {toast('لا يوجد مبلغ متبقٍ من الاشتراك');return;}
-  if (amount > rem) {toast('المبلغ أكبر من المتبقي!');return;}
-  // اقتطاع من مبلغ الاشتراك
-  var beforeData = { student: cloneFinancialData(s), subPayments: cloneFinancialData((data.subPayments || []).filter(function (p) {return p.studentId === sid;})) };
-  var idx = data.students.findIndex(function (x) {return x.id === sid;});
-  if (_rzPaymentSaveBusy) return;
-  _rzPaymentSaveBusy = true;
+  var student = gS(sid);
+  if (!student || !Number.isFinite(amount) || amount <= 0 || !Number.isInteger(amount)) {
+    rzPaymentFeedback('add-sub-payment','تحقق من الطالب والمبلغ؛ يجب أن يكون مبلغاً صحيحاً أكبر من صفر.');return;
+  }
+  var price=Number(student.subPrice)||0,paid=Number(student.subPaid)||0;
+  var remaining=price-paid;
+  if (remaining<=0){rzPaymentFeedback('add-sub-payment','لا توجد مبالغ متبقية لهذا الاشتراك.');return;}
+  if (amount>remaining){rzPaymentFeedback('add-sub-payment','المبلغ أكبر من المتبقي: '+fmt(remaining));return;}
+  if (!data.subPayments) data.subPayments=[];
+  if (!data.nextId.subPayment) data.nextId.subPayment=1;
+  if (!data.financialAuditLog) data.financialAuditLog=[];
+  var backup={paid:student.subPaid,payments:data.subPayments.slice(),nextPay:data.nextId.subPayment,
+    audit:data.financialAuditLog.slice(),nextAudit:data.nextId.financialAuditLog};
+  var before={student:cloneFinancialData(student),subPayments:cloneFinancialData(data.subPayments.filter(function(p){return Number(p.studentId)===sid;}))};
+  _rzPaymentSaveBusy=true;
+  rzPaymentWorking('add-sub-payment',true);
+  var completed=false;
   try {
-  data.students[idx].subPaid = paid + amount;
-  // حفظ في سجل الدفعات
-  if (!data.subPayments) data.subPayments = [];
-  if (!data.nextId.subPayment) data.nextId.subPayment = 1;
-  var newSubPayment = { id: data.nextId.subPayment++, studentId: sid, amount: amount, date: date, note: note, remainingAfter: Math.max(0, price - (paid + amount)) };
-  data.subPayments.push(newSubPayment);
-  await logFinancialAudit('subscription_payment_add', financialAuditActor(), beforeData, { student: cloneFinancialData(data.students[idx]), payment: cloneFinancialData(data.subPayments[data.subPayments.length - 1]) });
-  if (save() === false) return;
-  closeModal('add-sub-payment');
-  renderFees();
-  renderStudents();
-  toast('تم تسجيل الدفعة وتحديث اشتراك الطالب');
-  rzPaymentWhatsAppReceipt('subscription', newSubPayment.id);
-  } finally { _rzPaymentSaveBusy = false; }
+    student.subPaid=paid+amount;
+    var payment={id:data.nextId.subPayment++,studentId:sid,amount:amount,date:date,note:note,remainingAfter:Math.max(0,remaining-amount)};
+    data.subPayments.push(payment);
+    await logFinancialAudit('subscription_payment_add',financialAuditActor(),before,
+      {student:cloneFinancialData(student),payment:cloneFinancialData(payment)});
+    if (save()===false) throw new Error('لم تُقبل عملية الحفظ أو لا تمتلك الصلاحية اللازمة.');
+    completed=true;
+    closeModal('add-sub-payment');
+    toast('تم تسجيل الدفعة بنجاح');
+    try{renderFees();renderStudents();}catch(uiErr){console.warn('Refresh subscription payment view:',uiErr);}
+    try{rzPaymentWhatsAppReceipt('subscription',payment.id);}catch(receiptErr){console.warn('WhatsApp receipt dialog:',receiptErr);toast('تم حفظ الدفعة. يمكن إرسال الإشعار من سجل المدفوعات.');}
+  } catch(e) {
+    console.error('[Rasid payment] Subscription payment failed:',e);
+    if (!completed) {
+      var restored=gS(sid);if(restored)restored.subPaid=backup.paid;
+      data.subPayments=backup.payments;data.nextId.subPayment=backup.nextPay;
+      data.financialAuditLog=backup.audit;
+      data.nextId.financialAuditLog=backup.nextAudit;
+    }
+    rzPaymentFeedback('add-sub-payment','تعذر حفظ الدفعة. لم يتم اعتمادها، يرجى مراجعة البيانات ثم المحاولة.');
+  } finally {
+    _rzPaymentSaveBusy=false;
+    rzPaymentWorking('add-sub-payment',false);
+  }
 }
-
 function renderFees() {
   var q = (document.getElementById('fee-search') || { value: '' }).value.toLowerCase();
   var list = data.students.filter(function (s) {
@@ -9734,32 +9751,63 @@ function loadPayFees() {
   document.getElementById('pay-fee').innerHTML = fees.length ? fees.map(function (f) {var p = data.payments.filter(function (x) {return x.feeId === f.id;}).reduce(function (a, x) {return a + x.amount;}, 0);return "<option value=\"" + f.id + "\">" + f.desc + " — متبقي: " + fmt(f.amount - p) + "</option>";}).join('') : "<option>لا توجد رسوم</option>";
 }
 async function addPayment() {
-  if (!(rsAllow('payments.add'))) return;
-  var feeId = parseInt(document.getElementById('pay-fee').value);
-  var sid = parseInt(document.getElementById('pay-student').value);
-  var amount = parseFloat(gVal('pay-amount'));
-  var date = document.getElementById('pay-date').value;
-  var note = document.getElementById('pay-note').value.trim();
-  if (!feeId || !amount || amount <= 0) {toast('أدخل البيانات كاملة');return;}
-  var fee = data.fees.find(function (f) {return f.id === feeId;});
-  if (!fee || Number(fee.studentId) !== sid) {toast('الرسوم المختارة لا تتبع هذا الطالب');return;}
-  var paid = data.payments.filter(function (p) {return p.feeId === feeId;}).reduce(function (a, p) {return a + p.amount;}, 0);
-  if (paid + amount > fee.amount) {toast('المبلغ أكبر من المتبقي!');return;}
-  var beforeData = { fee: cloneFinancialData(fee), payments: cloneFinancialData(data.payments.filter(function (p) {return p.feeId === feeId;})) };
-  if (_rzPaymentSaveBusy) return;
-  _rzPaymentSaveBusy = true;
-  var newFeePayment = { id: data.nextId.payment++, feeId: feeId, studentId: sid, amount: amount, date: date, note: note, remainingAfter: Math.max(0, Number(fee.amount) - paid - amount) };
-  data.payments.push(newFeePayment);
+  if (!rsAllow('payments.add')) return;
+  if (_rzPaymentSaveBusy) {rzPaymentFeedback('add-payment','عملية تسجيل سابقة قيد التنفيذ.');return;}
+  rzPaymentFeedback('add-payment','');
+  var feeId=Number(gVal('pay-fee'));
+  var sid=Number(gVal('pay-student'));
+  var amount=Number(gVal('pay-amount'));
+  var date=gVal('pay-date') || today();
+  var note=gVal('pay-note').trim();
+  if (!Number.isFinite(amount)||!Number.isInteger(amount)||amount<=0){rzPaymentFeedback('add-payment','أدخل مبلغاً صحيحاً أكبر من صفر.');return;}
+  var student=gS(sid);
+  var fee=(data.fees||[]).find(function(f){return Number(f.id)===feeId;});
+  if(!student||!fee||Number(fee.studentId)!==sid){rzPaymentFeedback('add-payment','اختر الطالب والرسوم الصحيحة قبل التسجيل.');return;}
+  var paid=(data.payments||[]).filter(function(p){return Number(p.feeId)===feeId;}).reduce(function(a,p){return a+(Number(p.amount)||0);},0);
+  var remaining=(Number(fee.amount)||0)-paid;
+  if (remaining<=0){rzPaymentFeedback('add-payment','هذه الرسوم مسدّدة بالكامل.');return;}
+  if (amount>remaining){rzPaymentFeedback('add-payment','المبلغ أكبر من المتبقي: '+fmt(remaining));return;}
+  if (!data.nextId.payment) data.nextId.payment=1;
+  if (!data.financialAuditLog) data.financialAuditLog=[];
+  var backup={payments:data.payments.slice(),nextPay:data.nextId.payment,audit:data.financialAuditLog.slice(),nextAudit:data.nextId.financialAuditLog};
+  var before={fee:cloneFinancialData(fee),payments:cloneFinancialData(data.payments.filter(function(p){return Number(p.feeId)===feeId;}))};
+  _rzPaymentSaveBusy=true;
+  rzPaymentWorking('add-payment',true);
+  var completed=false;
   try {
-  await logFinancialAudit('payment_add', financialAuditActor(), beforeData, { fee: cloneFinancialData(fee), payment: cloneFinancialData(data.payments[data.payments.length - 1]) });
-  if (save() === false) return;
-  closeModal('add-payment');renderFees();
-  document.getElementById('pay-amount').value = '';document.getElementById('pay-note').value = '';
-  toast('تم تسجيل الدفعة');
-  rzPaymentWhatsAppReceipt('fee', newFeePayment.id);
-  } finally { _rzPaymentSaveBusy = false; }
+    var payment={id:data.nextId.payment++,feeId:feeId,studentId:sid,amount:amount,date:date,note:note,remainingAfter:Math.max(0,remaining-amount)};
+    data.payments.push(payment);
+    await logFinancialAudit('payment_add',financialAuditActor(),before,{fee:cloneFinancialData(fee),payment:cloneFinancialData(payment)});
+    if (save()===false) throw new Error('لم تُقبل عملية الحفظ أو لا تمتلك الصلاحية اللازمة.');
+    completed=true;
+    closeModal('add-payment');
+    toast('تم تسجيل الدفعة بنجاح');
+    try{renderFees();}catch(uiErr){console.warn('Refresh payments view:',uiErr);}
+    try{rzPaymentWhatsAppReceipt('fee',payment.id);}catch(receiptErr){console.warn('WhatsApp receipt dialog:',receiptErr);toast('تم حفظ الدفعة. يمكن إرسال الإشعار من سجل المدفوعات.');}
+  } catch(e) {
+    console.error('[Rasid payment] Fee payment failed:',e);
+    if(!completed){data.payments=backup.payments;data.nextId.payment=backup.nextPay;data.financialAuditLog=backup.audit;data.nextId.financialAuditLog=backup.nextAudit;}
+    rzPaymentFeedback('add-payment','تعذر حفظ الدفعة. لم يتم اعتمادها، يرجى مراجعة البيانات ثم المحاولة.');
+  } finally {
+    _rzPaymentSaveBusy=false;
+    rzPaymentWorking('add-payment',false);
+  }
 }
-
+// ══ حالة واضحة لحفظ الدفعة؛ لا يُترك المستخدم أمام نافذة صامتة ══
+function rzPaymentFeedback(name,message){
+  var modal=document.getElementById('modal-'+name);if(!modal)return;
+  var el=modal.querySelector('.rz-payment-feedback');
+  if(!el){el=document.createElement('div');el.className='rz-payment-feedback';el.setAttribute('role','alert');
+    var foot=modal.querySelector('.modal-footer');if(foot)foot.parentNode.insertBefore(el,foot);else modal.querySelector('.modal').appendChild(el);}
+  el.textContent=message||'';el.style.display=message?'block':'none';
+}
+function rzPaymentWorking(name,working){
+  var modal=document.getElementById('modal-'+name);if(!modal)return;
+  var selector=name==='add-payment'?'addPayment()':'addSubPayment()';
+  var btn=modal.querySelector('button[onclick="'+selector+'"]');if(!btn)return;
+  if(working){if(!btn.dataset.rzOriginalText)btn.dataset.rzOriginalText=btn.innerHTML;btn.disabled=true;btn.setAttribute('aria-busy','true');btn.textContent='جارٍ تسجيل الدفعة...';}
+  else{btn.disabled=false;btn.removeAttribute('aria-busy');if(btn.dataset.rzOriginalText){btn.innerHTML=btn.dataset.rzOriginalText;delete btn.dataset.rzOriginalText;}}
+}
 
 // ══ إشعارات تسديد الرسوم والاشتراكات عبر واتساب (اختيارية) ══
 // لا ترسل الرسائل تلقائياً، ولا تعدّل السجل المالي عند إعادة فتح الإشعار.
