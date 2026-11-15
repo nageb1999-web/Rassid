@@ -18731,5 +18731,315 @@ function rasidClearDemo(){
 })();
 </script>
 
+<!-- RASID UI STAGE 1 2026-11-15 -->
+<style id="rasid-ui-stage1-design-system">
+/* Phase 1: presentation layer only — does not alter permission or data operations. */
+html.rz-ui-stage1{
+  --rz-ctrl-h:46px;
+  --rz-modal-radius:20px;
+  --rz-modal-border:rgba(255,255,255,.12);
+  --rz-input-bg:var(--surface-2);
+  --rz-overlay-bg:rgba(7,10,15,.74);
+  --rz-ring:rgba(212,166,90,.24);
+  --rz-modal-shadow:0 28px 90px rgba(0,0,0,.53),0 4px 14px rgba(0,0,0,.22);
+}
+html[data-theme="light"].rz-ui-stage1{
+  --rz-modal-border:rgba(90,70,40,.18);
+  --rz-input-bg:#e8e1d6;
+  --rz-overlay-bg:rgba(25,20,15,.46);
+  --rz-ring:rgba(120,84,25,.20);
+  --rz-modal-shadow:0 28px 70px rgba(50,35,18,.18),0 2px 12px rgba(50,35,18,.08);
+}
+/* Buttons: one geometry and keyboard states without changing their onclick logic. */
+html.rz-ui-stage1 .btn{
+  min-height:var(--rz-ctrl-h);
+  padding:10px 17px;
+  border-radius:12px;
+  align-items:center;
+  justify-content:center;
+  line-height:1.45;
+  font-size:13px;
+  font-weight:750;
+  box-sizing:border-box;
+  transition:background-color .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease,transform .15s ease;
+}
+html.rz-ui-stage1 .btn.btn-sm{min-height:40px;padding:8px 13px;font-size:12px;border-radius:10px}
+html.rz-ui-stage1 .btn.btn-xs{min-height:32px;padding:5px 10px;font-size:11px;border-radius:9px}
+html.rz-ui-stage1 .modal-footer button:not(.rasid-modal-safe-close),
+html.rz-ui-stage1 .confirm-actions button{min-height:44px;border-radius:12px;font-size:13px}
+html.rz-ui-stage1 button:disabled,
+html.rz-ui-stage1 .btn:disabled{opacity:.48!important;cursor:not-allowed!important;transform:none!important;box-shadow:none!important}
+html.rz-ui-stage1 :is(button,.btn,input,select,textarea,[role="button"]):focus-visible{
+  outline:2px solid var(--brand)!important;
+  outline-offset:3px;
+  box-shadow:0 0 0 4px var(--rz-ring)!important;
+}
+/* Shared inputs. Exclude checkboxes, radio, file and hidden fields. */
+html.rz-ui-stage1 :is(.form-group,.form-row,.modal-overlay,.profile-section) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]),select,textarea){
+  min-height:var(--rz-ctrl-h);
+  border-radius:12px;
+  border:1px solid var(--border-strong);
+  background:var(--rz-input-bg);
+  color:var(--text);
+  padding:11px 13px;
+  font-size:14px;
+  line-height:1.5;
+  box-sizing:border-box;
+  max-width:100%;
+  transition:border-color .15s ease,box-shadow .15s ease,background-color .15s ease;
+}
+html.rz-ui-stage1 :is(.form-group,.form-row,.modal-overlay,.profile-section) textarea{
+  min-height:86px;
+  resize:vertical;
+  overflow-y:auto;
+}
+html.rz-ui-stage1 :is(.form-group,.form-row,.modal-overlay,.profile-section) :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea):focus{
+  border-color:var(--brand)!important;
+  background:var(--surface-hover);
+  box-shadow:0 0 0 3px var(--rz-ring)!important;
+  outline:0;
+}
+html.rz-ui-stage1 :is(.form-group,.modal-overlay) label{font-size:12px;line-height:1.5;font-weight:750;letter-spacing:0}
+html.rz-ui-stage1 :is(.form-group,.modal-overlay) :is(input,select,textarea)[aria-invalid="true"]{
+  border-color:var(--danger)!important;
+  box-shadow:0 0 0 3px var(--danger-bg)!important;
+}
+html.rz-ui-stage1 .rz-field-error{display:block;font-size:11px;line-height:1.6;color:var(--danger);padding-top:5px}
+/* Modal: same surface, header and footer; retain existing sizing and mobile close behavior. */
+html.rz-ui-stage1 .modal-overlay.open{
+  z-index:100500!important;
+  background:var(--rz-overlay-bg)!important;
+  backdrop-filter:blur(8px) saturate(120%);
+  -webkit-backdrop-filter:blur(8px) saturate(120%);
+}
+html.rz-ui-stage1 .modal-overlay .modal{
+  border:1px solid var(--rz-modal-border);
+  border-radius:var(--rz-modal-radius);
+  background:var(--surface);
+  box-shadow:var(--rz-modal-shadow)!important;
+  max-height:min(92dvh,880px);
+  box-sizing:border-box;
+  overscroll-behavior:contain;
+}
+html.rz-ui-stage1 .modal-overlay .modal > h3:first-of-type,
+html.rz-ui-stage1 .modal-overlay .modal > .modal-title:first-of-type{
+  font-size:17px;line-height:1.5;font-weight:850;
+  border-bottom:1px solid var(--border-strong);
+  padding-bottom:15px;margin-bottom:18px;
+  min-height:34px;
+}
+html.rz-ui-stage1 .modal-overlay .modal-footer{
+  display:flex;align-items:center;justify-content:flex-end;gap:10px;
+  border-top:1px solid var(--border-strong);
+  padding-top:16px;margin-top:20px;
+}
+html.rz-ui-stage1 .modal-overlay .modal-footer > .btn{flex:0 1 auto}
+html.rz-ui-stage1 .modal-overlay .rasid-modal-safe-close{
+  display:flex;align-items:center;justify-content:center;
+  width:40px;height:40px;min-width:40px;
+  border:1px solid var(--border-strong);border-radius:12px;
+  background:var(--surface-2);color:var(--text);
+  font:700 24px/1 inherit;cursor:pointer;
+  z-index:3;
+}
+@media(min-width:769px){
+  html.rz-ui-stage1 .modal-overlay .modal{padding:25px 26px 22px;overflow-y:auto}
+  html.rz-ui-stage1 .modal-overlay .rasid-modal-safe-close{
+    float:left;margin:0 0 8px 0;position:sticky;top:0;
+  }
+  html.rz-ui-stage1 .modal-overlay .modal > h3:first-of-type{padding-left:42px}
+}
+@media(max-width:768px){
+  html.rz-ui-stage1 .modal-overlay.open .modal{
+    border-radius:24px 24px 0 0!important;
+    border-bottom:0!important;
+    padding:20px 16px calc(14px + env(safe-area-inset-bottom,0px))!important;
+    max-height:calc(100dvh - 14px - env(safe-area-inset-top,0px))!important;
+  }
+  html.rz-ui-stage1 .modal-overlay.open .modal .form-row{grid-template-columns:minmax(0,1fr)!important;gap:10px}
+  html.rz-ui-stage1 .modal-overlay.open .modal-footer{
+    display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;
+    gap:9px!important;
+    background:var(--surface)!important;
+    border-top:1px solid var(--border-strong)!important;
+    margin-top:18px!important;
+    padding:12px 0 calc(8px + env(safe-area-inset-bottom,0px))!important;
+  }
+  html.rz-ui-stage1 .modal-overlay.open .modal-footer button:not(.rasid-modal-safe-close){flex:1 1 130px!important;min-width:0;width:auto!important}
+  html.rz-ui-stage1 .modal-overlay :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){font-size:16px!important}
+}
+/* Confirmation dialog has priority above modal; destructive actions remain explicit. */
+html.rz-ui-stage1 .confirm-overlay{z-index:100900!important;background:var(--rz-overlay-bg);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:14px}
+html.rz-ui-stage1 .confirm-box{width:min(430px,100%);max-height:90dvh;overflow:auto;border-radius:20px;border:1px solid var(--rz-modal-border);background:var(--surface);box-shadow:var(--rz-modal-shadow);padding:26px 24px 22px}
+html.rz-ui-stage1 .confirm-title{text-align:right;font-size:18px;line-height:1.5;margin:0 0 8px;color:var(--text)}
+html.rz-ui-stage1 .confirm-msg{text-align:right;color:var(--text-2);font-size:13px;line-height:1.8;white-space:pre-wrap;margin-bottom:20px}
+html.rz-ui-stage1 .confirm-actions{flex-direction:row;gap:10px}
+html.rz-ui-stage1 .confirm-btn-danger{border-color:var(--danger-border)!important;color:var(--danger)!important}
+/* Unified notifications: type is explicitly provided or inferred conservatively from text. */
+html.rz-ui-stage1 #toast.rz-toast{
+  position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom,0px));
+  transform:translate(-50%,20px);
+  display:flex;align-items:flex-start;gap:11px;
+  width:max-content;max-width:min(92vw,460px);
+  padding:12px 16px;border-radius:14px;
+  border:1px solid var(--border-strong);
+  background:var(--bg-elevated);color:var(--text);
+  box-shadow:0 14px 38px rgba(0,0,0,.30);white-space:normal;
+  font-size:13px;font-weight:650;line-height:1.6;direction:rtl;text-align:right;
+  transition:opacity .2s ease,transform .2s ease;
+}
+html.rz-ui-stage1 #toast.rz-toast.show{transform:translate(-50%,0);opacity:1;visibility:visible}
+html.rz-ui-stage1 #toast.rz-toast .rz-toast-mark{width:20px;height:20px;flex:0 0 20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--brand);background:var(--brand-tint);font:900 14px/1 inherit;margin-top:1px}
+html.rz-ui-stage1 #toast.rz-toast.rz-toast-success{border-color:var(--success-border)}
+html.rz-ui-stage1 #toast.rz-toast.rz-toast-success .rz-toast-mark{background:var(--success-bg);color:var(--success)}
+html.rz-ui-stage1 #toast.rz-toast.rz-toast-error{border-color:var(--danger-border)}
+html.rz-ui-stage1 #toast.rz-toast.rz-toast-error .rz-toast-mark{background:var(--danger-bg);color:var(--danger)}
+html.rz-ui-stage1 #toast.rz-toast.rz-toast-warning{border-color:var(--warning-border)}
+html.rz-ui-stage1 #toast.rz-toast.rz-toast-warning .rz-toast-mark{background:var(--warning-bg);color:var(--warning)}
+/* Shared loading controls; opt-in utility only, existing save handlers unchanged. */
+html.rz-ui-stage1 button.rz-ui-busy{position:relative;cursor:progress!important;pointer-events:none}
+html.rz-ui-stage1 button.rz-ui-busy::before{content:"";width:14px;height:14px;display:inline-block;border:2px solid currentColor;border-left-color:transparent;border-radius:50%;animation:rz-ui-spin .65s linear infinite;margin-inline-end:5px;flex-shrink:0}
+@keyframes rz-ui-spin{to{transform:rotate(360deg)}}
+html.rz-ui-stage1 .skeleton{border-radius:12px;animation-duration:1.65s}
+html.rz-ui-stage1 .save-indicator.saving{border-radius:10px}
+@media(prefers-reduced-motion:reduce){
+ html.rz-ui-stage1 .modal-overlay .modal,
+ html.rz-ui-stage1 .toast,
+ html.rz-ui-stage1 .btn,
+ html.rz-ui-stage1 .skeleton{animation:none!important;transition:none!important}
+}
+</style>
+
+<script id="rasid-ui-stage1-behavior">
+(function(){
+  'use strict';
+  document.documentElement.classList.add('rz-ui-stage1');
+  var lastToastTimer=null;
+  var overlayFocus=new WeakMap();
+  var opened=new WeakSet();
+  var modalSeq=0;
+  function toastType(message, forced){
+    if(['success','error','warning','info'].indexOf(forced)!==-1)return forced;
+    if(/(?:خطأ|فشل|تعذّر|تعذر|غير صحيحة|لا تملك صلاحية|غير مسموح|مرفوض)/.test(message))return 'error';
+    if(/(?:تنبيه|تحذير|تأكد|قريب الانتهاء|بانتظار)/.test(message))return 'warning';
+    if(/(?:(?:تم|تمت)\s+(?:حفظ|تسجيل|تحديث|إضافة|اضافة|حذف|تحميل|استعادة|تفعيل|إرسال|ارسال)|بنجاح)/.test(message))return 'success';
+    return 'info';
+  }
+  function notify(message,type,duration){
+    var el=document.getElementById('toast');if(!el)return;
+    var msg=String(message==null?'':message);
+    var kind=toastType(msg,type);
+    if(lastToastTimer!==null){clearTimeout(lastToastTimer);lastToastTimer=null;}
+    el.className='toast rz-toast rz-toast-'+kind;
+    el.textContent='';
+    var mark=document.createElement('span');mark.className='rz-toast-mark';mark.setAttribute('aria-hidden','true');
+    mark.textContent=kind==='success'?'✓':kind==='error'?'!':kind==='warning'?'!':'i';
+    var line=document.createElement('span');line.className='rz-toast-message';line.textContent=msg;
+    el.appendChild(mark);el.appendChild(line);
+    el.setAttribute('role',kind==='error'?'alert':'status');
+    el.setAttribute('aria-live',kind==='error'?'assertive':'polite');
+    void el.offsetHeight;
+    el.classList.add('show');
+    lastToastTimer=setTimeout(function(){el.classList.remove('show');lastToastTimer=null;},Math.max(1200,Math.min(10000,Number(duration)||3500)));
+  }
+  window.toast=notify; // Original calls remain source-compatible.
+  function confirmDialog(opts,onConfirm){
+    opts=opts||{};
+    var existing=document.getElementById('confirm-overlay');if(existing)existing.remove();
+    var overlay=document.createElement('div');overlay.id='confirm-overlay';overlay.className='confirm-overlay';
+    overlay.setAttribute('role','presentation');
+    var box=document.createElement('div');box.className='confirm-box';box.setAttribute('role','alertdialog');box.setAttribute('aria-modal','true');
+    var title=document.createElement('div');title.className='confirm-title';title.id='rz-confirm-title';title.textContent=String(opts.title||'تأكيد الإجراء');
+    var msg=document.createElement('div');msg.className='confirm-msg';msg.id='rz-confirm-message';msg.textContent=String(opts.msg||'هل أنت متأكد من تنفيذ هذا الإجراء؟');
+    box.setAttribute('aria-labelledby',title.id);box.setAttribute('aria-describedby',msg.id);
+    var actions=document.createElement('div');actions.className='confirm-actions';
+    var cancel=document.createElement('button');cancel.type='button';cancel.id='confirm-cancel';cancel.className='confirm-btn-cancel';cancel.textContent=String(opts.cancelText||'إلغاء');
+    var yes=document.createElement('button');yes.type='button';yes.id='confirm-ok';yes.className='confirm-btn-danger';yes.textContent=String(opts.confirmText||'تأكيد');
+    var prior=document.activeElement,done=false;
+    function dismiss(){if(done)return;done=true;overlay.remove();if(prior&&typeof prior.focus==='function')try{prior.focus({preventScroll:true});}catch(e){}}
+    function key(ev){if(ev.key==='Escape'){ev.preventDefault();ev.stopPropagation();dismiss();}if(ev.key==='Tab'){var target=document.activeElement===cancel?yes:cancel;if(ev.shiftKey)target=document.activeElement===yes?cancel:yes;ev.preventDefault();target.focus();}}
+    cancel.addEventListener('click',dismiss);
+    overlay.addEventListener('click',function(e){if(e.target===overlay)dismiss();});
+    overlay.addEventListener('keydown',key,true);
+    yes.addEventListener('click',function(){if(done)return;dismiss();if(typeof onConfirm==='function'){try{var result=onConfirm();if(result&&typeof result.catch==='function')result.catch(function(err){console.error('[Rasid] Action failed:',err);notify('تعذر إتمام العملية، يرجى المحاولة مجدداً.','error');});}catch(err){console.error('[Rasid] Action failed:',err);notify('تعذر إتمام العملية، يرجى المحاولة مجدداً.','error');}}});
+    actions.appendChild(yes);actions.appendChild(cancel);
+    box.appendChild(title);box.appendChild(msg);box.appendChild(actions);overlay.appendChild(box);document.body.appendChild(overlay);
+    cancel.focus({preventScroll:true});
+  }
+  window.showConfirm=confirmDialog; // Same (options, callback) contract as before.
+  function ensureModal(overlay){
+    var modal=overlay.querySelector('.modal');if(!modal)return;
+    if(!modal.id)modal.id='rz-ui-dialog-'+(++modalSeq);
+    modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');
+    modal.setAttribute('tabindex','-1');
+    var heading=modal.querySelector('h3,.modal-title');
+    if(heading){if(!heading.id)heading.id=modal.id+'-title';modal.setAttribute('aria-labelledby',heading.id);}
+    var btn=modal.querySelector('.rasid-modal-safe-close');
+    if(!btn){
+      btn=document.createElement('button');btn.type='button';btn.className='rasid-modal-safe-close';btn.textContent='×';btn.setAttribute('aria-label','إغلاق النافذة');
+      btn.addEventListener('click',function(){if(overlay.id.indexOf('modal-')===0&&typeof window.closeModal==='function')window.closeModal(overlay.id.slice(6));else overlay.classList.remove('open');});
+      modal.insertBefore(btn,modal.firstChild);
+    }
+    var isOpen=overlay.classList.contains('open');
+    overlay.setAttribute('aria-hidden',isOpen?'false':'true');
+    if(isOpen&&!opened.has(overlay)){
+      opened.add(overlay);
+      overlayFocus.set(overlay,document.activeElement);
+      // Focus the dialog, not an input: avoids opening the phone keyboard unexpectedly.
+      setTimeout(function(){if(overlay.classList.contains('open'))try{modal.focus({preventScroll:true});}catch(e){}},0);
+    }else if(!isOpen&&opened.has(overlay)){
+      opened.delete(overlay);
+      var previous=overlayFocus.get(overlay);overlayFocus.delete(overlay);
+      if(previous&&previous.isConnected&&typeof previous.focus==='function')try{previous.focus({preventScroll:true});}catch(e){}
+    }
+  }
+  function refreshModals(){document.querySelectorAll('.modal-overlay').forEach(ensureModal);}
+  function errorText(field){
+    var v=field.validity;if(!v)return 'تحقق من البيانات المدخلة.';
+    if(v.valueMissing)return 'هذا الحقل مطلوب.';
+    if(v.typeMismatch)return 'صيغة البيانات غير صحيحة.';
+    if(v.rangeUnderflow||v.rangeOverflow)return 'القيمة خارج الحدود المسموحة.';
+    if(v.tooShort||v.tooLong)return 'طول القيمة غير مناسب.';
+    if(v.patternMismatch)return 'صيغة الحقل غير صحيحة.';
+    return 'يرجى مراجعة هذا الحقل.';
+  }
+  function fieldError(field,show){
+    if(!field.closest||!field.closest('.form-group,.modal-overlay'))return;
+    var id=field.id;if(!id)return;
+    var key='rz-error-'+id;
+    var container=field.closest('.form-group')||field.parentNode;
+    var el=container.querySelector('.rz-field-error[data-for="'+id.replace(/"/g,'')+'"]');
+    if(!show){field.removeAttribute('aria-invalid');if(el)el.remove();return;}
+    field.setAttribute('aria-invalid','true');
+    if(!el){el=document.createElement('small');el.className='rz-field-error';el.dataset.for=id;container.appendChild(el);}
+    el.textContent=errorText(field);
+  }
+  document.addEventListener('invalid',function(ev){fieldError(ev.target,true);},true);
+  document.addEventListener('input',function(ev){if(ev.target&&ev.target.getAttribute('aria-invalid')==='true'&&ev.target.checkValidity())fieldError(ev.target,false);},true);
+  document.addEventListener('change',function(ev){if(ev.target&&ev.target.getAttribute('aria-invalid')==='true'&&ev.target.checkValidity())fieldError(ev.target,false);},true);
+  function setBusy(button,busy){
+    if(typeof button==='string')button=document.querySelector(button);
+    if(!button||!button.classList)return;
+    if(busy){if(button.classList.contains('rz-ui-busy'))return;button.dataset.rzWasDisabled=button.disabled?'1':'0';button.classList.add('rz-ui-busy');button.setAttribute('aria-busy','true');button.disabled=true;}
+    else {button.classList.remove('rz-ui-busy');button.removeAttribute('aria-busy');if(button.dataset.rzWasDisabled==='0')button.disabled=false;delete button.dataset.rzWasDisabled;}
+  }
+  window.RasidUI=Object.assign(window.RasidUI||{}, {notify:notify,confirm:confirmDialog,setBusy:setBusy,refreshModals:refreshModals});
+  document.addEventListener('keydown',function(ev){
+    if(ev.key!=='Escape'||window.innerWidth<=768||document.getElementById('confirm-overlay'))return;
+    var list=document.querySelectorAll('.modal-overlay.open');if(!list.length)return;
+    var overlay=list[list.length-1];
+    if(overlay.id.indexOf('modal-')!==0)return;
+    ev.preventDefault();window.closeModal(overlay.id.slice(6));
+  });
+  function ready(){
+    refreshModals();
+    var scheduled=false;
+    var observer=new MutationObserver(function(){if(scheduled)return;scheduled=true;requestAnimationFrame(function(){scheduled=false;refreshModals();});});
+    observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
+})();
+</script>
+<!-- /RASID UI STAGE 1 2026-11-15 -->
 </body>
 </html>
